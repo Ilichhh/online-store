@@ -1,6 +1,7 @@
 // import * as $ from 'jquery';
+import App from './components/app/app';
 import 'bootstrap';
 import './styles/index.scss';
-import drawFooterImages from './components/footer/footer';
 
-drawFooterImages();
+const app = new App();
+app.start();
