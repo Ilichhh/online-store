@@ -1,0 +1,10 @@
+@import "base/normalize.css";
+@import "bootstrap/custom";
+@import "~bootstrap/scss/bootstrap";
+
+@import "abstracts/variables";
+@import "base/fonts";
+@import "base/main";
+
+@import "../components/footer/footer";
+@import "../components/header/header";
