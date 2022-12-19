@@ -36,6 +36,10 @@ const baseConfig = {
           outputPath: 'assets',
         },
       },
+      {
+        test: /\.svg$/,
+        loader: 'svg-inline-loader'
+      },
     ],
   },
   resolve: {
