@@ -1,14 +1,18 @@
-import Footer from '../footer/footer';
+import AppView from '../view/appView';
+import AppController from '../controller/appController';
 
 class App {
-  footer: Footer;
+  private view: AppView;
+  private controller: AppController;
 
   constructor() {
-    this.footer = new Footer();
+    this.view = new AppView();
+    this.controller = new AppController();
   }
 
-  start() {
-    this.footer.drawFooterImages();
+  public start(): void {
+    this.view.drawFooter();
+    this.view.drawMainPage();
   }
 }
 
