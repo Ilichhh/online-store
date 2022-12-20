@@ -4,6 +4,14 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const EslingPlugin = require('eslint-webpack-plugin');
 
+const htmlPageNames = ['main-page', '404', 'cart-page', 'product-page'];
+const multipleHtmlPlugins = htmlPageNames.map(name => (
+  new HtmlWebpackPlugin({
+    template: `./src/templates/${name}.html`,
+    filename: `${name}.html`
+  })
+));
+
 const baseConfig = {
   entry: path.resolve(__dirname, './src/index.ts'),
   mode: 'development',
@@ -52,7 +60,7 @@ const baseConfig = {
     }),
     new CleanWebpackPlugin(),
     new EslingPlugin({ extensions: 'ts' }),
-  ],
+  ].concat(multipleHtmlPlugins),
 };
 
 module.exports = ({ mode }) => {
