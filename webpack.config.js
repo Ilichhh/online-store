@@ -61,6 +61,14 @@ const baseConfig = {
     new CleanWebpackPlugin(),
     new EslingPlugin({ extensions: 'ts' }),
   ].concat(multipleHtmlPlugins),
+  devServer: {
+    contentBase: path.resolve(__dirname, './dist'),
+    compress: true,
+    hot: true,
+    port: 8080,
+    publicPath: '/',
+    historyApiFallback: true
+  },
 };
 
 module.exports = ({ mode }) => {
