@@ -13,8 +13,7 @@ class App {
 
   public start(): void {
     this.view.drawFooter();
-    this.view.drawMainPage();
-    this.controller.getAllProducts((data: ProductsData) => this.view.drawAllProducts(data));
+    this.controller.getAllProducts((data: ProductsData) => this.view.drawMainPage(data));
   }
 }
 

@@ -15,12 +15,12 @@ export class AppView {
     this.footer.drawFooterImages();
   }
 
-  public drawMainPage(): void {
-    this.mainPage.drawMainPage();
+  public drawMainPage(data: ProductsData): void {
+    this.mainPage.drawMainPage(data);
   }
 
   public drawAllProducts(data: ProductsData): void {
-    console.log(data);
+    this.mainPage.productsBlock.draw(data);
   }
 }
 
