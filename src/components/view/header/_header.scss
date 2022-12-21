@@ -1,4 +1,25 @@
+.container_header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .header {
   height: 50px;
   background-color: #ddd;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nav {
+  display: flex;
+  width: 50%;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav-item {
+  text-decoration: none;
+  color: black;
 }

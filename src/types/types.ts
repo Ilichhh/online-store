@@ -17,3 +17,10 @@ export type ProductsData = {
 };
 
 export type CallbackFunc<T> = (data: T) => void;
+
+export type Routes = {
+  [name: string | number]: {
+    template: string;
+    component: string;
+  };
+};
