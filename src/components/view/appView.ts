@@ -1,5 +1,6 @@
 import Footer from './footer/footer';
 import MainPage from './main-page/mainPage';
+import type { ProductsData } from '../../types/types';
 
 export class AppView {
   footer: Footer;
@@ -16,6 +17,10 @@ export class AppView {
 
   public drawMainPage(): void {
     this.mainPage.drawMainPage();
+  }
+
+  public drawAllProducts(data: ProductsData): void {
+    console.log(data);
   }
 }
 
