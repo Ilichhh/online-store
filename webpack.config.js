@@ -4,12 +4,18 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const EslingPlugin = require('eslint-webpack-plugin');
 
-const htmlPageNames = ['main-page', '404', 'cart-page', 'product-page'];
+const htmlPageNames = [
+  'main-page/mainPage.html',
+  'page-404/404.html',
+  'cart-page/cartPage.html',
+  'product-page/productPage.html',
+];
+
 const multipleHtmlPlugins = htmlPageNames.map(
   (name) =>
     new HtmlWebpackPlugin({
-      template: `./src/templates/${name}.html`,
-      filename: `${name}.html`,
+      template: `./src/components/view/${name}`,
+      filename: name.split('/')[1],
     })
 );
 
