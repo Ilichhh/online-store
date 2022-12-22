@@ -48,7 +48,9 @@ class ProductsBlock extends DomElement {
     `;
 
     data.products.forEach((item) => {
-      productsItems.appendChild(new ProductCard().draw(item));
+      const wrapper: HTMLElement = this.createElement('div', 'products-block__item');
+      productsItems.appendChild(wrapper);
+      wrapper.appendChild(new ProductCard(item).drawGrid());
     });
 
     return productsBlock;
