@@ -1,6 +1,6 @@
 import DomElement from '../../domElement';
 
-class SearchBar {
+class SearchBar extends DomElement {
   public draw(): HTMLElement {
     const inputAttributes = {
       placeholder: 'Search product...',
@@ -13,14 +13,14 @@ class SearchBar {
       id: 'button-find',
     };
 
-    const searchBar: HTMLElement = new DomElement('div', 'search-bar input-group mt-4 mb-4').create();
-    const input: HTMLElement = new DomElement('input', 'serch-bar__input form-control', inputAttributes).create();
-    const button: HTMLElement = new DomElement(
+    const searchBar: HTMLElement = this.createElement('div', 'search-bar input-group mt-4 mb-4');
+    const input: HTMLElement = this.createElement('input', 'serch-bar__input form-control', inputAttributes);
+    const button: HTMLElement = this.createElement(
       'button',
       'serch-bar__button btn btn-warning',
       buttonAttributes,
       'Find'
-    ).create();
+    );
 
     searchBar.appendChild(input);
     searchBar.appendChild(button);

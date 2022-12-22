@@ -1,8 +1,8 @@
 import DomElement from '../../domElement';
 
-class FiltersBlock {
+class FiltersBlock extends DomElement {
   public draw(): HTMLElement {
-    const filtersBlock: HTMLElement = new DomElement('div', 'filters-block col-3').create();
+    const filtersBlock: HTMLElement = this.createElement('div', 'filters-block col-3');
 
     filtersBlock.innerHTML = `
       <div class="row mb-2">

@@ -4,12 +4,13 @@ import ProductsBlock from './products-block/productsBlock';
 import DomElement from '../domElement';
 import type { ProductsData } from '../../../types/types';
 
-class MainPage {
+class MainPage extends DomElement {
   searchBar: SearchBar;
   filtersBlock: FiltersBlock;
   productsBlock: ProductsBlock;
 
   constructor() {
+    super();
     this.searchBar = new SearchBar();
     this.filtersBlock = new FiltersBlock();
     this.productsBlock = new ProductsBlock();
@@ -17,8 +18,8 @@ class MainPage {
 
   public drawMainPage(data: ProductsData): void {
     const main: HTMLElement = <HTMLElement>document.getElementById('main');
-    const container = new DomElement('div', 'container').create();
-    const wrapper = new DomElement('div', 'products-filters-wrapper row').create();
+    const container = this.createElement('div', 'container');
+    const wrapper = this.createElement('div', 'products-filters-wrapper row');
 
     main.appendChild(container);
     container.appendChild(this.searchBar.draw());

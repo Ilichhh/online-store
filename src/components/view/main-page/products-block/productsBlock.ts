@@ -2,17 +2,17 @@ import DomElement from '../../domElement';
 import ProductCard from '../../product-card/productCard';
 import type { ProductsData } from '../../../../types/types';
 
-class ProductsBlock {
+class ProductsBlock extends DomElement {
   public draw(data: ProductsData): HTMLElement {
-    const productsBlock: HTMLElement = new DomElement('div', 'products-block col-9 mb-5').create();
-    const viewParameters: HTMLElement = new DomElement(
+    const productsBlock: HTMLElement = this.createElement('div', 'products-block col-9 mb-5');
+    const viewParameters: HTMLElement = this.createElement(
       'div',
       'products-block__view-parameters g-5 mb-4 d-flex justify-content-between'
-    ).create();
-    const productsItems: HTMLElement = new DomElement(
+    );
+    const productsItems: HTMLElement = this.createElement(
       'div',
       'products-block__items row row-cols-1 row-cols-md-3 g-4'
-    ).create();
+    );
 
     productsBlock.appendChild(viewParameters);
     productsBlock.appendChild(productsItems);

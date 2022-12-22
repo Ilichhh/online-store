@@ -1,28 +1,16 @@
 class DomElement {
-  tag: string;
-  classlist?: string;
-  attributes?: object;
-  content?: string;
-
-  constructor(tag: string, classlist?: string, attributes?: object, content?: string) {
-    this.tag = tag;
-    this.classlist = classlist;
-    this.attributes = attributes;
-    this.content = content;
-  }
-
-  public create(): HTMLElement {
-    const element: HTMLElement = document.createElement(this.tag);
-    if (this.classlist) {
-      element.className = this.classlist;
+  public createElement(tag: string, classlist?: string, attributes?: object, content?: string): HTMLElement {
+    const element: HTMLElement = document.createElement(tag);
+    if (classlist) {
+      element.className = classlist;
     }
-    if (this.attributes) {
-      for (const [key, value] of Object.entries(this.attributes)) {
+    if (attributes) {
+      for (const [key, value] of Object.entries(attributes)) {
         element.setAttribute(key, value);
       }
     }
-    if (this.content) {
-      element.textContent = this.content;
+    if (content) {
+      element.textContent = content;
     }
     return element;
   }

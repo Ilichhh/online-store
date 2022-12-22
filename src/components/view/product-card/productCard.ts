@@ -1,9 +1,9 @@
 import DomElement from '../domElement';
 import type { Product } from '../../../types/types';
 
-class ProductCard {
+class ProductCard extends DomElement {
   public draw(data: Product): HTMLElement {
-    const productCard: HTMLElement = new DomElement('div', 'products-block col-9 mb-5').create();
+    const productCard: HTMLElement = this.createElement('div', 'products-block col-9 mb-5');
 
     productCard.innerHTML = `
       <div class="product-card col">
