@@ -1,11 +1,4 @@
-import drawPage404Images from '../view/page-404/page404';
 import type { Routes } from '../../types/types';
-
-declare global {
-  interface Window {
-    route: (event: Event) => void;
-  }
-}
 
 class Router {
   public handleLocation(): void {
@@ -34,7 +27,6 @@ class Router {
       .then((data: Response) => data.text())
       .then((html: string) => {
         (<HTMLElement>document.getElementById('main')).innerHTML = html;
-        // drawPage404Images();
       });
   }
 

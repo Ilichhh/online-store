@@ -1,3 +1,16 @@
+declare global {
+  interface Window {
+    route: (event: Event) => void;
+  }
+}
+
+export type Routes = {
+  [name: string | number]: {
+    template: string;
+    component: string;
+  };
+};
+
 export type Product = {
   id: number;
   title: string;
@@ -17,10 +30,3 @@ export type ProductsData = {
 };
 
 export type CallbackFunc<T> = (data: T) => void;
-
-export type Routes = {
-  [name: string | number]: {
-    template: string;
-    component: string;
-  };
-};

@@ -8,7 +8,7 @@ class ProductCard {
     productCard.innerHTML = `
       <div class="product-card col">
         <div class="card">
-          <img src="${data.thumbnail}" class="card-img-top" alt="...">
+          <img src="${data.thumbnail}" class="card-img-top" alt="..." height="200">
           <div class="card-body">
             <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
               -${Math.round(data.discountPercentage)}%

@@ -15,18 +15,19 @@ class App {
   }
 
   public start(): void {
-    this.view.drawFooter();
-    this.controller.getAllProducts((data: ProductsData) => this.view.drawMainPage(data));
     this.router.handleLocation();
+    this.controller.getAllProducts((data: ProductsData) => this.view.drawMainPage(data));
 
     window.addEventListener('popstate', this.router.handleLocation);
     window.route = this.router.route;
 
-    document.querySelectorAll('.nav-item').forEach((e) => {
-      e.addEventListener('click', (e) => {
-        this.router.route(e);
-        this.controller.getAllProducts((data: ProductsData) => this.view.drawMainPage(data));
-      });
+    document.querySelector('.header__logo')?.addEventListener('click', (e) => {
+      this.router.route(e);
+      this.controller.getAllProducts((data: ProductsData) => this.view.drawMainPage(data));
+    });
+
+    document.querySelector('.header__cart')?.addEventListener('click', (e) => {
+      this.router.route(e);
     });
   }
 }
