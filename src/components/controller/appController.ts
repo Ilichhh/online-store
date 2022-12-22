@@ -3,7 +3,11 @@ import type { CallbackFunc } from './../../types/types';
 
 class AppController extends AppLoader {
   public getAllProducts<T>(callback: CallbackFunc<T>): void {
-    super.getResp(callback);
+    super.getResp('products?limit=100', callback);
+  }
+
+  public getAllCategories<T>(callback: CallbackFunc<T>): void {
+    super.getResp('products/categories', callback);
   }
 }
 

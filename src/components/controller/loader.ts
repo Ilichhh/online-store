@@ -7,8 +7,8 @@ class Loader {
     this.baseLink = baselink;
   }
 
-  public getResp<T>(callback: CallbackFunc<T>): void {
-    this.load('GET', callback);
+  public getResp<T>(endpoint: string, callback: CallbackFunc<T>): void {
+    this.load('GET', endpoint, callback);
   }
 
   private errorHandler(res: Response): Response {
@@ -20,13 +20,13 @@ class Loader {
     return res;
   }
 
-  private makeUrl() {
-    const url = this.baseLink;
+  private makeUrl(endpoint: string): string {
+    const url = `${this.baseLink}${endpoint}`;
     return url;
   }
 
-  private load<T>(method: string, callback: CallbackFunc<T>): void {
-    fetch(this.makeUrl(), { method })
+  private load<T>(method: string, endpoint: string, callback: CallbackFunc<T>): void {
+    fetch(this.makeUrl(endpoint), { method })
       .then(this.errorHandler)
       .then((res) => res.json())
       .then((data: T) => callback(data))

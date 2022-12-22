@@ -1,0 +1,7 @@
+.filters-block {
+  &__category,
+  &__brand {
+    height: 300px;
+    overflow: auto;
+  }
+}
