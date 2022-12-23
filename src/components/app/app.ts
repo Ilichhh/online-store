@@ -35,7 +35,6 @@ class App {
 
     this.view.mainPage.productsBlock.element.addEventListener('click', (e: Event) => {
       this.controller.toggleAddToCartButton(e, this.cart);
-      console.log(this.cart);
     });
   }
 }

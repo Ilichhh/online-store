@@ -31,6 +31,7 @@ class AppController extends AppLoader {
     if (target.classList.contains('product-card__add-to-cart-button')) {
       target.classList.contains('btn-warning') ? this.addToCart(target, cart) : this.removeFromCart(target, cart);
       // localStorage.setItem('cart', JSON.stringify(cart));
+      console.log(cart);
     }
   }
 }
