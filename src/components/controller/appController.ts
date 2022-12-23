@@ -22,8 +22,9 @@ class AppController extends AppLoader {
     button.classList.remove('btn-danger');
     button.classList.add('btn-warning');
     button.textContent = 'Add to Cart';
-    const index = cart.indexOf({ id: +button.id, count: 1 });
-    cart.splice(index - 1, 1);
+    let index = 0;
+    cart.forEach((product, i) => (product.id === +button.id ? (index = i) : null));
+    cart.splice(index, 1);
   }
 
   public toggleAddToCartButton(e: Event, cart: CartItem[]): void {
