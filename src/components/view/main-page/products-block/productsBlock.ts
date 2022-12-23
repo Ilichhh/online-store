@@ -1,6 +1,6 @@
 import DomElement from '../../domElement';
 import ProductCard from '../../product-card/productCard';
-import type { ProductsData } from '../../../../types/types';
+import type { ProductsData, CartItem } from '../../../../types/types';
 // import gridIcon from '../../../../assets/svg/grid.svg';
 // import listIcon from '../../../../assets/svg/list-ul.svg';
 
@@ -12,7 +12,7 @@ class ProductsBlock extends DomElement {
     this.element = this.createElement('div', 'products-block col-9 mb-5');
   }
 
-  public draw(data: ProductsData): HTMLElement {
+  public draw(data: ProductsData, cart: CartItem[]): HTMLElement {
     this.element.innerHTML = '';
 
     const viewParameters: HTMLElement = this.createElement(
@@ -89,9 +89,13 @@ class ProductsBlock extends DomElement {
     viewSwitcher.appendChild(listViewLabel);
 
     data.products.forEach((item) => {
+      let inCart = 0;
+      cart.forEach((e) => {
+        if (e.id === item.id) inCart = e.count;
+      });
       const wrapper: HTMLElement = this.createElement('div', 'products-block__item');
       productsItems.appendChild(wrapper);
-      wrapper.appendChild(new ProductCard(item).drawGridView());
+      wrapper.appendChild(new ProductCard(item, inCart).drawGridView());
     });
 
     return this.element;

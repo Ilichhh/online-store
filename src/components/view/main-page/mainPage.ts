@@ -2,7 +2,7 @@ import SearchBar from './search-bar/searchBar';
 import FiltersBlock from './filters-block/filtersBlock';
 import ProductsBlock from './products-block/productsBlock';
 import DomElement from '../domElement';
-import type { ProductsData } from '../../../types/types';
+import type { ProductsData, CartItem } from '../../../types/types';
 
 class MainPage extends DomElement {
   searchBar: SearchBar;
@@ -16,7 +16,7 @@ class MainPage extends DomElement {
     this.productsBlock = new ProductsBlock();
   }
 
-  public drawMainPage(data: ProductsData): void {
+  public drawMainPage(data: ProductsData, cart: CartItem[]): void {
     const main: HTMLElement = <HTMLElement>document.getElementById('main');
     const container = this.createElement('div', 'container');
     const wrapper = this.createElement('div', 'products-filters-wrapper row');
@@ -25,7 +25,7 @@ class MainPage extends DomElement {
     container.appendChild(this.searchBar.draw());
     container.appendChild(wrapper);
     wrapper.appendChild(this.filtersBlock.draw(data));
-    wrapper.appendChild(this.productsBlock.draw(data));
+    wrapper.appendChild(this.productsBlock.draw(data, cart));
   }
 }
 

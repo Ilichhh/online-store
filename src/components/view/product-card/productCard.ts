@@ -6,20 +6,23 @@ class ProductCard extends DomElement {
   data: Product;
   addToCartButton: HTMLElement;
   element: HTMLElement;
+  inCart: number;
 
-  constructor(data: Product) {
+  constructor(data: Product, inCart: number) {
     super();
     this.data = data;
+    this.inCart = inCart;
     this.element = this.createElement('div', 'product-card card', { 'data-card-id': this.data.id });
     this.addToCartButton = this.createElement(
       'button',
-      'product-card__add-to-cart-button btn btn-warning',
+      `product-card__add-to-cart-button btn ${!this.inCart ? 'btn-warning' : 'btn-danger'}`,
       { id: this.data.id },
-      'Add to Cart'
+      `${!this.inCart ? 'Add to Cart' : 'Remove from Cart'}`
     );
   }
 
   public drawGridView(): HTMLElement {
+    console.log(this.inCart);
     const thumbnail = this.createElement('img', 'product-card__thumbnail card-img-top', {
       src: this.data.thumbnail,
       alt: 'card thumbnail',
