@@ -60,14 +60,16 @@ class FiltersBlock extends DomElement {
         </div>
       </div>
       <div class="filters-block__category mb-4">
-        <h5>Category</h5>
-        <div class="filterss">
+        <h5 class="filters-block__category-header">Category</h5>
+        <div class="filters-block__category-items">
           ${categoriesBlock.join('')}
         </div>
       </div>
       <div class="filters-block__brand mb-4">
-        <h5>Brand</h5>
-        ${brandsBlock.join('')}
+        <h5 class="filters-block__brand-header">Brand</h5>
+        <div class="filters-block__brand-items">
+          ${brandsBlock.join('')}
+        </div>
       </div>
       <div class="filters-block__stock mb-3">
         <h5>Stock</h5>

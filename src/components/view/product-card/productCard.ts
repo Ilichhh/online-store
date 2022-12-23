@@ -3,31 +3,25 @@ import DomElement from '../domElement';
 import type { Product } from '../../../types/types';
 
 class ProductCard extends DomElement {
-  thumbnail: string;
-  price: number;
-  title: string;
-  category: string;
-  description: string;
-  rating: number;
-  stock: number;
-  discountPercentage: number;
+  data: Product;
+  addToCartButton: HTMLElement;
+  element: HTMLElement;
 
   constructor(data: Product) {
     super();
-    this.thumbnail = data.thumbnail;
-    this.price = data.price;
-    this.title = data.title;
-    this.category = data.category;
-    this.description = data.description;
-    this.rating = data.rating;
-    this.stock = data.stock;
-    this.discountPercentage = Math.round(data.discountPercentage);
+    this.data = data;
+    this.element = this.createElement('div', 'product-card card', { 'data-card-id': this.data.id });
+    this.addToCartButton = this.createElement(
+      'button',
+      'product-card__add-to-cart-button btn btn-warning',
+      { id: this.data.id },
+      'Add to Cart'
+    );
   }
 
-  public drawGrid(): HTMLElement {
-    const card = this.createElement('div', 'product-card card');
+  public drawGridView(): HTMLElement {
     const thumbnail = this.createElement('img', 'product-card__thumbnail card-img-top', {
-      src: this.thumbnail,
+      src: this.data.thumbnail,
       alt: 'card thumbnail',
       height: 220,
     });
@@ -36,30 +30,34 @@ class ProductCard extends DomElement {
       'span',
       'product-card__discount position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger',
       undefined,
-      `-${this.discountPercentage}%`
+      `-${Math.round(this.data.discountPercentage)}%`
     );
-    const price = this.createElement('h4', 'product-card__price', undefined, `$${this.price}`);
-    const title = this.createElement('h5', 'product-card__title card-title mt-1', undefined, this.title);
+    const price = this.createElement('h4', 'product-card__price', undefined, `$${this.data.price}`);
+    const title = this.createElement('h5', 'product-card__title card-title mt-1', undefined, this.data.title);
     const category = this.createElement(
       'h6',
       'product-card__category card-subtitle mb-2 text-muted',
       undefined,
-      this.category
+      this.data.category
     );
-    const description = this.createElement('p', 'product-card__description card-text', undefined, this.description);
-    const wrapper = this.createElement('div', 'product-card__rating-stock-wrapper col mb-3');
-    const rating = this.createElement('span', 'product-card__rating', undefined, `${this.rating}`);
-    const stock = this.createElement('span', 'product-card__stock badge text-bg-light', undefined, `${this.stock}pcs.`);
-    const addToCartButton = this.createElement(
-      'button',
-      'product-card__add-to-cart-button btn btn-warning',
+    const description = this.createElement(
+      'p',
+      'product-card__description card-text',
       undefined,
-      'Add to Cart'
+      this.data.description
+    );
+    const wrapper = this.createElement('div', 'product-card__rating-stock-wrapper col mb-3');
+    const rating = this.createElement('span', 'product-card__rating', undefined, `${this.data.rating}`);
+    const stock = this.createElement(
+      'span',
+      'product-card__stock badge text-bg-light',
+      undefined,
+      `${this.data.stock}pcs.`
     );
 
-    card.appendChild(thumbnail);
-    card.appendChild(body);
-    card.appendChild(discount);
+    this.element.appendChild(thumbnail);
+    this.element.appendChild(body);
+    this.element.appendChild(discount);
     body.appendChild(price);
     body.appendChild(title);
     body.appendChild(category);
@@ -67,9 +65,17 @@ class ProductCard extends DomElement {
     body.appendChild(wrapper);
     wrapper.appendChild(rating);
     wrapper.appendChild(stock);
-    body.appendChild(addToCartButton);
+    body.appendChild(this.addToCartButton);
 
-    return card;
+    return this.element;
+  }
+
+  public drawLineView() {
+    // for main page
+  }
+
+  public drawCartView() {
+    // for cart page
   }
 }
 

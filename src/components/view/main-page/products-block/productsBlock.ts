@@ -3,8 +3,15 @@ import ProductCard from '../../product-card/productCard';
 import type { ProductsData } from '../../../../types/types';
 
 class ProductsBlock extends DomElement {
+  element: HTMLElement;
+
+  constructor() {
+    super();
+    this.element = this.createElement('div', 'products-block col-9 mb-5');
+  }
+
   public draw(data: ProductsData): HTMLElement {
-    const productsBlock: HTMLElement = this.createElement('div', 'products-block col-9 mb-5');
+    this.element.innerHTML = '';
     const viewParameters: HTMLElement = this.createElement(
       'div',
       'products-block__view-parameters g-5 mb-4 d-flex justify-content-between'
@@ -14,8 +21,8 @@ class ProductsBlock extends DomElement {
       'products-block__items row row-cols-1 row-cols-md-3 g-4'
     );
 
-    productsBlock.appendChild(viewParameters);
-    productsBlock.appendChild(productsItems);
+    this.element.appendChild(viewParameters);
+    this.element.appendChild(productsItems);
 
     viewParameters.innerHTML = `
       <div class="input-group-sm">
@@ -50,10 +57,9 @@ class ProductsBlock extends DomElement {
     data.products.forEach((item) => {
       const wrapper: HTMLElement = this.createElement('div', 'products-block__item');
       productsItems.appendChild(wrapper);
-      wrapper.appendChild(new ProductCard(item).drawGrid());
+      wrapper.appendChild(new ProductCard(item).drawGridView());
     });
-
-    return productsBlock;
+    return this.element;
   }
 }
 

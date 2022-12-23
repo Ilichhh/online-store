@@ -1,29 +1,32 @@
 import DomElement from '../../domElement';
 
 class SearchBar extends DomElement {
-  public draw(): HTMLElement {
-    const inputAttributes = {
+  searchButton: HTMLElement;
+  input: HTMLElement;
+
+  constructor() {
+    super();
+    this.input = this.createElement('input', 'serch-bar__input form-control', {
       placeholder: 'Search product...',
       'aria-label': 'Search product...',
       'aria-describedby': 'button-find',
-      checked: true,
-    };
-    const buttonAttributes = {
-      type: 'button',
-      id: 'button-find',
-    };
-
-    const searchBar: HTMLElement = this.createElement('div', 'search-bar input-group mt-4 mb-4');
-    const input: HTMLElement = this.createElement('input', 'serch-bar__input form-control', inputAttributes);
-    const button: HTMLElement = this.createElement(
+    });
+    this.searchButton = this.createElement(
       'button',
       'serch-bar__button btn btn-warning',
-      buttonAttributes,
+      {
+        type: 'button',
+        id: 'button-find',
+      },
       'Find'
     );
+  }
 
-    searchBar.appendChild(input);
-    searchBar.appendChild(button);
+  public draw(): HTMLElement {
+    const searchBar: HTMLElement = this.createElement('div', 'search-bar input-group mt-4 mb-4');
+
+    searchBar.appendChild(this.input);
+    searchBar.appendChild(this.searchButton);
 
     return searchBar;
   }

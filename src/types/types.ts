@@ -30,3 +30,8 @@ export type ProductsData = {
 };
 
 export type CallbackFunc<T> = (data: T) => void;
+
+export type CartItem = {
+  id: number;
+  count: number;
+};

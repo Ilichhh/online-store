@@ -1,9 +1,8 @@
 class DomElement {
-  public createElement(tag: string, classlist?: string, attributes?: object, content?: string): HTMLElement {
+  public createElement(tag: string, classlist: string, attributes?: object, content?: string): HTMLElement {
     const element: HTMLElement = document.createElement(tag);
-    if (classlist) {
-      element.className = classlist;
-    }
+    element.className = classlist;
+
     if (attributes) {
       for (const [key, value] of Object.entries(attributes)) {
         element.setAttribute(key, value);
