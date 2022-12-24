@@ -1,6 +1,6 @@
-// .product-card {
-//   transition: .2s all;
-//   &:hover {
-//     transform: scale(1.1);
-//   }
-// }
+.product-card {
+  transition: .2s all;
+  &:hover {
+    transform: scale(1.05);
+  }
+}

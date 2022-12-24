@@ -12,25 +12,21 @@ class AppController extends AppLoader {
   }
 
   private addToCart(button: Element, cart: CartItem[]): void {
-    button.classList.remove('btn-warning');
-    button.classList.add('btn-danger');
     button.textContent = 'Remove from Cart';
     cart.push({ id: +button.id, count: 1 });
   }
 
   private removeFromCart(button: Element, cart: CartItem[]): void {
-    button.classList.remove('btn-danger');
-    button.classList.add('btn-warning');
     button.textContent = 'Add to Cart';
-    let index = 0;
-    cart.forEach((product, i) => (product.id === +button.id ? (index = i) : null));
-    cart.splice(index, 1);
+    cart.forEach((product, index) => (product.id === +button.id ? cart.splice(index, 1) : null));
   }
 
   public toggleAddToCartButton(e: Event, cart: CartItem[]): void {
-    const target: Element = <Element>e.target;
-    if (target.classList.contains('product-card__add-to-cart-button')) {
-      target.classList.contains('btn-warning') ? this.addToCart(target, cart) : this.removeFromCart(target, cart);
+    const button: Element = <Element>e.target;
+    if (button.classList.contains('product-card__add-to-cart-button')) {
+      button.classList.contains('btn-warning') ? this.addToCart(button, cart) : this.removeFromCart(button, cart);
+      button.classList.toggle('btn-danger');
+      button.classList.toggle('btn-warning');
       localStorage.setItem('cart', JSON.stringify(cart));
       console.log(cart);
     }
