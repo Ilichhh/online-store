@@ -4,11 +4,13 @@ declare global {
   }
 }
 
+export type Route = {
+  template: string;
+  component: string;
+};
+
 export type Routes = {
-  [name: string | number]: {
-    template: string;
-    component: string;
-  };
+  [name: string | number]: Route;
 };
 
 export type Product = {

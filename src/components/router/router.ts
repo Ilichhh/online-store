@@ -1,4 +1,4 @@
-import type { Routes } from '../../types/types';
+import type { Route, Routes } from '../../types/types';
 
 class Router {
   public handleLocation(): void {
@@ -21,8 +21,8 @@ class Router {
       },
     };
 
-    const path = window.location.pathname.length === 0 ? '/' : window.location.pathname;
-    const route = routes[path] || routes[404];
+    const path: string = window.location.pathname.length === 0 ? '/' : window.location.pathname;
+    const route: Route = routes[path] || routes[404];
     fetch(route.template)
       .then((data: Response) => data.text())
       .then((html: string) => {

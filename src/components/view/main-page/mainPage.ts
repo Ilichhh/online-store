@@ -18,8 +18,8 @@ class MainPage extends DomElement {
 
   public drawMainPage(data: ProductsData, cart: CartItem[]): void {
     const main: HTMLElement = <HTMLElement>document.getElementById('main');
-    const container = this.createElement('div', 'container');
-    const wrapper = this.createElement('div', 'products-filters-wrapper row');
+    const container: HTMLElement = this.createElement('div', 'container');
+    const wrapper: HTMLElement = this.createElement('div', 'products-filters-wrapper row');
 
     main.appendChild(container);
     container.appendChild(this.searchBar.draw());
