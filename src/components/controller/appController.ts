@@ -4,7 +4,7 @@ import type { CartItem } from '../../types/types';
 
 class AppController extends AppLoader {
   public getAllProducts<T>(callback: CallbackFunc<T>): void {
-    super.getResp('products?limit=30', callback);
+    super.getResp('products?limit=100', callback);
   }
 
   public getAllCategories<T>(callback: CallbackFunc<T>): void {

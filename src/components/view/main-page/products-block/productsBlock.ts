@@ -1,6 +1,6 @@
 import DomElement from '../../domElement';
 import ProductCard from '../../product-card/productCard';
-import type { ProductsData, CartItem } from '../../../../types/types';
+import type { ProductsData, CartItem, QueryParams } from '../../../../types/types';
 // import gridIcon from '../../../../assets/svg/grid.svg';
 // import listIcon from '../../../../assets/svg/list-ul.svg';
 
@@ -14,7 +14,7 @@ class ProductsBlock extends DomElement {
     this.productsItemsBlock = this.createElement('div', 'products-block__items row row-cols-1 row-cols-md-3 g-4');
   }
 
-  public draw(data: ProductsData, cart: CartItem[]): HTMLElement {
+  public draw(data: ProductsData, cart: CartItem[], params: QueryParams): HTMLElement {
     this.element.innerHTML = '';
 
     const viewParameters: HTMLElement = this.createElement(
@@ -54,9 +54,8 @@ class ProductsBlock extends DomElement {
       id: 'grid',
       autocomplete: 'off',
     });
-    gridViewInput.checked = true;
     const gridViewLabel = this.createElement('label', 'btn btn-outline-secondary btn-sm', { for: 'grid' });
-    const listViewInput = this.createElement('input', 'btn-check', {
+    const listViewInput = <HTMLInputElement>this.createElement('input', 'btn-check', {
       type: 'radio',
       name: 'view-style',
       id: 'list',
@@ -86,12 +85,14 @@ class ProductsBlock extends DomElement {
     viewSwitcher.appendChild(listViewInput);
     viewSwitcher.appendChild(listViewLabel);
 
-    this.drawProducts(data, cart, 'grid');
+    params['view-style'] === 'list' ? (listViewInput.checked = true) : (gridViewInput.checked = true);
+
+    this.drawProducts(data, cart, params);
     return this.element;
   }
 
-  public drawProducts(data: ProductsData, cart: CartItem[], view?: string) {
-    console.log(view);
+  public drawProducts(data: ProductsData, cart: CartItem[], params: QueryParams) {
+    console.log(params['view-style']);
     this.productsItemsBlock.innerHTML = '';
     data.products.forEach((item) => {
       let inCart = 0;
@@ -100,8 +101,9 @@ class ProductsBlock extends DomElement {
       });
       const wrapper: HTMLElement = this.createElement('div', 'products-block__item');
       this.productsItemsBlock.appendChild(wrapper);
-      if (view === 'grid') wrapper.appendChild(new ProductCard(item, inCart).drawGridView());
-      if (view === 'list') wrapper.appendChild(new ProductCard(item, inCart).drawListView());
+      if (!params['view-style'] || params['view-style'] === 'grid')
+        wrapper.appendChild(new ProductCard(item, inCart).drawGridView());
+      if (params['view-style'] === 'list') wrapper.appendChild(new ProductCard(item, inCart).drawListView());
     });
   }
 }

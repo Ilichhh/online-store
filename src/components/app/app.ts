@@ -19,14 +19,18 @@ class App {
 
   public start(): void {
     this.router.handleLocation();
-    this.controller.getAllProducts((data: ProductsData) => this.view.drawMainPage(data, this.cart));
+    this.controller.getAllProducts((data: ProductsData) =>
+      this.view.drawMainPage(data, this.cart, this.router.getQueryParams())
+    );
 
     window.addEventListener('popstate', this.router.handleLocation);
     window.route = this.router.route;
 
     document.querySelector('.header__logo')?.addEventListener('click', (e) => {
       this.router.route(e);
-      this.controller.getAllProducts((data: ProductsData) => this.view.drawMainPage(data, this.cart));
+      this.controller.getAllProducts((data: ProductsData) =>
+        this.view.drawMainPage(data, this.cart, this.router.getQueryParams())
+      );
     });
 
     document.querySelector('.header__cart')?.addEventListener('click', (e) => {
@@ -42,7 +46,7 @@ class App {
       if (button.name === 'view-style') {
         this.router.setQueryString({ 'view-style': button.closest('.btn-check')?.id });
         this.controller.getAllProducts((data: ProductsData) =>
-          this.view.mainPage.productsBlock.drawProducts(data, this.cart, button.closest('.btn-check')?.id)
+          this.view.mainPage.productsBlock.drawProducts(data, this.cart, this.router.getQueryParams())
         );
       }
     });

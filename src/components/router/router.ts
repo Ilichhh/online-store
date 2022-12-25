@@ -1,4 +1,4 @@
-import type { Route, Routes } from '../../types/types';
+import type { Route, Routes, QueryParams } from '../../types/types';
 
 class Router {
   public handleLocation(): void {
@@ -45,11 +45,14 @@ class Router {
     window.history.pushState({}, '', newUrl.href);
   }
 
-  public getQueryParam(param: string): string | null {
+  public getQueryParams(): QueryParams {
     const paramsString = window.location.search;
     const searchParams = new URLSearchParams(paramsString);
-    // console.log(searchParams.get(param));
-    return searchParams.get(param);
+    const paramsList: QueryParams = {};
+    for (const [key, value] of searchParams.entries()) {
+      paramsList[key] = value;
+    }
+    return paramsList;
   }
 }
 
