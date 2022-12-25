@@ -6,10 +6,12 @@ import type { ProductsData, CartItem } from '../../../../types/types';
 
 class ProductsBlock extends DomElement {
   element: HTMLElement;
+  productsItemsBlock: HTMLElement;
 
   constructor() {
     super();
     this.element = this.createElement('div', 'products-block col-9 mb-5');
+    this.productsItemsBlock = this.createElement('div', 'products-block__items row row-cols-1 row-cols-md-3 g-4');
   }
 
   public draw(data: ProductsData, cart: CartItem[]): HTMLElement {
@@ -18,10 +20,6 @@ class ProductsBlock extends DomElement {
     const viewParameters: HTMLElement = this.createElement(
       'div',
       'products-block__view-parameters g-5 mb-4 d-flex justify-content-between'
-    );
-    const productsItems: HTMLElement = this.createElement(
-      'div',
-      'products-block__items row row-cols-1 row-cols-md-3 g-4'
     );
     const sortingFilterWrapper: HTMLElement = this.createElement(
       'div',
@@ -52,19 +50,19 @@ class ProductsBlock extends DomElement {
     });
     const gridViewInput = <HTMLInputElement>this.createElement('input', 'btn-check', {
       type: 'radio',
-      name: 'view-stile',
-      id: 'view-grid',
+      name: 'view-style',
+      id: 'grid',
       autocomplete: 'off',
     });
     gridViewInput.checked = true;
-    const gridViewLabel = this.createElement('label', 'btn btn-outline-secondary btn-sm', { for: 'view-grid' });
+    const gridViewLabel = this.createElement('label', 'btn btn-outline-secondary btn-sm', { for: 'grid' });
     const listViewInput = this.createElement('input', 'btn-check', {
       type: 'radio',
-      name: 'view-stile',
-      id: 'view-list',
+      name: 'view-style',
+      id: 'list',
       autocomplete: 'off',
     });
-    const listViewLabel = this.createElement('label', 'btn btn-outline-secondary btn-sm', { for: 'view-list' });
+    const listViewLabel = this.createElement('label', 'btn btn-outline-secondary btn-sm', { for: 'list' });
 
     gridViewLabel.innerHTML = `
       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-grid" viewBox="0 0 16 16">
@@ -78,7 +76,7 @@ class ProductsBlock extends DomElement {
     `;
 
     this.element.appendChild(viewParameters);
-    this.element.appendChild(productsItems);
+    this.element.appendChild(this.productsItemsBlock);
     sortingFilterWrapper.appendChild(sortingFilter);
     viewParameters.appendChild(sortingFilterWrapper);
     viewParameters.appendChild(searchResults);
@@ -88,17 +86,23 @@ class ProductsBlock extends DomElement {
     viewSwitcher.appendChild(listViewInput);
     viewSwitcher.appendChild(listViewLabel);
 
+    this.drawProducts(data, cart, 'grid');
+    return this.element;
+  }
+
+  public drawProducts(data: ProductsData, cart: CartItem[], view?: string) {
+    console.log(view);
+    this.productsItemsBlock.innerHTML = '';
     data.products.forEach((item) => {
       let inCart = 0;
       cart.forEach((e) => {
         if (e.id === item.id) inCart = e.count;
       });
       const wrapper: HTMLElement = this.createElement('div', 'products-block__item');
-      productsItems.appendChild(wrapper);
-      wrapper.appendChild(new ProductCard(item, inCart).drawGridView());
+      this.productsItemsBlock.appendChild(wrapper);
+      if (view === 'grid') wrapper.appendChild(new ProductCard(item, inCart).drawGridView());
+      if (view === 'list') wrapper.appendChild(new ProductCard(item, inCart).drawListView());
     });
-
-    return this.element;
   }
 }
 

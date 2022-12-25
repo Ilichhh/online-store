@@ -33,8 +33,18 @@ class App {
       this.router.route(e);
     });
 
-    this.view.mainPage.productsBlock.element.addEventListener('click', (e: Event) => {
+    this.view.mainPage.productsBlock.productsItemsBlock.addEventListener('click', (e: Event) => {
       this.controller.toggleAddToCartButton(e, this.cart);
+    });
+
+    this.view.mainPage.productsBlock.element.addEventListener('change', (e: Event) => {
+      const button: HTMLButtonElement = <HTMLButtonElement>e.target;
+      if (button.name === 'view-style') {
+        this.router.setQueryString({ 'view-style': button.closest('.btn-check')?.id });
+        this.controller.getAllProducts((data: ProductsData) =>
+          this.view.mainPage.productsBlock.drawProducts(data, this.cart, button.closest('.btn-check')?.id)
+        );
+      }
     });
   }
 }

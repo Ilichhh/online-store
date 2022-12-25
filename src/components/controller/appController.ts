@@ -4,7 +4,7 @@ import type { CartItem } from '../../types/types';
 
 class AppController extends AppLoader {
   public getAllProducts<T>(callback: CallbackFunc<T>): void {
-    super.getResp('products?limit=100', callback);
+    super.getResp('products?limit=30', callback);
   }
 
   public getAllCategories<T>(callback: CallbackFunc<T>): void {
@@ -29,6 +29,14 @@ class AppController extends AppLoader {
       button.classList.toggle('btn-warning');
       localStorage.setItem('cart', JSON.stringify(cart));
       console.log(cart);
+    }
+  }
+
+  public changeCardView(e: Event): void {
+    const button: HTMLButtonElement = <HTMLButtonElement>e.target;
+    if (button.name === 'view-style') {
+      console.log(button.closest('.btn-check')?.id);
+      // block.(data: ProductsData, cart, button.closest('.btn-check')?.id);
     }
   }
 }

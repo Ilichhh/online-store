@@ -58,7 +58,7 @@ class ProductCard extends DomElement {
       'button',
       `product-card__add-to-cart-button btn ${!this.inCart ? 'btn-warning' : 'btn-danger'}`,
       { id: this.data.id },
-      `${!this.inCart ? 'Add to Cart' : 'Remove from Cart'}`
+      !this.inCart ? 'Add to Cart' : 'Remove from Cart'
     );
 
     wrapper.innerHTML = `
@@ -82,8 +82,48 @@ class ProductCard extends DomElement {
     return this.element;
   }
 
-  public drawLineView() {
-    // for main page
+  public drawListView() {
+    const thumbnail: HTMLElement = this.createElement('img', 'product-card__thumbnail card-img-top', {
+      src: this.data.thumbnail,
+      alt: 'card thumbnail',
+      height: 220,
+    });
+    const body: HTMLElement = this.createElement('div', 'product-card__body card-body');
+    const discount: HTMLElement = this.createElement(
+      'span',
+      'product-card__discount position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger',
+      undefined,
+      `-${Math.round(this.data.discountPercentage)}%`
+    );
+    const price: HTMLElement = this.createElement('h4', 'product-card__price', undefined, `$${this.data.price}`);
+    const title: HTMLElement = this.createElement(
+      'h5',
+      'product-card__title card-title mt-1',
+      undefined,
+      this.data.title
+    );
+    const category: HTMLElement = this.createElement(
+      'h6',
+      'product-card__category card-subtitle mb-2 text-muted',
+      undefined,
+      this.data.category
+    );
+    const addToCartButton: HTMLElement = this.createElement(
+      'button',
+      `product-card__add-to-cart-button btn ${!this.inCart ? 'btn-warning' : 'btn-danger'}`,
+      { id: this.data.id },
+      !this.inCart ? 'Add to Cart' : 'Remove from Cart'
+    );
+
+    this.element.appendChild(thumbnail);
+    this.element.appendChild(body);
+    this.element.appendChild(discount);
+    body.appendChild(price);
+    body.appendChild(title);
+    body.appendChild(category);
+    body.appendChild(addToCartButton);
+
+    return this.element;
   }
 
   public drawCartView() {

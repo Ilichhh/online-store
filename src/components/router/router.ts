@@ -36,6 +36,21 @@ class Router {
     window.history.pushState({}, '', (event.target as HTMLAnchorElement).href);
     this.handleLocation();
   }
+
+  public setQueryString(params: object): void {
+    const newUrl: URL = new URL(window.location.href);
+    for (const [key, value] of Object.entries(params)) {
+      newUrl.searchParams.set(key, value);
+    }
+    window.history.pushState({}, '', newUrl.href);
+  }
+
+  public getQueryParam(param: string): string | null {
+    const paramsString = window.location.search;
+    const searchParams = new URLSearchParams(paramsString);
+    // console.log(searchParams.get(param));
+    return searchParams.get(param);
+  }
 }
 
 export default Router;
