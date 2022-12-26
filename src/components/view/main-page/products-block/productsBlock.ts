@@ -25,24 +25,31 @@ class ProductsBlock extends DomElement {
       'div',
       'products-block__sorting-filter-wrapper input-group-sm'
     );
-    const sortingFilter: HTMLElement = this.createElement('select', 'products-block__sorting-filter form-select', {
-      id: 'sort',
-    });
-    const sortingFiltersArray: string[] = [
-      'Price Low to High',
-      'Price High to Low',
-      'Rating Low to High',
-      'Rating High to Low',
+    const sortingFilter = <HTMLSelectElement>this.createElement(
+      'select',
+      'products-block__sorting-filter form-select',
+      {
+        id: 'sort',
+      }
+    );
+
+    const sortingFiltersArray: [string, string][] = [
+      ['Sort by...', 'placeholder'],
+      ['Price Low to High', 'priceLtH'],
+      ['Price High to Low', 'priceHtL'],
+      ['Rating Low to High', 'ratingLtH'],
+      ['Rating High to Low', 'ratingHtL'],
     ];
-    sortingFiltersArray.forEach((e) => {
-      const sortingFilterItem: HTMLElement = this.createElement(
-        'option',
-        'products-block__sorting-filter-item',
-        { value: e },
-        e
+
+    sortingFiltersArray.forEach((item) => {
+      const sortingFilterItem = <HTMLOptionElement>(
+        this.createElement('option', 'products-block__sorting-filter-item', { value: item[1] }, item[0])
       );
       sortingFilter.appendChild(sortingFilterItem);
     });
+
+    sortingFilter.value = params.sort || 'placeholder';
+
     const searchResults = this.createElement('div', 'products-block__found-count');
     searchResults.textContent = `Found ${data.products.length} items`;
     const viewSwitcher = this.createElement('div', 'products-block__view-switcher btn-group', {
@@ -92,7 +99,9 @@ class ProductsBlock extends DomElement {
     return this.element;
   }
 
-  public drawProducts(data: ProductsData, cart: CartItem[], params: QueryParams) {
+  public drawProducts(data: ProductsData, cart: CartItem[], params: QueryParams): void {
+    this.sortData(data, params);
+
     this.productsItemsBlock.innerHTML = '';
     if (!data.products.length)
       this.productsItemsBlock.innerHTML = "<h3>Oops, looks like we didn't find anything :(</h3>";
@@ -113,6 +122,21 @@ class ProductsBlock extends DomElement {
         wrapper.appendChild(new ProductCard(item, inCart).drawListView());
       }
     });
+  }
+
+  private sortData(data: ProductsData, params: QueryParams): void {
+    if (params.sort === 'priceLtH') {
+      data.products = data.products.sort((a, b) => a.price - b.price);
+    }
+    if (params.sort === 'priceHtL') {
+      data.products = data.products.sort((a, b) => b.price - a.price);
+    }
+    if (params.sort === 'ratingLtH') {
+      data.products = data.products.sort((a, b) => a.rating - b.rating);
+    }
+    if (params.sort === 'ratingHtL') {
+      data.products = data.products.sort((a, b) => b.rating - a.rating);
+    }
   }
 }
 

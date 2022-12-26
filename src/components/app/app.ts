@@ -42,11 +42,18 @@ class App {
     });
 
     this.view.mainPage.productsBlock.element.addEventListener('change', (e: Event) => {
-      const button: HTMLButtonElement = <HTMLButtonElement>e.target;
-      if (button.name === 'view-style') {
-        this.router.setQueryString({ 'view-style': button.closest('.btn-check')?.id });
+      const element: HTMLButtonElement = <HTMLButtonElement>e.target;
+      if (element.name === 'view-style') {
+        this.router.setQueryString({ 'view-style': element.closest('.btn-check')?.id });
         this.controller.getAllProducts((data: ProductsData) =>
-          this.view.mainPage.productsBlock.drawProducts(data, this.cart, this.router.getQueryParams())
+          this.view.drawAllProducts(data, this.cart, this.router.getQueryParams())
+        );
+      }
+
+      if (element.id === 'sort') {
+        this.router.setQueryString({ sort: element.value });
+        this.controller.getAllProducts((data: ProductsData) =>
+          this.view.drawAllProducts(data, this.cart, this.router.getQueryParams())
         );
       }
     });
