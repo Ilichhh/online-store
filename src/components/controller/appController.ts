@@ -36,7 +36,6 @@ class AppController extends AppLoader {
     const button: HTMLButtonElement = <HTMLButtonElement>e.target;
     if (button.name === 'view-style') {
       console.log(button.closest('.btn-check')?.id);
-      // block.(data: ProductsData, cart, button.closest('.btn-check')?.id);
     }
   }
 }

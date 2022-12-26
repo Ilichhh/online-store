@@ -94,22 +94,24 @@ class ProductsBlock extends DomElement {
 
   public drawProducts(data: ProductsData, cart: CartItem[], params: QueryParams) {
     this.productsItemsBlock.innerHTML = '';
-    if (!data.products.length) {
-      const message = this.createElement('h3', 'products-block__not-found-message');
-      message.textContent = "Oops, looks like we didn't find anything :(";
-      this.productsItemsBlock.appendChild(message);
-    }
+    if (!data.products.length)
+      this.productsItemsBlock.innerHTML = "<h3>Oops, looks like we didn't find anything :(</h3>";
 
     data.products.forEach((item) => {
       let inCart = 0;
-      cart.forEach((e) => {
-        if (e.id === item.id) inCart = e.count;
-      });
+      cart.forEach((e) => (e.id === item.id ? (inCart = e.count) : null));
       const wrapper: HTMLElement = this.createElement('div', 'products-block__item');
       this.productsItemsBlock.appendChild(wrapper);
-      if (!params['view-style'] || params['view-style'] === 'grid')
+
+      if (!params['view-style'] || params['view-style'] === 'grid') {
+        this.productsItemsBlock.className = 'products-block__items row row-cols-1 row-cols-md-3 g-4';
         wrapper.appendChild(new ProductCard(item, inCart).drawGridView());
-      if (params['view-style'] === 'list') wrapper.appendChild(new ProductCard(item, inCart).drawListView());
+      }
+      if (params['view-style'] === 'list') {
+        this.productsItemsBlock.className = 'products-block__items row';
+        wrapper.classList.add('mb-3');
+        wrapper.appendChild(new ProductCard(item, inCart).drawListView());
+      }
     });
   }
 }
