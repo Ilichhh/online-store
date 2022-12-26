@@ -43,7 +43,8 @@ class ProductsBlock extends DomElement {
       );
       sortingFilter.appendChild(sortingFilterItem);
     });
-    const searchResults = this.createElement('div', 'products-block__found-count', undefined, 'Found all cool items');
+    const searchResults = this.createElement('div', 'products-block__found-count');
+    searchResults.textContent = `Found ${data.products.length} items`;
     const viewSwitcher = this.createElement('div', 'products-block__view-switcher btn-group', {
       role: 'group',
       'aria-label': 'view-switcher',
@@ -92,8 +93,13 @@ class ProductsBlock extends DomElement {
   }
 
   public drawProducts(data: ProductsData, cart: CartItem[], params: QueryParams) {
-    console.log(params['view-style']);
     this.productsItemsBlock.innerHTML = '';
+    if (!data.products.length) {
+      const message = this.createElement('h3', 'products-block__not-found-message');
+      message.textContent = "Oops, looks like we didn't find anything :(";
+      this.productsItemsBlock.appendChild(message);
+    }
+
     data.products.forEach((item) => {
       let inCart = 0;
       cart.forEach((e) => {
