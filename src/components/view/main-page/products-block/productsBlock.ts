@@ -6,11 +6,20 @@ import type { ProductsData, CartItem, QueryParams } from '../../../../types/type
 
 class ProductsBlock extends DomElement {
   element: HTMLElement;
+  sortingFilter: HTMLSelectElement;
+  viewSwitcher: HTMLButtonElement;
   productsItemsBlock: HTMLElement;
 
   constructor() {
     super();
     this.element = this.createElement('div', 'products-block col-9 mb-5');
+    this.sortingFilter = <HTMLSelectElement>this.createElement('select', 'products-block__sorting-filter form-select', {
+      id: 'sort',
+    });
+    this.viewSwitcher = <HTMLButtonElement>this.createElement('div', 'products-block__view-switcher btn-group', {
+      role: 'group',
+      'aria-label': 'view-switcher',
+    });
     this.productsItemsBlock = this.createElement('div', 'products-block__items row row-cols-1 row-cols-md-3 g-4');
   }
 
@@ -25,37 +34,26 @@ class ProductsBlock extends DomElement {
       'div',
       'products-block__sorting-filter-wrapper input-group-sm'
     );
-    const sortingFilter = <HTMLSelectElement>this.createElement(
-      'select',
-      'products-block__sorting-filter form-select',
-      {
-        id: 'sort',
-      }
-    );
 
     const sortingFiltersArray: [string, string][] = [
       ['Sort by...', 'placeholder'],
-      ['Price Low to High', 'priceLtH'],
-      ['Price High to Low', 'priceHtL'],
-      ['Rating Low to High', 'ratingLtH'],
-      ['Rating High to Low', 'ratingHtL'],
+      ['Price Low to High', 'price-asc'],
+      ['Price High to Low', 'price-desc'],
+      ['Rating Low to High', 'rating-asc'],
+      ['Rating High to Low', 'rating-desc'],
     ];
 
+    this.sortingFilter.innerHTML = '';
     sortingFiltersArray.forEach((item) => {
       const sortingFilterItem = <HTMLOptionElement>(
         this.createElement('option', 'products-block__sorting-filter-item', { value: item[1] }, item[0])
       );
-      sortingFilter.appendChild(sortingFilterItem);
+      this.sortingFilter.appendChild(sortingFilterItem);
     });
-
-    sortingFilter.value = params.sort || 'placeholder';
 
     const searchResults = this.createElement('div', 'products-block__found-count');
     searchResults.textContent = `Found ${data.products.length} items`;
-    const viewSwitcher = this.createElement('div', 'products-block__view-switcher btn-group', {
-      role: 'group',
-      'aria-label': 'view-switcher',
-    });
+
     const gridViewInput = <HTMLInputElement>this.createElement('input', 'btn-check', {
       type: 'radio',
       name: 'view-style',
@@ -82,17 +80,20 @@ class ProductsBlock extends DomElement {
       </svg>
     `;
 
+    this.viewSwitcher.innerHTML = '';
+
     this.element.appendChild(viewParameters);
     this.element.appendChild(this.productsItemsBlock);
-    sortingFilterWrapper.appendChild(sortingFilter);
+    sortingFilterWrapper.appendChild(this.sortingFilter);
     viewParameters.appendChild(sortingFilterWrapper);
     viewParameters.appendChild(searchResults);
-    viewParameters.appendChild(viewSwitcher);
-    viewSwitcher.appendChild(gridViewInput);
-    viewSwitcher.appendChild(gridViewLabel);
-    viewSwitcher.appendChild(listViewInput);
-    viewSwitcher.appendChild(listViewLabel);
+    viewParameters.appendChild(this.viewSwitcher);
+    this.viewSwitcher.appendChild(gridViewInput);
+    this.viewSwitcher.appendChild(gridViewLabel);
+    this.viewSwitcher.appendChild(listViewInput);
+    this.viewSwitcher.appendChild(listViewLabel);
 
+    this.sortingFilter.value = params.sort || 'placeholder';
     params['view-style'] === 'list' ? (listViewInput.checked = true) : (gridViewInput.checked = true);
 
     this.drawProducts(data, cart, params);
@@ -112,31 +113,30 @@ class ProductsBlock extends DomElement {
       const wrapper: HTMLElement = this.createElement('div', 'products-block__item');
       this.productsItemsBlock.appendChild(wrapper);
 
-      if (!params['view-style'] || params['view-style'] === 'grid') {
-        this.productsItemsBlock.className = 'products-block__items row row-cols-1 row-cols-md-3 g-4';
-        wrapper.appendChild(new ProductCard(item, inCart).drawGridView());
-      }
       if (params['view-style'] === 'list') {
         this.productsItemsBlock.className = 'products-block__items row';
         wrapper.classList.add('mb-3');
         wrapper.appendChild(new ProductCard(item, inCart).drawListView());
+      } else {
+        this.productsItemsBlock.className = 'products-block__items row row-cols-1 row-cols-md-3 g-4';
+        wrapper.appendChild(new ProductCard(item, inCart).drawGridView());
       }
     });
   }
 
+  public toggleAddToCartButton(button: Element): void {
+    button.classList.toggle('btn-danger');
+    button.classList.toggle('btn-warning');
+    button.textContent === 'Remove from Cart'
+      ? (button.textContent = 'Add to Cart')
+      : (button.textContent = 'Remove from Cart');
+  }
+
   private sortData(data: ProductsData, params: QueryParams): void {
-    if (params.sort === 'priceLtH') {
-      data.products = data.products.sort((a, b) => a.price - b.price);
-    }
-    if (params.sort === 'priceHtL') {
-      data.products = data.products.sort((a, b) => b.price - a.price);
-    }
-    if (params.sort === 'ratingLtH') {
-      data.products = data.products.sort((a, b) => a.rating - b.rating);
-    }
-    if (params.sort === 'ratingHtL') {
-      data.products = data.products.sort((a, b) => b.rating - a.rating);
-    }
+    if (params.sort === 'price-asc') data.products = data.products.sort((a, b) => a.price - b.price);
+    if (params.sort === 'price-desc') data.products = data.products.sort((a, b) => b.price - a.price);
+    if (params.sort === 'rating-asc') data.products = data.products.sort((a, b) => a.rating - b.rating);
+    if (params.sort === 'rating-desc') data.products = data.products.sort((a, b) => b.rating - a.rating);
   }
 }
 
