@@ -36,6 +36,7 @@ class Router {
     event.preventDefault();
     window.history.pushState({}, '', element.closest('a')?.href);
     this.handleLocation();
+    console.log(element.closest('a')?.href);
   }
 
   public setQueryString(params: object): void {

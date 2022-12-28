@@ -32,7 +32,8 @@ class App {
         this.view.drawMainPage(data, this.cart, this.router.getQueryParams())
       );
     });
-    document.querySelector('.header__cart')?.addEventListener('click', (e) => this.router.route(e));
+
+    this.view.header.cart.addEventListener('click', (e) => this.router.route(e));
 
     this.view.mainPage.productsBlock.sortingFilter.addEventListener('change', (e) => this.sortProducts(e));
     this.view.mainPage.productsBlock.viewSwitcher.addEventListener('change', (e) => this.changeProductsView(e));
@@ -65,10 +66,8 @@ class App {
         : this.cart.forEach((product, index) => (product.id === +button.id ? this.cart.splice(index, 1) : null));
 
       this.controller.getAllProducts((data: ProductsData) => this.view.header.updateData(data, cart));
-
       this.view.mainPage.productsBlock.toggleAddToCartButton(button);
       localStorage.setItem('cart', JSON.stringify(this.cart));
-      console.log(this.cart);
     }
   }
 }
