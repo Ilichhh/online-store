@@ -20,7 +20,6 @@ class App {
   public start(): void {
     this.router.handleLocation();
     this.controller.getAllProducts((data: ProductsData) => this.view.drawMainPage(data, this.cart));
-
     window.addEventListener('popstate', this.router.handleLocation);
     window.route = this.router.route;
 
@@ -31,6 +30,7 @@ class App {
 
     document.querySelector('.header__cart')?.addEventListener('click', (e) => {
       this.router.route(e);
+      this.controller.getAllProducts((data: ProductsData) => this.view.drawCartPage(data, this.cart));
     });
 
     this.view.mainPage.productsBlock.element.addEventListener('click', (e: Event) => {
