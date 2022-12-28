@@ -31,9 +31,10 @@ class Router {
   }
 
   public route(event: Event): void {
+    const element: HTMLAnchorElement = <HTMLAnchorElement>event.target;
     event = event || window.event;
     event.preventDefault();
-    window.history.pushState({}, '', (event.target as HTMLAnchorElement).href);
+    window.history.pushState({}, '', element.closest('a')?.href);
     this.handleLocation();
   }
 
