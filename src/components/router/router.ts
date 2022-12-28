@@ -1,4 +1,4 @@
-import type { Route, Routes } from '../../types/types';
+import type { Route, Routes, QueryParams } from '../../types/types';
 
 class Router {
   public handleLocation(): void {
@@ -35,6 +35,24 @@ class Router {
     event.preventDefault();
     window.history.pushState({}, '', (event.target as HTMLAnchorElement).href);
     this.handleLocation();
+  }
+
+  public setQueryString(params: object): void {
+    const newUrl: URL = new URL(window.location.href);
+    for (const [key, value] of Object.entries(params)) {
+      newUrl.searchParams.set(key, value);
+    }
+    window.history.pushState({}, '', newUrl.href);
+  }
+
+  public getQueryParams(): QueryParams {
+    const paramsString = window.location.search;
+    const searchParams = new URLSearchParams(paramsString);
+    const paramsList: QueryParams = {};
+    for (const [key, value] of searchParams.entries()) {
+      paramsList[key] = value;
+    }
+    return paramsList;
   }
 }
 

@@ -13,6 +13,10 @@ export type Routes = {
   [name: string | number]: Route;
 };
 
+export type QueryParams = {
+  [name: string]: string;
+};
+
 export type Product = {
   id: number;
   title: string;
