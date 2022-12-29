@@ -17,13 +17,10 @@ export class AppView {
 
   public drawAllProducts(data: ProductsData, cart: CartItem[], params: QueryParams): void {
     this.mainPage.productsBlock.draw(data, cart, params);
+  }
 
   public drawCartPage(data: ProductsData, cart: CartItem[]): void {
     this.cartPage.drawCartPage(data, cart);
-  }
-
-  public drawAllProducts(data: ProductsData, cart: CartItem[]): void {
-    this.mainPage.productsBlock.draw(data, cart);
   }
 
   public drawCartElement(data: ProductsData, cart: CartItem[]): void {

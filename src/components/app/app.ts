@@ -30,16 +30,15 @@ class App {
         this.view.drawMainPage(data, this.cart, this.router.getQueryParams())
       );
     });
-    document.querySelector('.header__cart')?.addEventListener('click', (e) => this.router.route(e));
+    document.querySelector('.header__cart')?.addEventListener('click', (e) => {
+      this.router.route(e);
+      this.controller.getAllProducts((data: ProductsData) => this.view.drawCartPage(data, this.cart));
+    });
 
     this.view.mainPage.productsBlock.sortingFilter.addEventListener('change', (e) => this.sortProducts(e));
     this.view.mainPage.productsBlock.viewSwitcher.addEventListener('change', (e) => this.changeProductsView(e));
     this.view.mainPage.productsBlock.productsItemsBlock.addEventListener('click', (e) => this.addRemoveFromCart(e));
   }
-    document.querySelector('.header__cart')?.addEventListener('click', (e) => {
-      this.router.route(e);
-      this.controller.getAllProducts((data: ProductsData) => this.view.drawCartPage(data, this.cart));
-    });
 
   private sortProducts(e: Event): void {
     const element: HTMLSelectElement = <HTMLSelectElement>e.target;
