@@ -1,14 +1,21 @@
 import MainPage from './main-page/mainPage';
+import Header from './header/header';
 import type { ProductsData, CartItem, QueryParams } from '../../types/types';
 import CartPage from './cart-page/cartPage';
 
 export class AppView {
+  header: Header;
   mainPage: MainPage;
   cartPage: CartPage;
 
   constructor() {
+    this.header = new Header();
     this.mainPage = new MainPage();
     this.cartPage = new CartPage();
+  }
+
+  public drawHeader(data: ProductsData, cart: CartItem[]): void {
+    this.header.draw(data, cart);
   }
 
   public drawMainPage(data: ProductsData, cart: CartItem[], params: QueryParams): void {
