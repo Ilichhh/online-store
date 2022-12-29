@@ -37,9 +37,9 @@ class App {
 
     this.view.mainPage.productsBlock.sortingFilter.addEventListener('change', (e) => this.sortProducts(e));
     this.view.mainPage.productsBlock.viewSwitcher.addEventListener('change', (e) => this.changeProductsView(e));
-    this.view.mainPage.productsBlock.productsItemsBlock.addEventListener('click', (e) =>
-      this.addRemoveFromCart(e, this.cart)
-    );
+    this.view.mainPage.productsBlock.productsItemsBlock.addEventListener('click', (e) => {
+      this.addRemoveFromCart(e, this.cart);
+    });
   }
 
   private sortProducts(e: Event): void {
@@ -60,6 +60,7 @@ class App {
 
   private addRemoveFromCart(e: Event, cart: CartItem[]): void {
     const button: Element = <Element>e.target;
+    e.preventDefault();
     if (button.classList.contains('product-card__add-to-cart-button')) {
       button.classList.contains('btn-warning')
         ? this.cart.push({ id: +button.id, count: 1 })
@@ -68,6 +69,8 @@ class App {
       this.controller.getAllProducts((data: ProductsData) => this.view.header.updateData(data, cart));
       this.view.mainPage.productsBlock.toggleAddToCartButton(button);
       localStorage.setItem('cart', JSON.stringify(this.cart));
+    } else if (button.closest('.product-card')) {
+      this.router.route(e);
     }
   }
 }

@@ -1,0 +1,17 @@
+.product-card {
+  &_full {
+    height: 520px;
+  }
+  &__carousel-img {
+    background-size: cover;
+  }
+}
+
+.carousel-indicators {
+  bottom: -120px;
+}
+
+.carousel-indicators [data-bs-target] {
+  height: 80px;
+  width: 100px;
+}
