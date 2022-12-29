@@ -19,10 +19,6 @@ class CartPage extends DomElement {
   public drawCartPage(data: ProductsData, cart: CartItem[]): void {
     const main: HTMLElement = <HTMLElement>document.getElementById('main');
     const cartBlock: HTMLElement = <HTMLElement>document.querySelector('.cart-block');
-    // const container: HTMLElement = this.createElement(
-    //   'div',
-    //   'cart-block container d-flex flex-wrap w-100 mt-2 justify-content-between justify-content-lg-center'
-    // );
 
     main.appendChild(cartBlock);
     cartBlock.appendChild(this.productCartBlock.draw(data, cart));
