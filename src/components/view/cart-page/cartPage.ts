@@ -23,7 +23,7 @@ class CartPage extends DomElement {
     main.appendChild(cartBlock);
     cartBlock.appendChild(this.productCartBlock.draw(data, cart));
     cartBlock.appendChild(this.summaryCartBlock.draw(data, cart));
-    cartBlock.appendChild(this.modalBuyNow.draw(data, cart));
+    cartBlock.appendChild(this.modalBuyNow.draw());
   }
 }
 

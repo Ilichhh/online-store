@@ -13,7 +13,7 @@ class ProductCard extends DomElement {
     this.inCart = inCart;
     this.element = this.createElement('div', 'product-card card');
   }
-
+   
   public drawGridView(): HTMLElement {
     const thumbnail: HTMLElement = this.createElement('img', 'product-card__thumbnail card-img-top', {
       src: this.data.thumbnail,
@@ -224,12 +224,14 @@ class ProductCard extends DomElement {
                   d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
             </svg>`;
 
+    const countProduct = 1;
+
     const cartProductCountInput: HTMLElement = this.createElement(
       'input',
       'cart-block__product-general__number fw-bold border rounded-2 me-1 ms-1 text-center',
       {
         type: 'text',
-        value: '1',
+        value: `${countProduct}`,
       }
     );
 
@@ -274,16 +276,6 @@ class ProductCard extends DomElement {
     cartBlockProductItem.appendChild(cartProductStock);
     cartProductStock.appendChild(cartProductCount);
     cartProductStock.appendChild(cartProductPrice);
-
-    // data.products.forEach((item) => {
-    //   let inCart = 0;
-    //   cart.forEach((e) => {
-    //     if (e.id === item.id) inCart = e.count;
-    //   });
-    //   const wrapper: HTMLElement = this.createElement('div', 'products-block__item');
-    //   // productsItems.appendChild(wrapper);
-    //   wrapper.appendChild(new ProductCard(item, inCart).drawGridView());
-    // });
 
     return this.element;
   }
