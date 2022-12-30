@@ -33,12 +33,16 @@ class ProductCartBlock extends DomElement {
 
     const pageItemsCount: HTMLElement = this.createElement('span', 'me-2', undefined, 'ITEMS');
 
+    const productInCartCount: number = cart.length;
+    const productInPage = 3;
+    const pageCount: number = Math.ceil(productInCartCount / productInPage);
+
     const inputItemsCount: HTMLElement = this.createElement(
       'input',
       'cart-block__product-general__number fw-bold me-1 ms-1 text-center border rounded-2 d-flex align-items-center',
       {
         type: 'text',
-        value: '1',
+        value: productInPage,
       },
       ''
     );
@@ -63,7 +67,7 @@ class ProductCartBlock extends DomElement {
       'cart-block__product-general__number fw-bold border rounded-2 me-1 ms-1 text-center',
       {
         type: 'text',
-        value: '6',
+        value: pageCount,
       },
       ''
     );
@@ -104,7 +108,6 @@ class ProductCartBlock extends DomElement {
         }
       });
     });
-
     return this.element;
   }
 }
