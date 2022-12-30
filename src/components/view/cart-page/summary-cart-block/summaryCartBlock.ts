@@ -15,6 +15,16 @@ class summaryCartBlock extends DomElement {
   public draw(data: ProductsData, cart: CartItem[]): HTMLElement {
     this.element.innerHTML = '';
 
+    let countPrice = 0;
+
+    cart.forEach((itemId: CartItem) => {
+      data.products.forEach((itemData) => {
+        if (itemId.id === itemData.id) {
+          countPrice = countPrice + itemData.price;
+        }
+      });
+    });
+
     const summaryName: HTMLElement = this.createElement(
       'div',
       'cart-block__summary__name border-bottom mb-2 fs-4',
@@ -32,7 +42,7 @@ class summaryCartBlock extends DomElement {
       'span',
       'cart-block__summary__count',
       undefined,
-      '2'
+      `${cart.length}`
     );
 
     const summaryTotalPriceBlock: HTMLElement = this.createElement('div', 'mb-1');
@@ -43,7 +53,7 @@ class summaryCartBlock extends DomElement {
       'span',
       'cart-block__summary__price',
       undefined,
-      '$1798.00'
+      `$${countPrice}`
     );
 
     const addPromoBlock: HTMLElement = this.createElement(

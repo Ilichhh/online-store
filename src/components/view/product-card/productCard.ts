@@ -248,7 +248,7 @@ class ProductCard extends DomElement {
       'div',
       'cart-block__product-item__price',
       undefined,
-      `${this.data.price}`
+      `$${this.data.price}`
     );
 
     this.element.appendChild(cartBlockProductItem);
