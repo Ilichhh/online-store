@@ -134,10 +134,14 @@ class ProductCard extends DomElement {
     );
     const cartBlockImgBlock: HTMLElement = this.createElement('div', 'me-2 w-25');
 
-    const cartBlockImg: HTMLElement = this.createElement('img', 'w-100 cart-block__product-item__photo border rounded-4', {
-      src: this.data.thumbnail,
-      alt: 'card thumbnail'
-    });
+    const cartBlockImg: HTMLElement = this.createElement(
+      'img',
+      'w-100 cart-block__product-item__photo border rounded-4',
+      {
+        src: this.data.thumbnail,
+        alt: 'card thumbnail',
+      }
+    );
 
     const cartProductItemInfo: HTMLElement = this.createElement(
       'div',
@@ -148,14 +152,14 @@ class ProductCard extends DomElement {
       'div',
       'cart-block__product-item__name mb-2 fs-4 fw-bold border-bottom',
       undefined,
-      `${this.data.title}`,
+      `${this.data.title}`
     );
 
     const cartProductDescription: HTMLElement = this.createElement(
       'div',
       'cart-block__product-item__description p-1 text-center',
       undefined,
-      `${this.data.description}`,
+      `${this.data.description}`
     );
 
     const cartProductInfoBlock: HTMLElement = this.createElement(
@@ -171,7 +175,7 @@ class ProductCard extends DomElement {
       'span',
       'cart-block__product-item__rating',
       undefined,
-      `${this.data.rating}`,
+      `${this.data.rating}`
     );
 
     const cartProductDiscountInfo: HTMLElement = this.createElement('div', '');
@@ -246,7 +250,6 @@ class ProductCard extends DomElement {
       undefined,
       `${this.data.price}`
     );
-
 
     this.element.appendChild(cartBlockProductItem);
     cartBlockImgBlock.appendChild(cartBlockImg);
