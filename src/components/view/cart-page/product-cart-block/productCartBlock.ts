@@ -9,7 +9,7 @@ class ProductCartBlock extends DomElement {
 
   constructor() {
     super();
-    this.element = this.createElement('div', 'cart-block__product bg-light border rounded-4 w-75 p-2');
+    this.element = this.createElement('div', 'cart-block__product border rounded-4 w-75 p-2');
   }
 
   public draw(data: ProductsData, cart: CartItem[]): HTMLElement {
@@ -34,7 +34,7 @@ class ProductCartBlock extends DomElement {
     const pageItemsCount: HTMLElement = this.createElement('span', 'me-2', undefined, 'ITEMS');
 
     const productInCartCount: number = cart.length;
-    const productInPage = 3;
+    let productInPage = 3;
     const pageCount: number = Math.ceil(productInCartCount / productInPage);
 
     const inputItemsCount: HTMLElement = this.createElement(
@@ -46,6 +46,10 @@ class ProductCartBlock extends DomElement {
       },
       ''
     );
+
+    inputItemsCount.addEventListener('change', () => {
+      productInPage = Number(inputItemsCount.textContent);
+    });
 
     const cartSettingCount: HTMLElement = this.createElement('div', 'd-flex align-items-center');
 

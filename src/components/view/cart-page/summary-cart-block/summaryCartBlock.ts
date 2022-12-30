@@ -8,7 +8,7 @@ class summaryCartBlock extends DomElement {
     super();
     this.element = this.createElement(
       'div',
-      'cart-block__summary bg-light fs-6 mw-100 w-25 p-2 d-flex fw-bold border rounded-4 flex-column justify-content-start align-items-center'
+      'cart-block__summary fs-6 mw-100 w-25 p-2 d-flex fw-bold border rounded-4 flex-column justify-content-start align-items-center'
     );
   }
 
