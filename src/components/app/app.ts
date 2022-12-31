@@ -62,15 +62,20 @@ class App {
     const button: Element = <Element>e.target;
     e.preventDefault();
     if (button.classList.contains('product-card__add-to-cart-button')) {
+      const card: HTMLElement = <HTMLElement>button.closest('.product-card__main');
       button.classList.contains('btn-warning')
-        ? this.cart.push({ id: +button.id, count: 1 })
-        : this.cart.forEach((product, index) => (product.id === +button.id ? this.cart.splice(index, 1) : null));
+        ? this.cart.push({ id: +card.id, count: 1 })
+        : this.cart.forEach((product, index) => (product.id === +card.id ? this.cart.splice(index, 1) : null));
 
       this.controller.getAllProducts((data: ProductsData) => this.view.header.updateData(data, cart));
       this.view.mainPage.productsBlock.toggleAddToCartButton(button);
       localStorage.setItem('cart', JSON.stringify(this.cart));
-    } else if (button.closest('.product-card')) {
+    } else if (button.closest('.product-card__main')) {
+      const card: HTMLElement = <HTMLElement>button.closest('.product-card__main');
       this.router.route(e);
+      this.controller.getAllProducts((data: ProductsData) =>
+        this.view.productPage.drawProductPage(data.products[+card.id - 1], cart)
+      );
     }
   }
 }
