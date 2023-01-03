@@ -46,6 +46,10 @@ class App {
       this.addRemoveFromCart(target, target, this.cart);
     });
   }
+    document.querySelector('.header__cart')?.addEventListener('click', (e) => {
+      this.router.route(e);
+      this.controller.getAllProducts((data: ProductsData) => this.view.drawCartPage(data, this.cart));
+    });
 
   private sortProducts(e: Event): void {
     const element: HTMLSelectElement = <HTMLSelectElement>e.target;
