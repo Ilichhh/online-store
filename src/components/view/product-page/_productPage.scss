@@ -1,0 +1,45 @@
+.product-page {
+
+  &__card {
+    height: 520px;
+  }
+
+  &__carousel {
+    height: 400px;
+  }
+
+  &__carousel-img,
+  &__preview-img {
+    width: 100%;
+    height: 100%; 
+    object-fit: contain;
+  }
+
+  &__previews {
+    bottom: -120px;
+  }
+
+  &__previews [data-bs-target] {
+    height: 80px;
+    width: 100px;
+  }
+
+  &__preview {
+    height: 100px;
+  }
+
+  &__ordering {
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+
+  &__price {
+    margin-bottom: 4px;
+    margin-left: 15px;
+    text-decoration: line-through;
+    &_final {
+      margin-bottom: 0;
+    }
+  }
+}

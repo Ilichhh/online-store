@@ -1,5 +1,5 @@
 import DomElement from '../domElement';
-import type { ProductsData, CartItem, QueryParams } from '../../../types/types';
+import type { ProductsData, CartItem } from '../../../types/types';
 
 class Header extends DomElement {
   cart: HTMLElement;

@@ -15,6 +15,7 @@ class ProductCard extends DomElement {
   }
 
   public drawGridView(): HTMLElement {
+    const card = this.createElement('a', 'product-card__main', { href: `/product`, id: this.data.id });
     const thumbnail: HTMLElement = this.createElement('img', 'product-card__thumbnail card-img-top', {
       src: this.data.thumbnail,
       alt: 'card thumbnail',
@@ -35,7 +36,7 @@ class ProductCard extends DomElement {
     const addToCartButton: HTMLElement = this.createElement(
       'button',
       `product-card__add-to-cart-button btn ${!this.inCart ? 'btn-warning' : 'btn-danger'}`,
-      { id: this.data.id },
+      undefined,
       !this.inCart ? 'Add to Cart' : 'Remove from Cart'
     );
 
@@ -51,9 +52,10 @@ class ProductCard extends DomElement {
     description.textContent = this.data.description;
     stock.textContent = `${this.data.stock}pcs.`;
 
-    this.element.appendChild(thumbnail);
-    this.element.appendChild(body);
-    this.element.appendChild(discount);
+    this.element.appendChild(card);
+    card.appendChild(thumbnail);
+    card.appendChild(body);
+    card.appendChild(discount);
     body.appendChild(price);
     body.appendChild(title);
     body.appendChild(category);
