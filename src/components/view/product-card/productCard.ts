@@ -6,11 +6,13 @@ class ProductCard extends DomElement {
   data: Product;
   inCart: number;
   element: HTMLElement;
+  index: number | undefined;
 
-  constructor(data: Product, inCart: number) {
+  constructor(data: Product, inCart: number, index?: number) {
     super();
     this.data = data;
     this.inCart = inCart;
+    this.index = index;
     this.element = this.createElement('div', 'product-card card');
   }
 
@@ -132,7 +134,12 @@ class ProductCard extends DomElement {
       'div',
       'p-2 cart-block__product-item border-bottom d-flex justify-content-between align-items-center'
     );
-    const cartBlockImgBlock: HTMLElement = this.createElement('div', 'me-2 w-25');
+
+    const cartNumberImageBlock: HTMLElement = this.createElement('div', 'd-flex align-items-center w-25');
+
+    const cartBlockNumber: HTMLElement = this.createElement('div', 'me-2 fw-bold fs-6', undefined, `${this.index}`);
+
+    const cartBlockImgBlock: HTMLElement = this.createElement('div', 'me-2 w-100');
 
     const cartBlockImg: HTMLElement = this.createElement(
       'img',
@@ -154,6 +161,12 @@ class ProductCard extends DomElement {
       undefined,
       `${this.data.title}`
     );
+
+    const cartProductCategoryBlock: HTMLElement = this.createElement('div', 'd-flex fw-bolder');
+
+    const cartProductCategoryText: HTMLElement = this.createElement('span', 'me-2', undefined, 'Category:');
+
+    const cartProductCategory: HTMLElement = this.createElement('span', '', undefined, `${this.data.category}`);
 
     const cartProductDescription: HTMLElement = this.createElement(
       'div',
@@ -258,12 +271,12 @@ class ProductCard extends DomElement {
       localStorage.setItem(
         'cart',
         JSON.stringify(
-          cart.map((item: { id: number }) => item.id === this.data.id ? { ...item, count: this.inCart } : item)))
-          e.target?.dispatchEvent(new CustomEvent('recalculatePrice', { bubbles: true }));
+          cart.map((item: { id: number }) => item.id === this.data.id ? { ...item, count: this.inCart } : item)));
+
+      e.target?.dispatchEvent(new CustomEvent('recalculatePrice', { bubbles: true }));
 
       cartProductCountInput.setAttribute('value', this.inCart.toString());
-    }
-    );
+    });
 
     cartProductCountMinus.innerHTML = `
     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-dash"
@@ -279,10 +292,15 @@ class ProductCard extends DomElement {
     );
 
     this.element.appendChild(cartBlockProductItem);
+    cartNumberImageBlock.appendChild(cartBlockNumber);
+    cartNumberImageBlock.appendChild(cartBlockImgBlock);
     cartBlockImgBlock.appendChild(cartBlockImg);
-    cartBlockProductItem.appendChild(cartBlockImgBlock);
+    cartBlockProductItem.appendChild(cartNumberImageBlock);
     cartBlockProductItem.appendChild(cartProductItemInfo);
     cartProductItemInfo.appendChild(cartProductName);
+    cartProductCategoryBlock.appendChild(cartProductCategoryText);
+    cartProductCategoryBlock.appendChild(cartProductCategory);
+    cartProductItemInfo.appendChild(cartProductCategoryBlock);
     cartProductItemInfo.appendChild(cartProductDescription);
     cartProductItemInfo.appendChild(cartProductInfoBlock);
     cartProductRatingInfo.appendChild(cartProductRatingText);
