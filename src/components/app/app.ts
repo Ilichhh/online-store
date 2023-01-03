@@ -33,7 +33,10 @@ class App {
       );
     });
 
-    this.view.header.cart.addEventListener('click', (e) => this.router.route(e));
+    this.view.header.cart.addEventListener('click', (e) => {
+      this.router.route(e);
+      this.controller.getAllProducts((data: ProductsData) => this.view.drawCartPage(data, this.cart));
+    });
 
     this.view.mainPage.productsBlock.sortingFilter.addEventListener('change', (e) => this.sortProducts(e));
     this.view.mainPage.productsBlock.viewSwitcher.addEventListener('change', (e) => this.changeProductsView(e));
@@ -46,10 +49,6 @@ class App {
       this.addRemoveFromCart(target, target, this.cart);
     });
   }
-    document.querySelector('.header__cart')?.addEventListener('click', (e) => {
-      this.router.route(e);
-      this.controller.getAllProducts((data: ProductsData) => this.view.drawCartPage(data, this.cart));
-    });
 
   private sortProducts(e: Event): void {
     const element: HTMLSelectElement = <HTMLSelectElement>e.target;
