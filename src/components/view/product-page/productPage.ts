@@ -50,19 +50,21 @@ class ProductPage extends DomElement {
     const price = this.createElement('h5', 'product-page__price text-muted');
 
     data.images.forEach((link, index) => {
-      const item = this.createElement('div', `carousel-item ${index === 0 ? 'active' : ''}`);
+      const item = this.createElement('div', `product-page__carousel carousel-item ${index === 0 ? 'active' : ''}`);
       const image = this.createElement('img', 'product-page__carousel-img d-block w-100', {
         src: link,
         alt: 'product image',
-        height: 400,
       });
-      const previewButton = this.createElement('button', index === 0 ? 'active' : '', {
+      const previewButton = this.createElement('button', `product-page__preview ${index === 0 ? 'active' : ''}`, {
         type: 'button',
         'data-bs-target': '#productSlider',
         'data-bs-slide-to': index,
         'aria-label': `Slide ${index + 1}`,
       });
-      const previewImage = this.createElement('img', 'd-block w-100 img-fluid', { alt: 'preview', src: link });
+      const previewImage = this.createElement('img', 'product-page__preview-img d-block w-100 img-fluid', {
+        alt: 'preview',
+        src: link,
+      });
 
       sliderImgBlock.appendChild(item);
       item.appendChild(image);
