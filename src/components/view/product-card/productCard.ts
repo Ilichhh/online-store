@@ -13,7 +13,7 @@ class ProductCard extends DomElement {
     this.inCart = inCart;
     this.element = this.createElement('div', 'product-card card');
   }
-   
+
   public drawGridView(): HTMLElement {
     const thumbnail: HTMLElement = this.createElement('img', 'product-card__thumbnail card-img-top', {
       src: this.data.thumbnail,
@@ -224,20 +224,45 @@ class ProductCard extends DomElement {
                   d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
             </svg>`;
 
-    const countProduct = 1;
-
     const cartProductCountInput: HTMLElement = this.createElement(
       'input',
       'cart-block__product-general__number fw-bold border rounded-2 me-1 ms-1 text-center',
       {
         type: 'text',
-        value: `${countProduct}`,
+        value: `${this.inCart}`,
       }
     );
+
+    cartProductCountPlus.addEventListener('click', (e) => {
+      const cart = JSON.parse(localStorage.getItem('cart') || '');
+      this.inCart += 1;
+      localStorage.setItem(
+        'cart',
+        JSON.stringify(
+          cart.map((item: { id: number }) => item.id === this.data.id ? { ...item, count: this.inCart } : item)))
+      e.target?.dispatchEvent(new CustomEvent('recalculatePrice', { bubbles: true }));
+
+      cartProductCountInput.setAttribute('value', this.inCart.toString());
+    });
 
     const cartProductCountMinus: HTMLElement = this.createElement(
       'div',
       'btn btn-warning ms-1 d-flex justify-content-center align-items-center'
+    );
+
+    cartProductCountMinus.addEventListener('click', (e) => {
+      const cart = JSON.parse(localStorage.getItem('cart') || '');
+
+      this.inCart = this.inCart ? this.inCart - 1 : 0;
+
+      localStorage.setItem(
+        'cart',
+        JSON.stringify(
+          cart.map((item: { id: number }) => item.id === this.data.id ? { ...item, count: this.inCart } : item)))
+          e.target?.dispatchEvent(new CustomEvent('recalculatePrice', { bubbles: true }));
+
+      cartProductCountInput.setAttribute('value', this.inCart.toString());
+    }
     );
 
     cartProductCountMinus.innerHTML = `

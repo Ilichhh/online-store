@@ -9,6 +9,7 @@ class ProductCartBlock extends DomElement {
 
   constructor() {
     super();
+
     this.element = this.createElement('div', 'cart-block__product border rounded-4 w-75 p-2');
   }
 
@@ -101,14 +102,8 @@ class ProductCartBlock extends DomElement {
 
     cart.forEach((itemId: CartItem) => {
       data.products.forEach((itemData) => {
-        let inCart = 0;
-        cart.forEach((e) => {
-          if (e.id === itemData.id) inCart = e.count;
-        });
-
         if (itemId.id === itemData.id) {
-          console.log(123);
-          this.element.appendChild(new ProductCard(itemData, inCart).drawCartView());
+          this.element.appendChild(new ProductCard(itemData, itemId.count).drawCartView());
         }
       });
     });

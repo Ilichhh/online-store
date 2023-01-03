@@ -3,27 +3,38 @@ import { CartItem, ProductsData } from '../../../../types/types';
 
 class summaryCartBlock extends DomElement {
   element: HTMLElement;
+  countPrice: number;
+  data: ProductsData;
 
-  constructor() {
+  constructor(data: ProductsData) {
     super();
+    this.countPrice = 0;
+    this.data = data;
     this.element = this.createElement(
       'div',
       'cart-block__summary fs-6 mw-100 w-25 p-2 d-flex fw-bold border rounded-4 flex-column justify-content-start align-items-center'
     );
   }
 
-  public draw(data: ProductsData, cart: CartItem[]): HTMLElement {
-    this.element.innerHTML = '';
-
-    let countPrice = 0;
+  public recalculatePrice(): void {
+    const cart = JSON.parse(localStorage.getItem('cart') || '');
+    let sum = 0;
 
     cart.forEach((itemId: CartItem) => {
-      data.products.forEach((itemData) => {
+      this.data.products.forEach((itemData) => {
         if (itemId.id === itemData.id) {
-          countPrice = countPrice + itemData.price;
+          sum += itemId.count * itemData.price;
         }
       });
     });
+
+    this.countPrice = sum;
+  }
+
+  public draw(cart: CartItem[]): HTMLElement {
+    this.element.innerHTML = '';
+
+    this.recalculatePrice();
 
     const summaryName: HTMLElement = this.createElement(
       'div',
@@ -53,8 +64,13 @@ class summaryCartBlock extends DomElement {
       'span',
       'cart-block__summary__price',
       undefined,
-      `$${countPrice}`
+      `$${this.countPrice}`
     );
+
+    document.addEventListener('recalculatePrice', () => {
+      this.recalculatePrice();
+      summaryTotalPriceValue.innerHTML = `$${this.countPrice}`;
+    });
 
     const addPromoBlock: HTMLElement = this.createElement(
       'div',
