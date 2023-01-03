@@ -7,9 +7,7 @@ class ProductPage extends DomElement {
 
   constructor() {
     super();
-    this.addToCart = this.createElement('button', 'product-page__add-to-cart-btn btn btn-secondary', {
-      type: 'button',
-    });
+    this.addToCart = this.createElement('button', 'product-page__add-to-cart-btn btn', { type: 'button' });
     this.buy = this.createElement('button', 'product-page__buy-now-btn btn btn-warning', { type: 'button' });
   }
 
@@ -53,24 +51,34 @@ class ProductPage extends DomElement {
 
     data.images.forEach((link, index) => {
       const item = this.createElement('div', `carousel-item ${index === 0 ? 'active' : ''}`);
-      sliderImgBlock.appendChild(item);
       const image = this.createElement('img', 'product-page__carousel-img d-block w-100', {
         src: link,
         alt: 'product image',
         height: 400,
       });
-      item.appendChild(image);
-
       const previewButton = this.createElement('button', index === 0 ? 'active' : '', {
         type: 'button',
         'data-bs-target': '#productSlider',
         'data-bs-slide-to': index,
         'aria-label': `Slide ${index + 1}`,
       });
-      sliderPreviews.appendChild(previewButton);
       const previewImage = this.createElement('img', 'd-block w-100 img-fluid', { alt: 'preview', src: link });
+
+      sliderImgBlock.appendChild(item);
+      item.appendChild(image);
+      sliderPreviews.appendChild(previewButton);
       previewButton.appendChild(previewImage);
     });
+
+    if (cart.filter((e) => e.id === data.id).length) {
+      this.addToCart.textContent = 'Remove from Cart';
+      this.addToCart.classList.add('btn-danger');
+      this.addToCart.classList.remove('btn-warning');
+    } else {
+      this.addToCart.textContent = 'Add to Cart';
+      this.addToCart.classList.add('btn-warning');
+      this.addToCart.classList.remove('btn-danger');
+    }
 
     breadcrumbs.textContent = `Store > ${data.category} > ${data.brand} > ${data.title}`;
     brand.textContent = `Brand: ${data.brand}`;
@@ -81,8 +89,8 @@ class ProductPage extends DomElement {
     stock.textContent = `Stock: ${data.stock}`;
     priceFinal.textContent = `$${Math.round(data.price * ((100 - data.discountPercentage) / 100))}`;
     price.textContent = `$${data.price}`;
-    this.addToCart.textContent = 'Add to Cart';
     this.buy.textContent = 'Buy Now';
+    this.addToCart.id = data.id.toString();
 
     main.appendChild(container);
     container.appendChild(breadcrumbs);

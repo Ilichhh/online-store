@@ -40,6 +40,17 @@ class App {
     this.view.mainPage.productsBlock.productsItemsBlock.addEventListener('click', (e) => {
       this.addRemoveFromCart(e, this.cart);
     });
+
+    this.view.productPage.addToCart.addEventListener('click', (e) => {
+      const button: HTMLSelectElement = <HTMLSelectElement>e.target;
+      button.classList.contains('btn-warning')
+        ? this.cart.push({ id: +button.id, count: 1 })
+        : this.cart.forEach((product, index) => (product.id === +button.id ? this.cart.splice(index, 1) : null));
+
+      this.controller.getAllProducts((data: ProductsData) => this.view.header.updateData(data, this.cart));
+      this.view.mainPage.productsBlock.toggleAddToCartButton(button);
+      localStorage.setItem('cart', JSON.stringify(this.cart));
+    });
   }
 
   private sortProducts(e: Event): void {
