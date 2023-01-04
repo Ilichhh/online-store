@@ -130,6 +130,7 @@ class ProductCard extends DomElement {
   }
 
   public drawCartView() {
+    console.log(this.inCart);
     const cartBlockProductItem: HTMLElement = this.createElement(
       'div',
       'p-2 cart-block__product-item border-bottom d-flex justify-content-between align-items-center'
@@ -249,13 +250,13 @@ class ProductCard extends DomElement {
     cartProductCountPlus.addEventListener('click', (e) => {
       const cart = JSON.parse(localStorage.getItem('cart') || '');
       this.inCart += 1;
+      cartProductCountInput.setAttribute('value', this.inCart.toString());
       localStorage.setItem(
         'cart',
         JSON.stringify(
           cart.map((item: { id: number }) => item.id === this.data.id ? { ...item, count: this.inCart } : item)))
       e.target?.dispatchEvent(new CustomEvent('recalculatePrice', { bubbles: true }));
-
-      cartProductCountInput.setAttribute('value', this.inCart.toString());
+      cart.map((item: { id: number }) => item.id === this.data.id ? { ...item, count: this.inCart } : item);
     });
 
     const cartProductCountMinus: HTMLElement = this.createElement(
@@ -267,7 +268,10 @@ class ProductCard extends DomElement {
       const cart = JSON.parse(localStorage.getItem('cart') || '');
 
       this.inCart = this.inCart ? this.inCart - 1 : 0;
-
+      if (cartProductCountInput.getAttribute('value') === '0') {
+        // cartBlockProductItem.classList.add('d-none');
+        // cart.forEach((data, index) => (this.data.id === +button.id ? this.cart.splice(index, 1) : null));
+      }
       localStorage.setItem(
         'cart',
         JSON.stringify(

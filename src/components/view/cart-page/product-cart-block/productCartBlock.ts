@@ -100,10 +100,10 @@ class ProductCartBlock extends DomElement {
     cartPageSetting.appendChild(cartSettingCount);
     cartBlockGeneral.appendChild(cartPageSetting);
 
-    cart.forEach((itemId: CartItem, index: number) => {
+    cart.forEach((item: CartItem, index: number) => {
       data.products.forEach((itemData) => {
-        if (itemId.id === itemData.id && itemId.count !== 0) {
-          this.element.appendChild(new ProductCard(itemData, itemId.count, index + 1).drawCartView());
+        if (item.id === itemData.id && item.count !== 0) {
+          this.element.appendChild(new ProductCard(itemData, item.count, index + 1).drawCartView());
         }
       });
     });
