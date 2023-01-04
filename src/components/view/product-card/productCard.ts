@@ -252,7 +252,9 @@ class ProductCard extends DomElement {
 
     cartProductCountPlus.addEventListener('click', (e) => {
       const cart = JSON.parse(localStorage.getItem('cart') || '');
-      this.inCart += 1;
+      if (this.inCart < this.data.stock) {
+        this.inCart += 1;
+      }
       cartProductCountInput.textContent = this.inCart.toString();
       localStorage.setItem(
         'cart',
