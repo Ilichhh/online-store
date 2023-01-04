@@ -98,7 +98,7 @@ class ProductCartBlock extends DomElement {
       if (currentPage <= 1) {
         currentPage = 1;
       }
-      inputPageCount.textContent = currentPage.toString();
+      inputPageCount.setAttribute('value', currentPage.toString());
     });
 
     this.element.appendChild(cartBlockGeneral);

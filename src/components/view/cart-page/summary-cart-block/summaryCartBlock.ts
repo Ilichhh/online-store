@@ -4,11 +4,13 @@ import { CartItem, ProductsData } from '../../../../types/types';
 class summaryCartBlock extends DomElement {
   element: HTMLElement;
   countPrice: number;
+  countProduct: number;
   data: ProductsData;
 
   constructor(data: ProductsData) {
     super();
     this.countPrice = 0;
+    this.countProduct = 0;
     this.data = data;
     this.element = this.createElement(
       'div',
@@ -19,16 +21,19 @@ class summaryCartBlock extends DomElement {
   public recalculatePrice(): void {
     const cart = JSON.parse(localStorage.getItem('cart') || '');
     let sum = 0;
+    let countProduct = 0;
 
-    cart.forEach((itemId: CartItem) => {
+    cart.forEach((itemCart: CartItem) => {
       this.data.products.forEach((itemData) => {
-        if (itemId.id === itemData.id) {
-          sum += itemId.count * itemData.price;
+        if (itemCart.id === itemData.id && itemCart.count !== 0) {
+          sum += itemCart.count * itemData.price;
+          countProduct += itemCart.count;
         }
       });
     });
 
     this.countPrice = sum;
+    this.countProduct = countProduct;
   }
 
   public draw(cart: CartItem[]): HTMLElement {
@@ -53,7 +58,7 @@ class summaryCartBlock extends DomElement {
       'span',
       'cart-block__summary__count',
       undefined,
-      `${cart.length}`
+      `${this.countProduct}`
     );
 
     const summaryTotalPriceBlock: HTMLElement = this.createElement('div', 'mb-1');
@@ -70,21 +75,22 @@ class summaryCartBlock extends DomElement {
     document.addEventListener('recalculatePrice', () => {
       this.recalculatePrice();
       summaryTotalPriceValue.innerHTML = `$${this.countPrice}`;
+      summaryProductCountValue.innerHTML = `${this.countProduct}`;
     });
 
     const addPromoBlock: HTMLElement = this.createElement(
       'div',
-      'form-check d-flex align-items-center justify-content-center'
+      'form-check d-flex align-items-center justify-content-center w-100 mb-2'
     );
 
-    const addPromoInput: HTMLElement = this.createElement('input', 'fs-6 mb-2  me-2', {
+    const addPromoInput: HTMLElement = this.createElement('input', 'fs-6 me-1 w-75', {
       type: 'text',
       placeholder: 'Enter promo code',
     });
 
     const addPromoButton: HTMLElement = this.createElement(
       'button',
-      'btn btn-secondary',
+      'btn btn-secondary w-25',
       {
         type: 'button',
       },
