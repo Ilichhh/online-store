@@ -136,7 +136,10 @@ class ProductCard extends DomElement {
       'p-2 cart-block__product-item border-bottom d-flex justify-content-between align-items-center'
     );
 
-    const cartNumberImageBlock: HTMLElement = this.createElement('div', 'd-flex align-items-center w-25');
+    const cartNumberImageBlock: HTMLElement = this.createElement(
+      'div',
+      'd-flex align-items-center justify-content-start w-25'
+    );
 
     const cartBlockNumber: HTMLElement = this.createElement('div', 'me-2 fw-bold fs-6', undefined, `${this.index}`);
 
@@ -239,18 +242,18 @@ class ProductCard extends DomElement {
             </svg>`;
 
     const cartProductCountInput: HTMLElement = this.createElement(
-      'input',
+      'label',
       'cart-block__product-general__number fw-bold border rounded-2 me-1 ms-1 text-center',
       {
         type: 'text',
-        value: `${this.inCart}`,
-      }
+      },
+      `${this.inCart}`
     );
 
     cartProductCountPlus.addEventListener('click', (e) => {
       const cart = JSON.parse(localStorage.getItem('cart') || '');
       this.inCart += 1;
-      cartProductCountInput.setAttribute('value', this.inCart.toString());
+      cartProductCountInput.textContent = this.inCart.toString();
       localStorage.setItem(
         'cart',
         JSON.stringify(
@@ -269,7 +272,8 @@ class ProductCard extends DomElement {
 
       this.inCart = this.inCart ? this.inCart - 1 : 0;
       if (cartProductCountInput.getAttribute('value') === '0') {
-        // cartBlockProductItem.classList.add('d-none');
+        // cart.splice(index, 1);
+        cartBlockProductItem.classList.add('d-none');
         // cart.forEach((data, index) => (this.data.id === +button.id ? this.cart.splice(index, 1) : null));
       }
       localStorage.setItem(
@@ -279,7 +283,7 @@ class ProductCard extends DomElement {
 
       e.target?.dispatchEvent(new CustomEvent('recalculatePrice', { bubbles: true }));
 
-      cartProductCountInput.setAttribute('value', this.inCart.toString());
+      cartProductCountInput.textContent = this.inCart.toString();
     });
 
     cartProductCountMinus.innerHTML = `

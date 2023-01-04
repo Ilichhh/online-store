@@ -35,8 +35,9 @@ class ProductCartBlock extends DomElement {
     const pageItemsCount: HTMLElement = this.createElement('span', 'me-2', undefined, 'ITEMS');
 
     const productInCartCount: number = cart.length;
-    let productInPage = 3;
+    const productInPage = 3;
     const pageCount: number = Math.ceil(productInCartCount / productInPage);
+    let currentPage = 1;
 
     const inputItemsCount: HTMLElement = this.createElement(
       'input',
@@ -47,10 +48,6 @@ class ProductCartBlock extends DomElement {
       },
       ''
     );
-
-    inputItemsCount.addEventListener('change', () => {
-      productInPage = Number(inputItemsCount.textContent);
-    });
 
     const cartSettingCount: HTMLElement = this.createElement('div', 'd-flex align-items-center');
 
@@ -68,13 +65,13 @@ class ProductCartBlock extends DomElement {
             </svg>`;
 
     const inputPageCount: HTMLElement = this.createElement(
-      'input',
+      'label',
       'cart-block__product-general__number fw-bold border rounded-2 me-1 ms-1 text-center',
       {
         type: 'text',
-        value: pageCount,
+        value: currentPage,
       },
-      ''
+      `${currentPage}`
     );
 
     const cartPageArrowRight: HTMLElement = this.createElement(
@@ -87,6 +84,22 @@ class ProductCartBlock extends DomElement {
   <path fill-rule="evenodd" d="M3.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L9.293 8 3.646 2.354a.5.5 0 0 1 0-.708z"/>
   <path fill-rule="evenodd" d="M7.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L13.293 8 7.646 2.354a.5.5 0 0 1 0-.708z"/>
             </svg>`;
+
+    cartPageArrowRight.addEventListener('click', (e) => {
+      currentPage += 1;
+      if (currentPage >= pageCount) {
+        currentPage = pageCount;
+      }
+      inputPageCount.textContent = currentPage.toString();
+    });
+
+    cartPageArrowLeft.addEventListener('click', (e) => {
+      currentPage -= 1;
+      if (currentPage <= 1) {
+        currentPage = 1;
+      }
+      inputPageCount.textContent = currentPage.toString();
+    });
 
     this.element.appendChild(cartBlockGeneral);
     cartBlockGeneral.appendChild(cartBlockGeneralName);
