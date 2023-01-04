@@ -36,14 +36,26 @@ class Router {
     event.preventDefault();
     window.history.pushState({}, '', element.closest('a')?.href);
     this.handleLocation();
-    console.log(element.closest('a')?.href);
   }
 
   public setQueryString(params: object): void {
     const newUrl: URL = new URL(window.location.href);
+
     for (const [key, value] of Object.entries(params)) {
-      newUrl.searchParams.set(key, value);
+      if (key === 'category') {
+        const oldValues = this.getQueryParams().category?.split('%');
+        console.log(oldValues);
+        if (!oldValues) newUrl.searchParams.set(key, value);
+        else {
+          oldValues.forEach((oldValue) => {
+            oldValue === value ? newUrl.searchParams.delete(key) : newUrl.searchParams.append(key, value);
+          });
+        }
+      } else {
+        newUrl.searchParams.set(key, value);
+      }
     }
+
     window.history.pushState({}, '', newUrl.href);
   }
 
@@ -52,7 +64,7 @@ class Router {
     const searchParams = new URLSearchParams(paramsString);
     const paramsList: QueryParams = {};
     for (const [key, value] of searchParams.entries()) {
-      paramsList[key] = value;
+      paramsList[key] ? (paramsList[key] += `%${value}`) : (paramsList[key] = value);
     }
     return paramsList;
   }

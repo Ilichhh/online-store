@@ -1,23 +1,28 @@
 import DomElement from '../../domElement';
-import type { ProductsData } from '../../../../types/types';
+import type { ProductsData, QueryParams } from '../../../../types/types';
 
 class FiltersBlock extends DomElement {
-  resetBtn: HTMLElement;
-  copyLInkBtn: HTMLElement;
+  element: HTMLElement;
+  resetBtn: HTMLButtonElement;
+  copyLInkBtn: HTMLButtonElement;
   categoryFilter: HTMLElement;
   brandFilter: HTMLElement;
 
   constructor() {
     super();
-    this.resetBtn = this.createElement('button', 'filters-block__reset-btn btn btn-secondary btn-sm');
-    this.copyLInkBtn = this.createElement('button', 'filters-block__copy-link-btn btn btn-outline-secondary btn-sm');
+    this.element = this.createElement('div', 'filters-block col-3');
+    this.resetBtn = <HTMLButtonElement>(
+      this.createElement('button', 'filters-block__reset-btn btn btn-secondary btn-sm')
+    );
+    this.copyLInkBtn = <HTMLButtonElement>(
+      this.createElement('button', 'filters-block__copy-link-btn btn btn-outline-secondary btn-sm')
+    );
     this.categoryFilter = this.createElement('div', 'filters-block__category-items');
     this.brandFilter = this.createElement('div', 'filters-block__brand-items mb-4');
   }
 
-  public draw(data: ProductsData): HTMLElement {
-    const filtersBlock: HTMLElement = this.createElement('div', 'filters-block col-3');
-
+  public draw(data: ProductsData, params: QueryParams): HTMLElement {
+    this.element.innerHTML = '';
     // Create categories and brands arrays
     let categoriesData: string[] = [];
     let brandsData: string[] = [];
@@ -46,68 +51,81 @@ class FiltersBlock extends DomElement {
     buttonColCopy.appendChild(buttonGridCopy);
     buttonGridRes.appendChild(this.resetBtn);
     buttonGridCopy.appendChild(this.copyLInkBtn);
-    filtersBlock.appendChild(buttonsWrapper);
+    this.element.appendChild(buttonsWrapper);
 
     // Draw Category
     const categoryWrapper = this.createElement('div', 'filters-block__category mb-4');
-    const categoryHeader = this.createElement('h5', 'filters-block__category-header', undefined, 'Category');
+    const categoryHeader = this.createElement('h5', 'filters-block__category-header', {}, 'Category');
 
-    filtersBlock.appendChild(categoryWrapper);
+    this.element.appendChild(categoryWrapper);
     categoryWrapper.appendChild(categoryHeader);
     categoryWrapper.appendChild(this.categoryFilter);
 
-    this.drawCheckBoxFilter(categoriesData, this.categoryFilter);
+    this.drawCheckBoxFilter(categoriesData, this.categoryFilter, params);
 
     // Draw Brand
-    const brandWrapper = this.createElement('div', 'filters-block__brand mb-4');
-    const brandHeader = this.createElement('h5', 'filters-block__brand-header', undefined, 'Brand');
+    // const brandWrapper = this.createElement('div', 'filters-block__brand mb-4');
+    // const brandHeader = this.createElement('h5', 'filters-block__brand-header', undefined, 'Brand');
 
-    filtersBlock.appendChild(brandWrapper);
-    brandWrapper.appendChild(brandHeader);
-    brandWrapper.appendChild(this.brandFilter);
+    // this.element.appendChild(brandWrapper);
+    // brandWrapper.appendChild(brandHeader);
+    // brandWrapper.appendChild(this.brandFilter);
 
-    this.drawCheckBoxFilter(brandsData, this.brandFilter);
+    // this.drawCheckBoxFilter(brandsData, this.brandFilter, params);
 
     // Draw Price
-    filtersBlock.innerHTML += `
-      <div class="filters-block__price mb-4">
-        <h5>Price</h5>
-        <input type="range" class="form-range mb-2" id="price" value="0">
-        <div class="row mb-2">
-          <div class="col">
-            <input type="text" class="form-control" placeholder="from: 0" aria-label="from">
-          </div>
-          <div class="col">
-            <input type="text" class="form-control" placeholder="to: 999" aria-label="to">
-          </div>
-        </div>
-      </div>
-    `;
+    // this.element.innerHTML += `
+    //   <div class="filters-block__price mb-4">
+    //     <h5>Price</h5>
+    //     <input type="range" class="form-range mb-2" id="price" value="0">
+    //     <div class="row mb-2">
+    //       <div class="col">
+    //         <input type="text" class="form-control" placeholder="from: 0" aria-label="from">
+    //       </div>
+    //       <div class="col">
+    //         <input type="text" class="form-control" placeholder="to: 999" aria-label="to">
+    //       </div>
+    //     </div>
+    //   </div>
+    // `;
 
     // Draw Stock
-    filtersBlock.innerHTML += `
-      <div class="filters-block__stock mb-3">
-        <h5>Stock</h5>
-        <input type="range" class="form-range mb-2" id="stock" value="0">
-        <div class="row mb-2">
-          <div class="col">
-            <input type="text" class="form-control" placeholder="from: 0" aria-label="from">
-          </div>
-          <div class="col">
-            <input type="text" class="form-control" placeholder="to: 999" aria-label="to">
-          </div>
-        </div>
-      </div>
-    `;
+    // this.element.innerHTML += `
+    //   <div class="filters-block__stock mb-3">
+    //     <h5>Stock</h5>
+    //     <input type="range" class="form-range mb-2" id="stock" value="0">
+    //     <div class="row mb-2">
+    //       <div class="col">
+    //         <input type="text" class="form-control" placeholder="from: 0" aria-label="from">
+    //       </div>
+    //       <div class="col">
+    //         <input type="text" class="form-control" placeholder="to: 999" aria-label="to">
+    //       </div>
+    //     </div>
+    //   </div>
+    // `;
 
-    return filtersBlock;
+    return this.element;
   }
 
-  private drawCheckBoxFilter(data: string[], filter: HTMLElement): void {
+  private drawCheckBoxFilter(data: string[], filter: HTMLElement, params: QueryParams): void {
+    filter.innerHTML = '';
+    let checkedArr: string[];
+    if (params.category) {
+      checkedArr = data.filter((item) => params.category === item);
+    }
+
     data.forEach((item) => {
       const wrapper = this.createElement('div', 'form-check');
-      const input = this.createElement('input', 'form-check-input', { type: 'checkbox', value: item, id: item });
+      const input: HTMLInputElement = <HTMLInputElement>(
+        this.createElement('input', 'form-check-input', { type: 'checkbox', value: item, id: item })
+      );
       const label = this.createElement('label', 'form-check-label', { for: item }, item);
+
+      if (checkedArr && checkedArr.includes(item)) {
+        input.checked = true;
+      }
+
       wrapper.appendChild(input);
       wrapper.appendChild(label);
       filter.appendChild(wrapper);

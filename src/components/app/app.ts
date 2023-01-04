@@ -28,9 +28,9 @@ class App {
 
     document.querySelector('.header__logo')?.addEventListener('click', (e) => {
       this.router.route(e);
-      this.controller.getAllProducts((data: ProductsData) =>
-        this.view.drawMainPage(data, this.cart, this.router.getQueryParams())
-      );
+      this.controller.getAllProducts((data: ProductsData) => {
+        this.view.drawMainPage(data, this.cart, this.router.getQueryParams());
+      });
     });
 
     this.view.header.cart.addEventListener('click', (e) => {
@@ -47,6 +47,18 @@ class App {
     this.view.productPage.addToCart.addEventListener('click', (e) => {
       const target: HTMLSelectElement = <HTMLSelectElement>e.target;
       this.addRemoveFromCart(target, target, this.cart);
+    });
+
+    this.view.mainPage.filtersBlock.categoryFilter.addEventListener('change', (e) => {
+      const target: HTMLElement = <HTMLElement>e.target;
+      if (target.closest('input')) {
+        const categoryItem: HTMLInputElement = <HTMLInputElement>target.closest('input');
+        this.router.setQueryString({ category: categoryItem.value });
+        this.controller.getAllProducts((data: ProductsData) => {
+          this.view.mainPage.productsBlock.draw(data, this.cart, this.router.getQueryParams());
+          // this.view.drawAllFilters(data, this.router.getQueryParams());
+        });
+      }
     });
   }
 

@@ -1,6 +1,6 @@
 import DomElement from '../../domElement';
 import ProductCard from '../../product-card/productCard';
-import type { ProductsData, CartItem, QueryParams } from '../../../../types/types';
+import type { ProductsData, Product, CartItem, QueryParams } from '../../../../types/types';
 // import gridIcon from '../../../../assets/svg/grid.svg';
 // import listIcon from '../../../../assets/svg/list-ul.svg';
 
@@ -25,6 +25,7 @@ class ProductsBlock extends DomElement {
 
   public draw(data: ProductsData, cart: CartItem[], params: QueryParams): HTMLElement {
     this.element.innerHTML = '';
+    const filteredData: Product[] = this.filterData(data, params);
 
     const viewParameters: HTMLElement = this.createElement(
       'div',
@@ -96,18 +97,17 @@ class ProductsBlock extends DomElement {
     this.sortingFilter.value = params.sort || 'placeholder';
     params['view-style'] === 'list' ? (listViewInput.checked = true) : (gridViewInput.checked = true);
 
-    this.drawProducts(data, cart, params);
+    this.drawProducts(filteredData, cart, params);
     return this.element;
   }
 
-  public drawProducts(data: ProductsData, cart: CartItem[], params: QueryParams): void {
+  public drawProducts(data: Product[], cart: CartItem[], params: QueryParams): void {
     this.sortData(data, params);
 
     this.productsItemsBlock.innerHTML = '';
-    if (!data.products.length)
-      this.productsItemsBlock.innerHTML = "<h3>Oops, looks like we didn't find anything :(</h3>";
+    if (!data.length) this.productsItemsBlock.innerHTML = "<h3>Oops, looks like we didn't find anything :(</h3>";
 
-    data.products.forEach((item) => {
+    data.forEach((item) => {
       let inCart = 0;
       cart.forEach((e) => (e.id === item.id ? (inCart = e.count) : null));
       const wrapper: HTMLElement = this.createElement('div', 'products-block__item');
@@ -132,11 +132,20 @@ class ProductsBlock extends DomElement {
       : (button.textContent = 'Remove from Cart');
   }
 
-  private sortData(data: ProductsData, params: QueryParams): void {
-    if (params.sort === 'price-asc') data.products = data.products.sort((a, b) => a.price - b.price);
-    if (params.sort === 'price-desc') data.products = data.products.sort((a, b) => b.price - a.price);
-    if (params.sort === 'rating-asc') data.products = data.products.sort((a, b) => a.rating - b.rating);
-    if (params.sort === 'rating-desc') data.products = data.products.sort((a, b) => b.rating - a.rating);
+  private sortData(data: Product[], params: QueryParams): void {
+    if (params.sort === 'price-asc') data = data.sort((a, b) => a.price - b.price);
+    if (params.sort === 'price-desc') data = data.sort((a, b) => b.price - a.price);
+    if (params.sort === 'rating-asc') data = data.sort((a, b) => a.rating - b.rating);
+    if (params.sort === 'rating-desc') data = data.sort((a, b) => b.rating - a.rating);
+  }
+
+  private filterData(data: ProductsData, params: QueryParams): Product[] {
+    console.log(params);
+    const categoryArr = params.category?.split('%') || [];
+    console.log(categoryArr);
+    let filtered = data.products.filter((item) => categoryArr.includes(item.category));
+    if (!filtered.length) filtered = [...data.products];
+    return filtered;
   }
 }
 

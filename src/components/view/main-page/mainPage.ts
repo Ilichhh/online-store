@@ -24,7 +24,7 @@ class MainPage extends DomElement {
     main.appendChild(container);
     container.appendChild(this.searchBar.draw());
     container.appendChild(wrapper);
-    wrapper.appendChild(this.filtersBlock.draw(data));
+    wrapper.appendChild(this.filtersBlock.draw(data, params));
     wrapper.appendChild(this.productsBlock.draw(data, cart, params));
   }
 }
