@@ -7,6 +7,7 @@ import type { ProductsData, Product, CartItem, QueryParams } from '../../../../t
 class ProductsBlock extends DomElement {
   element: HTMLElement;
   sortingFilter: HTMLSelectElement;
+  searchResults: HTMLElement;
   viewSwitcher: HTMLButtonElement;
   productsItemsBlock: HTMLElement;
 
@@ -16,6 +17,7 @@ class ProductsBlock extends DomElement {
     this.sortingFilter = <HTMLSelectElement>this.createElement('select', 'products-block__sorting-filter form-select', {
       id: 'sort',
     });
+    this.searchResults = this.createElement('div', 'products-block__found-count');
     this.viewSwitcher = <HTMLButtonElement>this.createElement('div', 'products-block__view-switcher btn-group', {
       role: 'group',
       'aria-label': 'view-switcher',
@@ -52,8 +54,7 @@ class ProductsBlock extends DomElement {
       this.sortingFilter.appendChild(sortingFilterItem);
     });
 
-    const searchResults = this.createElement('div', 'products-block__found-count');
-    searchResults.textContent = `Found ${data.products.length} items`;
+    this.searchResults.textContent = `Found ${data.products.length} items`;
 
     const gridViewInput = <HTMLInputElement>this.createElement('input', 'btn-check', {
       type: 'radio',
@@ -87,7 +88,7 @@ class ProductsBlock extends DomElement {
     this.element.appendChild(this.productsItemsBlock);
     sortingFilterWrapper.appendChild(this.sortingFilter);
     viewParameters.appendChild(sortingFilterWrapper);
-    viewParameters.appendChild(searchResults);
+    viewParameters.appendChild(this.searchResults);
     viewParameters.appendChild(this.viewSwitcher);
     this.viewSwitcher.appendChild(gridViewInput);
     this.viewSwitcher.appendChild(gridViewLabel);
@@ -103,6 +104,7 @@ class ProductsBlock extends DomElement {
 
   public drawProducts(data: Product[], cart: CartItem[], params: QueryParams): void {
     this.sortData(data, params);
+    this.searchResults.textContent = `Found ${data.length} items`;
 
     this.productsItemsBlock.innerHTML = '';
     if (!data.length) this.productsItemsBlock.innerHTML = "<h3>Oops, looks like we didn't find anything :(</h3>";
