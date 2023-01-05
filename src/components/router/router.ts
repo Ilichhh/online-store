@@ -38,6 +38,12 @@ class Router {
     this.handleLocation();
   }
 
+  public resetFilters(): void {
+    const newUrl: URL = new URL(window.location.href);
+    newUrl.search = '';
+    window.history.pushState({}, '', newUrl.href);
+  }
+
   public setQueryString(params: object): void {
     const newUrl: URL = new URL(window.location.href);
 

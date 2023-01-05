@@ -17,6 +17,7 @@ class App {
   }
 
   public start(): void {
+    // Init
     this.router.handleLocation();
     this.controller.getAllProducts((data: ProductsData) => {
       this.view.drawHeader(data, this.cart);
@@ -26,6 +27,7 @@ class App {
     window.addEventListener('popstate', this.router.handleLocation);
     window.route = this.router.route;
 
+    // Header
     document.querySelector('.header__logo')?.addEventListener('click', (e) => {
       this.router.route(e);
       this.controller.getAllProducts((data: ProductsData) => {
@@ -38,21 +40,30 @@ class App {
       this.controller.getAllProducts((data: ProductsData) => this.view.drawCartPage(data, this.cart));
     });
 
+    // Product page
+    this.view.productPage.addToCart.addEventListener('click', (e) => {
+      const target: HTMLSelectElement = <HTMLSelectElement>e.target;
+      this.addRemoveFromCart(target, target, this.cart);
+    });
+
+    // Main page
     this.view.mainPage.productsBlock.sortingFilter.addEventListener('change', (e) => this.sortProducts(e));
     this.view.mainPage.productsBlock.viewSwitcher.addEventListener('change', (e) => this.changeProductsView(e));
     this.view.mainPage.productsBlock.productsItemsBlock.addEventListener('click', (e) => {
       this.productCardEventListener(e, this.cart);
     });
 
-    this.view.productPage.addToCart.addEventListener('click', (e) => {
-      const target: HTMLSelectElement = <HTMLSelectElement>e.target;
-      this.addRemoveFromCart(target, target, this.cart);
-    });
-
-    this.view.mainPage.filtersBlock.copyLInkBtn.addEventListener('click', (e) => {
+    this.view.mainPage.filtersBlock.copyLInkBtn.addEventListener('click', () => {
       navigator.clipboard.writeText(window.location.href);
       this.view.mainPage.filtersBlock.copyLInkBtn.textContent = 'Copied!';
       setTimeout(() => (this.view.mainPage.filtersBlock.copyLInkBtn.textContent = 'Copy link'), 2000);
+    });
+
+    this.view.mainPage.filtersBlock.resetBtn.addEventListener('click', () => {
+      this.router.resetFilters();
+      this.controller.getAllProducts((data: ProductsData) => {
+        this.view.drawMainPage(data, this.cart, this.router.getQueryParams());
+      });
     });
 
     this.view.mainPage.filtersBlock.categoryFilter.addEventListener('change', (e) => {
