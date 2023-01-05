@@ -67,16 +67,24 @@ class App {
     });
 
     this.view.mainPage.filtersBlock.categoryFilter.addEventListener('change', (e) => {
-      const target: HTMLElement = <HTMLElement>e.target;
-      if (target.closest('input')) {
-        const categoryItem: HTMLInputElement = <HTMLInputElement>target.closest('input');
-        this.router.setQueryString({ category: categoryItem.value });
-        this.controller.getAllProducts((data: ProductsData) => {
-          this.view.mainPage.productsBlock.draw(data, this.cart, this.router.getQueryParams());
-          // this.view.drawAllFilters(data, this.router.getQueryParams());
-        });
-      }
+      this.filterProducts(e, 'category');
     });
+
+    this.view.mainPage.filtersBlock.brandFilter.addEventListener('change', (e) => {
+      this.filterProducts(e, 'brand');
+    });
+  }
+
+  private filterProducts(e: Event, filter: string): void {
+    const target: HTMLElement = <HTMLElement>e.target;
+    if (target.closest('input')) {
+      const item: HTMLInputElement = <HTMLInputElement>target.closest('input');
+      this.router.setQueryString({ [filter]: item.value });
+      this.controller.getAllProducts((data: ProductsData) => {
+        this.view.mainPage.productsBlock.draw(data, this.cart, this.router.getQueryParams());
+        // this.view.drawAllFilters(data, this.router.getQueryParams());
+      });
+    }
   }
 
   private sortProducts(e: Event): void {

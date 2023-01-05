@@ -48,8 +48,8 @@ class Router {
     const newUrl: URL = new URL(window.location.href);
 
     for (const [key, value] of Object.entries(params)) {
-      if (key === 'category') {
-        const oldValues = this.getQueryParams().category?.split('%');
+      if (key === 'category' || key === 'brand') {
+        const oldValues = this.getQueryParams()[key]?.split('%');
         if (!oldValues) newUrl.searchParams.set(key, value);
         else {
           const isIn = oldValues.includes(value);

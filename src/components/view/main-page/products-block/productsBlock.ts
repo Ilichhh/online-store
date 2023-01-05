@@ -141,9 +141,15 @@ class ProductsBlock extends DomElement {
 
   private filterData(data: ProductsData, params: QueryParams): Product[] {
     const categoryArr = params.category?.split('%') || [];
-    let filtered = data.products.filter((item) => categoryArr.includes(item.category));
-    if (!filtered.length) filtered = [...data.products];
-    return filtered;
+    const brandArr = params.brand?.split('%') || [];
+
+    let filteredByCategory = data.products.filter((item) => categoryArr.includes(item.category));
+    if (!filteredByCategory.length) filteredByCategory = data.products;
+    let filteredByBrand = data.products.filter((item) => brandArr.includes(item.brand));
+    if (!filteredByBrand.length) filteredByBrand = data.products;
+
+    const filteredData = filteredByCategory.filter((item) => filteredByBrand.includes(item));
+    return filteredData;
   }
 }
 

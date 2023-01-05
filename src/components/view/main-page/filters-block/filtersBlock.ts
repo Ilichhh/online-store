@@ -61,17 +61,17 @@ class FiltersBlock extends DomElement {
     categoryWrapper.appendChild(categoryHeader);
     categoryWrapper.appendChild(this.categoryFilter);
 
-    this.drawCheckBoxFilter(categoriesData, this.categoryFilter, params);
+    this.drawCheckBoxFilter(categoriesData, this.categoryFilter, 'category', params);
 
     // Draw Brand
-    // const brandWrapper = this.createElement('div', 'filters-block__brand mb-4');
-    // const brandHeader = this.createElement('h5', 'filters-block__brand-header', undefined, 'Brand');
+    const brandWrapper = this.createElement('div', 'filters-block__brand mb-4');
+    const brandHeader = this.createElement('h5', 'filters-block__brand-header', undefined, 'Brand');
 
-    // this.element.appendChild(brandWrapper);
-    // brandWrapper.appendChild(brandHeader);
-    // brandWrapper.appendChild(this.brandFilter);
+    this.element.appendChild(brandWrapper);
+    brandWrapper.appendChild(brandHeader);
+    brandWrapper.appendChild(this.brandFilter);
 
-    // this.drawCheckBoxFilter(brandsData, this.brandFilter, params);
+    this.drawCheckBoxFilter(brandsData, this.brandFilter, 'brand', params);
 
     // Draw Price
     // this.element.innerHTML += `
@@ -108,9 +108,9 @@ class FiltersBlock extends DomElement {
     return this.element;
   }
 
-  private drawCheckBoxFilter(data: string[], filter: HTMLElement, params: QueryParams): void {
-    filter.innerHTML = '';
-    const checkedArr: string[] = params.category?.split('%');
+  private drawCheckBoxFilter(data: string[], filterElement: HTMLElement, filter: string, params: QueryParams): void {
+    filterElement.innerHTML = '';
+    const checkedArr: string[] = params[filter]?.split('%');
 
     data.forEach((item) => {
       const wrapper = this.createElement('div', 'form-check');
@@ -125,7 +125,7 @@ class FiltersBlock extends DomElement {
 
       wrapper.appendChild(input);
       wrapper.appendChild(label);
-      filter.appendChild(wrapper);
+      filterElement.appendChild(wrapper);
     });
   }
 }
