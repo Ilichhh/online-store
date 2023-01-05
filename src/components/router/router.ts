@@ -50,12 +50,15 @@ class Router {
     for (const [key, value] of Object.entries(params)) {
       if (key === 'category') {
         const oldValues = this.getQueryParams().category?.split('%');
-        console.log(oldValues);
         if (!oldValues) newUrl.searchParams.set(key, value);
         else {
-          oldValues.forEach((oldValue) => {
-            oldValue === value ? newUrl.searchParams.delete(key) : newUrl.searchParams.append(key, value);
-          });
+          const isIn = oldValues.includes(value);
+          if (!isIn) newUrl.searchParams.append(key, value);
+          else {
+            const newValues = oldValues.filter((e) => e !== value);
+            newUrl.searchParams.delete(key);
+            newValues.forEach((e) => newUrl.searchParams.append(key, e));
+          }
         }
       } else {
         newUrl.searchParams.set(key, value);

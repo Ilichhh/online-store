@@ -110,10 +110,7 @@ class FiltersBlock extends DomElement {
 
   private drawCheckBoxFilter(data: string[], filter: HTMLElement, params: QueryParams): void {
     filter.innerHTML = '';
-    let checkedArr: string[];
-    if (params.category) {
-      checkedArr = data.filter((item) => params.category === item);
-    }
+    const checkedArr: string[] = params.category?.split('%');
 
     data.forEach((item) => {
       const wrapper = this.createElement('div', 'form-check');

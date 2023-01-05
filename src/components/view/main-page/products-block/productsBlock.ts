@@ -140,9 +140,7 @@ class ProductsBlock extends DomElement {
   }
 
   private filterData(data: ProductsData, params: QueryParams): Product[] {
-    console.log(params);
     const categoryArr = params.category?.split('%') || [];
-    console.log(categoryArr);
     let filtered = data.products.filter((item) => categoryArr.includes(item.category));
     if (!filtered.length) filtered = [...data.products];
     return filtered;
