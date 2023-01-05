@@ -49,6 +49,12 @@ class App {
       this.addRemoveFromCart(target, target, this.cart);
     });
 
+    this.view.mainPage.filtersBlock.copyLInkBtn.addEventListener('click', (e) => {
+      navigator.clipboard.writeText(window.location.href);
+      this.view.mainPage.filtersBlock.copyLInkBtn.textContent = 'Copied!';
+      setTimeout(() => (this.view.mainPage.filtersBlock.copyLInkBtn.textContent = 'Copy link'), 2000);
+    });
+
     this.view.mainPage.filtersBlock.categoryFilter.addEventListener('change', (e) => {
       const target: HTMLElement = <HTMLElement>e.target;
       if (target.closest('input')) {
