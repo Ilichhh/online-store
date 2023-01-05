@@ -5,10 +5,12 @@ class summaryCartBlock extends DomElement {
   element: HTMLElement;
   countPrice: number;
   countProduct: number;
+  countOldPrice: number;
   data: ProductsData;
 
   constructor(data: ProductsData) {
     super();
+    this.countOldPrice = 0;
     this.countPrice = 0;
     this.countProduct = 0;
     this.data = data;
@@ -21,23 +23,27 @@ class summaryCartBlock extends DomElement {
   public recalculatePrice(promo: number): void {
     const cart = JSON.parse(localStorage.getItem('cart') || '');
     let sum = 0;
+    let sumOld = 0;
     let countProduct = 0;
     cart.forEach((itemCart: CartItem) => {
       this.data.products.forEach((itemData) => {
         if (itemCart.id === itemData.id) {
-          sum += (itemCart.count * itemData.price) - ((itemCart.count * itemData.price) / 100 * promo);
+          sumOld += itemCart.count * itemData.price;
+          sum += itemCart.count * itemData.price - ((itemCart.count * itemData.price / 100) * promo);
           countProduct += itemCart.count;
         }
       });
     });
 
     this.countPrice = sum;
+    this.countOldPrice = sumOld;
     this.countProduct = countProduct;
   }
 
   public draw(cart: CartItem[]): HTMLElement {
     this.element.innerHTML = '';
 
+    let promoCode = 'Rolling Scopes School - 10%';
     let promo = 0;
     this.recalculatePrice(promo);
 
@@ -61,9 +67,10 @@ class summaryCartBlock extends DomElement {
       `${this.countProduct}`
     );
 
-    let countOldPrice = this.countPrice;
-
-    const summaryOldTotalPriceBlock: HTMLElement = this.createElement('div', 'text-decoration-line-through mb-1 d-none');
+    const summaryOldTotalPriceBlock: HTMLElement = this.createElement(
+      'div',
+      'text-decoration-line-through mb-1 d-none'
+    );
 
     const summaryOldTotalPriceName: HTMLElement = this.createElement('span', 'me-2', undefined, 'Old price:');
 
@@ -71,7 +78,7 @@ class summaryCartBlock extends DomElement {
       'span',
       'cart-block__summary__price',
       undefined,
-      `$${countOldPrice}`
+      `$${this.countOldPrice}`
     );
 
     const summaryTotalPriceBlock: HTMLElement = this.createElement('div', 'mb-1');
@@ -88,6 +95,7 @@ class summaryCartBlock extends DomElement {
     document.addEventListener('recalculatePrice', () => {
       this.recalculatePrice(promo);
       summaryTotalPriceValue.innerHTML = `$${this.countPrice}`;
+      summaryOldTotalPriceValue.innerHTML = `$${this.countOldPrice}`;
       summaryProductCountValue.innerHTML = `${this.countProduct}`;
     });
 
@@ -96,16 +104,16 @@ class summaryCartBlock extends DomElement {
       'form-check d-flex flex-column align-items-center justify-content-center w-100 mb-2'
     );
 
-    const addPromoInput: HTMLElement = this.createElement('input', 'fs-6 me-1 w-75', {
+    const addPromoInput: HTMLElement = this.createElement('input', 'fs-6 me-1 w-75 rounded', {
       type: 'text',
       placeholder: 'Enter promo code',
       value: '',
     });
 
-    let promoCode = 'Test promo rs';
+    const addPromoHint: HTMLElement = this.createElement('div', 'mb-2', undefined, 'Test promo "rs"');
 
-    const promoCodeButton: HTMLElement = this.createElement('div', 'mt-2 d-flex align-items-center');
-    const addPromoCheck: HTMLElement = this.createElement('span', 'me-2 fs-7', undefined, `${promoCode}`)
+    const promoCodeButton: HTMLElement = this.createElement('div', 'mt-2 d-flex align-items-center d-none');
+    const addPromoCheck: HTMLElement = this.createElement('span', 'me-2 fs-7', undefined, `${promoCode}`);
 
     const addPromoButton: HTMLElement = this.createElement(
       'button',
@@ -116,17 +124,26 @@ class summaryCartBlock extends DomElement {
       'Add'
     );
 
+    const addedPromoCodesUl: HTMLElement = this.createElement('ul', '');
+    const addedPromoCodesLi: HTMLElement = this.createElement('li', '');
+    const addedPromoCodesItem: HTMLElement = this.createElement('li', '');
+
+
     addPromoInput.addEventListener('input', (e: Event) => {
-      console.log(e.target);
-      if (addPromoInput.getAttribute('value') === 'rs') {
+      const currentText = (<HTMLInputElement>e.target).value;
+      if (currentText === 'rs') {
+        promo = 10;
+        promoCode = '';
+        promoCodeButton.classList.remove('d-none');
+      } else {
+        promoCodeButton.classList.add('d-none');
       }
     });
 
     addPromoButton.addEventListener('click', (e) => {
-      countOldPrice = this.countPrice;
       e.target?.dispatchEvent(new CustomEvent('recalculatePrice', { bubbles: true }));
       summaryOldTotalPriceBlock.classList.remove('d-none');
-    })
+    });
 
     const buyNowButton: HTMLElement = this.createElement(
       'button',
@@ -153,6 +170,7 @@ class summaryCartBlock extends DomElement {
     summaryOldTotalPriceBlock.appendChild(summaryOldTotalPriceName);
     summaryOldTotalPriceBlock.appendChild(summaryOldTotalPriceValue);
     addPromoBlock.appendChild(addPromoInput);
+    addPromoBlock.appendChild(addPromoHint);
     addPromoBlock.appendChild(promoCodeButton);
     promoCodeButton.appendChild(addPromoCheck);
     promoCodeButton.appendChild(addPromoButton);
