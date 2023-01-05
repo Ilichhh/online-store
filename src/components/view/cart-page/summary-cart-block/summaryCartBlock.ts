@@ -18,15 +18,14 @@ class summaryCartBlock extends DomElement {
     );
   }
 
-  public recalculatePrice(): void {
+  public recalculatePrice(promo: number): void {
     const cart = JSON.parse(localStorage.getItem('cart') || '');
     let sum = 0;
     let countProduct = 0;
-
     cart.forEach((itemCart: CartItem) => {
       this.data.products.forEach((itemData) => {
-        if (itemCart.id === itemData.id && itemCart.count !== 0) {
-          sum += itemCart.count * itemData.price;
+        if (itemCart.id === itemData.id) {
+          sum += (itemCart.count * itemData.price) - ((itemCart.count * itemData.price) / 100 * promo);
           countProduct += itemCart.count;
         }
       });
@@ -39,7 +38,8 @@ class summaryCartBlock extends DomElement {
   public draw(cart: CartItem[]): HTMLElement {
     this.element.innerHTML = '';
 
-    this.recalculatePrice();
+    let promo = 0;
+    this.recalculatePrice(promo);
 
     const summaryName: HTMLElement = this.createElement(
       'div',
@@ -61,6 +61,19 @@ class summaryCartBlock extends DomElement {
       `${this.countProduct}`
     );
 
+    let countOldPrice = this.countPrice;
+
+    const summaryOldTotalPriceBlock: HTMLElement = this.createElement('div', 'text-decoration-line-through mb-1 d-none');
+
+    const summaryOldTotalPriceName: HTMLElement = this.createElement('span', 'me-2', undefined, 'Old price:');
+
+    const summaryOldTotalPriceValue: HTMLElement = this.createElement(
+      'span',
+      'cart-block__summary__price',
+      undefined,
+      `$${countOldPrice}`
+    );
+
     const summaryTotalPriceBlock: HTMLElement = this.createElement('div', 'mb-1');
 
     const summaryTotalPriceName: HTMLElement = this.createElement('span', 'me-2', undefined, 'Total:');
@@ -73,29 +86,47 @@ class summaryCartBlock extends DomElement {
     );
 
     document.addEventListener('recalculatePrice', () => {
-      this.recalculatePrice();
+      this.recalculatePrice(promo);
       summaryTotalPriceValue.innerHTML = `$${this.countPrice}`;
       summaryProductCountValue.innerHTML = `${this.countProduct}`;
     });
 
     const addPromoBlock: HTMLElement = this.createElement(
       'div',
-      'form-check d-flex align-items-center justify-content-center w-100 mb-2'
+      'form-check d-flex flex-column align-items-center justify-content-center w-100 mb-2'
     );
 
     const addPromoInput: HTMLElement = this.createElement('input', 'fs-6 me-1 w-75', {
       type: 'text',
       placeholder: 'Enter promo code',
+      value: '',
     });
+
+    let promoCode = 'Test promo rs';
+
+    const promoCodeButton: HTMLElement = this.createElement('div', 'mt-2 d-flex align-items-center');
+    const addPromoCheck: HTMLElement = this.createElement('span', 'me-2 fs-7', undefined, `${promoCode}`)
 
     const addPromoButton: HTMLElement = this.createElement(
       'button',
-      'btn btn-secondary w-25',
+      'btn btn-secondary',
       {
         type: 'button',
       },
       'Add'
     );
+
+    addPromoInput.addEventListener('input', (e: Event) => {
+      console.log(e.target);
+      if (addPromoInput.getAttribute('value') === 'rs') {
+      }
+    });
+
+    addPromoButton.addEventListener('click', (e) => {
+      countOldPrice = this.countPrice;
+      e.target?.dispatchEvent(new CustomEvent('recalculatePrice', { bubbles: true }));
+      summaryOldTotalPriceBlock.classList.remove('d-none');
+    })
 
     const buyNowButton: HTMLElement = this.createElement(
       'button',
@@ -111,6 +142,7 @@ class summaryCartBlock extends DomElement {
     this.element.appendChild(summaryName);
     this.element.appendChild(summaryDescription);
     summaryDescription.appendChild(summaryProductCountBlock);
+    summaryDescription.appendChild(summaryOldTotalPriceBlock);
     summaryDescription.appendChild(summaryTotalPriceBlock);
     summaryDescription.appendChild(addPromoBlock);
     summaryDescription.appendChild(buyNowButton);
@@ -118,8 +150,12 @@ class summaryCartBlock extends DomElement {
     summaryProductCountBlock.appendChild(summaryProductCountValue);
     summaryTotalPriceBlock.appendChild(summaryTotalPriceName);
     summaryTotalPriceBlock.appendChild(summaryTotalPriceValue);
+    summaryOldTotalPriceBlock.appendChild(summaryOldTotalPriceName);
+    summaryOldTotalPriceBlock.appendChild(summaryOldTotalPriceValue);
     addPromoBlock.appendChild(addPromoInput);
-    addPromoBlock.appendChild(addPromoButton);
+    addPromoBlock.appendChild(promoCodeButton);
+    promoCodeButton.appendChild(addPromoCheck);
+    promoCodeButton.appendChild(addPromoButton);
 
     return this.element;
   }

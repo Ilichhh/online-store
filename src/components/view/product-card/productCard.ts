@@ -1,6 +1,6 @@
-import DomElement from "../domElement";
+import DomElement from '../domElement';
 // import ratingIcon from '../../../assets/svg/star.svg';
-import type { Product } from "../../../types/types";
+import type { Product } from '../../../types/types';
 
 class ProductCard extends DomElement {
   data: Product;
@@ -274,23 +274,22 @@ class ProductCard extends DomElement {
               <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8z"/>
             </svg>`;
 
-    cartProductCountMinus.addEventListener("click", (e) => {
-      const cart = JSON.parse(localStorage.getItem("cart") || "");
+    cartProductCountMinus.addEventListener('click', (e) => {
+      const cart = JSON.parse(localStorage.getItem('cart') || '');
 
       this.inCart = this.inCart ? this.inCart - 1 : 0;
 
       if (Number(cartProductCountInput.textContent) <= 1) {
-        cartBlockProductItem.classList.add("d-none");
+        cartBlockProductItem.classList.add('d-none');
         cart.splice(cart.id, 1);
       }
 
       localStorage.setItem(
-        "cart",
+        'cart',
         JSON.stringify(
-          cart.map((item: { id: number }) => item.id === this.data.id ? { ...item, count: this.inCart } : item)));
-
-      e.target?.dispatchEvent(new CustomEvent("recalculatePrice", { bubbles: true }));
-
+          cart.map((item: { id: number }) => item.id === this.data.id ? { ...item, count: this.inCart } : item))
+      );
+      e.target?.dispatchEvent(new CustomEvent('recalculatePrice', { bubbles: true }));
       cartProductCountInput.textContent = this.inCart.toString();
     });
 

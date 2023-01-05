@@ -28,9 +28,8 @@ class App {
       this.router.route(e);
       this.controller.getAllProducts((data: ProductsData) => {
         this.cart = JSON.parse(<string>localStorage.getItem('cart')) || [];
-          this.view.drawMainPage(data, this.cart, this.router.getQueryParams())
-      }
-      );
+        this.view.drawMainPage(data, this.cart, this.router.getQueryParams());
+      });
     });
     document.querySelector('.header__cart')?.addEventListener('click', (e) => {
       this.router.route(e);

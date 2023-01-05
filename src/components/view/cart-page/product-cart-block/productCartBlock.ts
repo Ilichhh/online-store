@@ -85,7 +85,7 @@ class ProductCartBlock extends DomElement {
   <path fill-rule="evenodd" d="M7.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L13.293 8 7.646 2.354a.5.5 0 0 1 0-.708z"/>
             </svg>`;
 
-    cartPageArrowRight.addEventListener('click', (e) => {
+    cartPageArrowRight.addEventListener('click', () => {
       currentPage += 1;
       if (currentPage >= pageCount) {
         currentPage = pageCount;
@@ -93,12 +93,12 @@ class ProductCartBlock extends DomElement {
       inputPageCount.textContent = currentPage.toString();
     });
 
-    cartPageArrowLeft.addEventListener('click', (e) => {
+    cartPageArrowLeft.addEventListener('click', () => {
       currentPage -= 1;
       if (currentPage <= 1) {
         currentPage = 1;
       }
-      inputPageCount.setAttribute('value', currentPage.toString());
+      inputPageCount.textContent = currentPage.toString();
     });
 
     this.element.appendChild(cartBlockGeneral);
@@ -113,6 +113,15 @@ class ProductCartBlock extends DomElement {
     cartPageSetting.appendChild(cartSettingCount);
     cartBlockGeneral.appendChild(cartPageSetting);
 
+    // for (let i = currentPage; i < pageCount; i++) {
+    //   console.log('currentPage', currentPage);
+    //   console.log('pageCount', pageCount);
+    //   data.products.forEach((itemData) => {
+    //     if (cart[i].id === itemData.id && cart[i].count !== 0) {
+    //       this.element.appendChild(new ProductCard(itemData, cart[i].count, i + 1).drawCartView());
+    //     }
+    //   });
+    // }
     cart.forEach((item: CartItem, index: number) => {
       data.products.forEach((itemData) => {
         if (item.id === itemData.id && item.count !== 0) {
