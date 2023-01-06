@@ -146,6 +146,11 @@ class modalBuyNow extends DomElement {
       'BUY NOW'
     );
 
+    modalFormNameInput.addEventListener('input', (e: Event) => {
+      const currentText = (<HTMLInputElement>e.target).value;
+      console.log(currentText);
+    });
+
     this.element.appendChild(modal);
     modal.appendChild(modalContent);
     modalContent.appendChild(modalHeader);
