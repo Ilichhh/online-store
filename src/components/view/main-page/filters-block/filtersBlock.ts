@@ -64,6 +64,8 @@ class FiltersBlock extends DomElement {
     priceWrapper.appendChild(priceHeader);
     priceWrapper.appendChild(this.priceFilter);
 
+    this.initSlider(data, params);
+
     // Draw Category
     const categoryWrapper = this.createElement('div', 'filters-block__category mb-4');
     const categoryHeader = this.createElement('h5', 'filters-block__category-header', {}, 'Category');
@@ -118,21 +120,29 @@ class FiltersBlock extends DomElement {
     return this.element;
   }
 
-  public initSlider(data: ProductsData) {
+  public initSlider(data: ProductsData, params: QueryParams) {
     const lowestPrice = data.products.reduce((prev, curr) => (curr.price < prev.price ? curr : prev), data.products[0])
       .price;
     const highestPrice = data.products.reduce((prev, curr) => (curr.price > prev.price ? curr : prev), data.products[0])
       .price;
 
-    noUiSlider.create(this.priceFilter, {
-      start: [lowestPrice, highestPrice],
-      tooltips: true,
-      connect: true,
-      range: {
-        min: [lowestPrice],
-        max: [highestPrice],
-      },
-    });
+    const priceRange = params.price?.split('%') || [lowestPrice, highestPrice];
+    const min: number = +priceRange[0];
+    const max: number = +priceRange[1];
+
+    try {
+      noUiSlider.create(this.priceFilter, {
+        start: [min, max],
+        tooltips: true,
+        connect: true,
+        range: {
+          min: [lowestPrice],
+          max: [highestPrice],
+        },
+      });
+    } catch {
+      this.priceFilter.noUiSlider?.set([lowestPrice, highestPrice]);
+    }
   }
 
   private drawCheckBoxFilter(data: string[], filterElement: HTMLElement, filter: string, params: QueryParams): void {

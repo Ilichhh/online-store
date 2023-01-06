@@ -52,13 +52,11 @@ class Router {
         const oldValues = this.getQueryParams()[key]?.split('%');
         if (!oldValues) newUrl.searchParams.set(key, value);
         else {
-          const isIn = oldValues.includes(value);
-          if (!isIn) newUrl.searchParams.append(key, value);
-          else {
+          if (oldValues.includes(value)) {
             const newValues = oldValues.filter((e) => e !== value);
             newUrl.searchParams.delete(key);
             newValues.forEach((e) => newUrl.searchParams.append(key, e));
-          }
+          } else newUrl.searchParams.append(key, value);
         }
       } else {
         newUrl.searchParams.set(key, value);

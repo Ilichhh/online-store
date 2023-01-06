@@ -142,15 +142,27 @@ class ProductsBlock extends DomElement {
   }
 
   private filterData(data: ProductsData, params: QueryParams): Product[] {
-    const categoryArr = params.category?.split('%') || [];
-    const brandArr = params.brand?.split('%') || [];
+    const lowestPrice = data.products.reduce((prev, curr) => (curr.price < prev.price ? curr : prev), data.products[0])
+      .price;
+    const highestPrice = data.products.reduce((prev, curr) => (curr.price > prev.price ? curr : prev), data.products[0])
+      .price;
+
+    const categoryArr: string[] = params.category?.split('%') || [];
+    const brandArr: string[] = params.brand?.split('%') || [];
+    const priceRange: number[] = params.price?.split('%').map((i) => +i) || [lowestPrice, highestPrice];
 
     let filteredByCategory = data.products.filter((item) => categoryArr.includes(item.category));
     if (!filteredByCategory.length) filteredByCategory = data.products;
     let filteredByBrand = data.products.filter((item) => brandArr.includes(item.brand));
     if (!filteredByBrand.length) filteredByBrand = data.products;
+    const filteredByPrice = data.products.filter((item) => {
+      return item.price >= priceRange[0] && item.price <= priceRange[1];
+    });
 
-    const filteredData = filteredByCategory.filter((item) => filteredByBrand.includes(item));
+    const filteredData = filteredByCategory
+      .filter((brand) => filteredByBrand.includes(brand))
+      .filter((price) => filteredByPrice.includes(price));
+
     return filteredData;
   }
 }

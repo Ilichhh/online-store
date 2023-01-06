@@ -23,7 +23,6 @@ class App {
     this.controller.getAllProducts((data: ProductsData) => {
       this.view.drawHeader(data, this.cart);
       this.view.drawMainPage(data, this.cart, this.router.getQueryParams());
-      this.view.mainPage.filtersBlock.initSlider(data);
     });
 
     window.addEventListener('popstate', this.router.handleLocation);
@@ -78,7 +77,18 @@ class App {
 
     this.view.mainPage.filtersBlock.priceFilter.addEventListener('click', () => {
       const priceSlider: noUiSlider.API = <noUiSlider.API>this.view.mainPage.filtersBlock.priceFilter.noUiSlider;
-      console.log(priceSlider.get());
+      const range = <string[]>priceSlider.get(true);
+      const min: number = Math.round(+range[0]);
+      const max: number = Math.round(+range[1]);
+      this.filterByPrice(min, max);
+    });
+  }
+
+  private filterByPrice(min: number, max: number): void {
+    this.router.setQueryString({ price: `${min}%${max}` });
+    console.log(min, max);
+    this.controller.getAllProducts((data: ProductsData) => {
+      this.view.mainPage.productsBlock.draw(data, this.cart, this.router.getQueryParams());
     });
   }
 
@@ -89,7 +99,6 @@ class App {
       this.router.setQueryString({ [filter]: item.value });
       this.controller.getAllProducts((data: ProductsData) => {
         this.view.mainPage.productsBlock.draw(data, this.cart, this.router.getQueryParams());
-        // this.view.drawAllFilters(data, this.router.getQueryParams());
       });
     }
   }
