@@ -44,8 +44,8 @@ class summaryCartBlock extends DomElement {
       });
     });
 
-    this.countPrice = sum;
-    this.countOldPrice = sumOld;
+    this.countPrice = Math.floor(sum * 100) / 100;
+    this.countOldPrice = Math.floor(sumOld * 100) / 100;
     this.countProduct = countProduct;
   }
 

@@ -1,4 +1,4 @@
-import ModalBuyNow from './modal-bay-now/modalBuyNow';
+import ModalBuyNow from './modal-buy-now/modalBuyNow';
 import ProductCartBlock from './product-cart-block/productCartBlock';
 import SummaryCartBlock from './summary-cart-block/summaryCartBlock';
 import DomElement from '../domElement';
