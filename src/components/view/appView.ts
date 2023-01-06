@@ -1,14 +1,24 @@
+import Header from './header/header';
 import MainPage from './main-page/mainPage';
-import type { ProductsData, CartItem, QueryParams } from '../../types/types';
+import ProductPage from './product-page/productPage';
 import CartPage from './cart-page/cartPage';
+import type { ProductsData, Product, CartItem, QueryParams } from '../../types/types';
 
 export class AppView {
+  header: Header;
   mainPage: MainPage;
+  productPage: ProductPage;
   cartPage: CartPage;
 
   constructor() {
+    this.header = new Header();
     this.mainPage = new MainPage();
+    this.productPage = new ProductPage();
     this.cartPage = new CartPage();
+  }
+
+  public drawHeader(data: ProductsData, cart: CartItem[]): void {
+    this.header.draw(data, cart);
   }
 
   public drawMainPage(data: ProductsData, cart: CartItem[], params: QueryParams): void {
@@ -29,6 +39,10 @@ export class AppView {
 
   public drawAllFilters(data: ProductsData): void {
     this.mainPage.filtersBlock.draw(data);
+  }
+
+  public drawProductPage(data: Product, cart: CartItem[]): void {
+    this.productPage.drawProductPage(data, cart);
   }
 }
 
