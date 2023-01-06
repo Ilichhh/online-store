@@ -1,10 +1,12 @@
 import DomElement from '../../domElement';
+import * as noUiSlider from 'nouislider';
 import type { ProductsData, QueryParams } from '../../../../types/types';
 
 class FiltersBlock extends DomElement {
   element: HTMLElement;
   resetBtn: HTMLButtonElement;
   copyLInkBtn: HTMLButtonElement;
+  priceFilter: noUiSlider.target;
   categoryFilter: HTMLElement;
   brandFilter: HTMLElement;
 
@@ -17,6 +19,7 @@ class FiltersBlock extends DomElement {
     this.copyLInkBtn = <HTMLButtonElement>(
       this.createElement('button', 'filters-block__copy-link-btn btn btn-outline-secondary btn-sm')
     );
+    this.priceFilter = <noUiSlider.target>this.createElement('div', 'filters-block__price-range mb-4');
     this.categoryFilter = this.createElement('div', 'filters-block__category-items');
     this.brandFilter = this.createElement('div', 'filters-block__brand-items mb-4');
   }
@@ -53,6 +56,32 @@ class FiltersBlock extends DomElement {
     buttonGridCopy.appendChild(this.copyLInkBtn);
     this.element.appendChild(buttonsWrapper);
 
+    // Draw Price
+    const priceWrapper = this.createElement('div', 'filters-block__price mb-4');
+    const priceHeader = this.createElement('h5', 'filters-block__price-header mb-5', {}, 'Price');
+
+    this.element.appendChild(priceWrapper);
+    priceWrapper.appendChild(priceHeader);
+    priceWrapper.appendChild(this.priceFilter);
+
+    const lowestPrice = data.products.reduce((prev, curr) => (curr.price < prev.price ? curr : prev), data.products[0])
+      .price;
+    const highestPrice = data.products.reduce((prev, curr) => (curr.price > prev.price ? curr : prev), data.products[0])
+      .price;
+    console.log(highestPrice);
+
+    noUiSlider.create(this.priceFilter, {
+      start: [lowestPrice, highestPrice],
+      tooltips: true,
+      connect: true,
+      range: {
+        min: [lowestPrice],
+        max: [highestPrice],
+      },
+    });
+
+    console.log(this.priceFilter.noUiSlider!.get());
+
     // Draw Category
     const categoryWrapper = this.createElement('div', 'filters-block__category mb-4');
     const categoryHeader = this.createElement('h5', 'filters-block__category-header', {}, 'Category');
@@ -65,7 +94,7 @@ class FiltersBlock extends DomElement {
 
     // Draw Brand
     const brandWrapper = this.createElement('div', 'filters-block__brand mb-4');
-    const brandHeader = this.createElement('h5', 'filters-block__brand-header', undefined, 'Brand');
+    const brandHeader = this.createElement('h5', 'filters-block__brand-header', {}, 'Brand');
 
     this.element.appendChild(brandWrapper);
     brandWrapper.appendChild(brandHeader);
@@ -73,7 +102,6 @@ class FiltersBlock extends DomElement {
 
     this.drawCheckBoxFilter(brandsData, this.brandFilter, 'brand', params);
 
-    // Draw Price
     // this.element.innerHTML += `
     //   <div class="filters-block__price mb-4">
     //     <h5>Price</h5>

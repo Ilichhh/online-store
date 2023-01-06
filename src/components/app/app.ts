@@ -1,6 +1,7 @@
 import AppView from '../view/appView';
 import AppController from '../controller/appController';
 import Router from '../router/router';
+import * as noUiSlider from 'nouislider';
 import type { ProductsData, CartItem } from '../../types/types';
 
 class App {
@@ -72,6 +73,10 @@ class App {
 
     this.view.mainPage.filtersBlock.brandFilter.addEventListener('change', (e) => {
       this.filterProducts(e, 'brand');
+    });
+
+    this.view.mainPage.filtersBlock.priceFilter.addEventListener('click', () => {
+      console.log(this.view.mainPage.filtersBlock.priceFilter.noUiSlider!.get());
     });
   }
 
