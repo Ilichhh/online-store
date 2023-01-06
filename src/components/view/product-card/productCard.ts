@@ -130,7 +130,6 @@ class ProductCard extends DomElement {
   }
 
   public drawCartView() {
-    console.log(this.inCart);
     const cartBlockProductItem: HTMLElement = this.createElement(
       'div',
       'p-2 cart-block__product-item border-bottom d-flex justify-content-between align-items-center'
@@ -259,7 +258,9 @@ class ProductCard extends DomElement {
       localStorage.setItem(
         'cart',
         JSON.stringify(
-          cart.map((item: { id: number }) => item.id === this.data.id ? { ...item, count: this.inCart } : item)))
+          cart.map((item: { id: number }) => (item.id === this.data.id ? { ...item, count: this.inCart } : item))
+        )
+      );
       e.target?.dispatchEvent(new CustomEvent('recalculatePrice', { bubbles: true }));
     });
 
@@ -287,7 +288,8 @@ class ProductCard extends DomElement {
       localStorage.setItem(
         'cart',
         JSON.stringify(
-          cart.map((item: { id: number }) => item.id === this.data.id ? { ...item, count: this.inCart } : item))
+          cart.map((item: { id: number }) => (item.id === this.data.id ? { ...item, count: this.inCart } : item))
+        )
       );
       e.target?.dispatchEvent(new CustomEvent('recalculatePrice', { bubbles: true }));
       cartProductCountInput.textContent = this.inCart.toString();
@@ -321,9 +323,9 @@ class ProductCard extends DomElement {
     cartProductStockCount.appendChild(cartProductStockCountText);
     cartProductStockCount.appendChild(cartProductStockCountValue);
     cartProductStock.appendChild(cartProductStockCount);
-    cartProductCount.appendChild(cartProductCountPlus);
-    cartProductCount.appendChild(cartProductCountInput);
     cartProductCount.appendChild(cartProductCountMinus);
+    cartProductCount.appendChild(cartProductCountInput);
+    cartProductCount.appendChild(cartProductCountPlus);
     cartProductStock.appendChild(cartProductCount);
     cartBlockProductItem.appendChild(cartProductStock);
     cartProductStock.appendChild(cartProductCount);

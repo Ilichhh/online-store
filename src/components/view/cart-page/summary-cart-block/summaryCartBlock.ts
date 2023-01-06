@@ -38,7 +38,7 @@ class summaryCartBlock extends DomElement {
       this.data.products.forEach((itemData) => {
         if (itemCart.id === itemData.id) {
           sumOld += itemCart.count * itemData.price;
-          sum += itemCart.count * itemData.price - ((itemCart.count * itemData.price / 100) * promo);
+          sum += itemCart.count * itemData.price - ((itemCart.count * itemData.price) / 100) * promo;
           countProduct += itemCart.count;
         }
       });
