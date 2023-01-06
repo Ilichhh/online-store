@@ -6,6 +6,7 @@ class ProductCard extends DomElement {
   data: Product;
   inCart: number;
   element: HTMLElement;
+  cartProductCountInput: HTMLElement;
   index: number | undefined;
 
   constructor(data: Product, inCart: number, index?: number) {
@@ -14,6 +15,14 @@ class ProductCard extends DomElement {
     this.inCart = inCart;
     this.index = index;
     this.element = this.createElement('div', 'product-card card');
+    this.cartProductCountInput = this.createElement(
+      'label',
+      'cart-block__product-general__number fw-bold border rounded-2 me-1 ms-1 text-center',
+      {
+        type: 'text',
+      },
+      `${this.inCart}`
+    );
   }
 
   public drawGridView(): HTMLElement {
@@ -232,61 +241,66 @@ class ProductCard extends DomElement {
 
     const cartProductCountPlus: HTMLElement = this.createElement(
       'div',
-      'btn btn-warning me-1 d-flex justify-content-center align-items-center'
+      'plus-button-product-cart btn btn-warning me-1 d-flex justify-content-center align-items-center',
+      { id: 'plus-button-product-cart' },
+      '+'
     );
 
-    cartProductCountPlus.innerHTML = `
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus"
-                 viewBox="0 0 16 16">
-              <path
-                  d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
-            </svg>`;
+    // cartProductCountPlus.innerHTML = `
+    // <svg id='plus-button-product-cart-svg' xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus"
+    //              viewBox="0 0 16 16">
+    //           <path
+    //               d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+    //         </svg>`;
 
-    const cartProductCountInput: HTMLElement = this.createElement(
-      'label',
-      'cart-block__product-general__number fw-bold border rounded-2 me-1 ms-1 text-center',
-      {
-        type: 'text',
-      },
-      `${this.inCart}`
-    );
+    // const cartProductCountInput: HTMLElement = this.createElement(
+    //   'label',
+    //   'cart-block__product-general__number fw-bold border rounded-2 me-1 ms-1 text-center',
+    //   {
+    //     type: 'text',
+    //   },
+    //   `${this.inCart}`
+    // );
 
-    cartProductCountPlus.addEventListener('click', (e) => {
-      const cart = JSON.parse(localStorage.getItem('cart') || '');
-      if (this.inCart < this.data.stock) {
-        this.inCart += 1;
-      }
-      cartProductCountInput.textContent = this.inCart.toString();
-      localStorage.setItem(
-        'cart',
-        JSON.stringify(
-          cart.map((item: { id: number }) => (item.id === this.data.id ? { ...item, count: this.inCart } : item))
-        )
-      );
-      e.target?.dispatchEvent(new CustomEvent('recalculatePrice', { bubbles: true }));
+    cartProductCountPlus.addEventListener('click', (e: Event) => {
+      this.plusCountProduct(e);
     });
+
+    // cartProductCountPlus.addEventListener('click', (e) => {
+    //   const cart = JSON.parse(localStorage.getItem('cart') || '');
+    //   if (this.inCart < this.data.stock) {
+    //     this.inCart += 1;
+    //   }
+    //   cartProductCountInput.textContent = this.inCart.toString();
+    //   localStorage.setItem(
+    //     'cart',
+    //     JSON.stringify(
+    //       cart.map((item: { id: number }) => (item.id === this.data.id ? { ...item, count: this.inCart } : item))
+    //     )
+    //   );
+    //   e.target?.dispatchEvent(new CustomEvent('recalculatePrice', { bubbles: true }));
+    // });
 
     const cartProductCountMinus: HTMLElement = this.createElement(
       'div',
-      'btn btn-warning ms-1 d-flex justify-content-center align-items-center'
+      'btn btn-warning ms-1 d-flex justify-content-center align-items-center',
+      { id: 'minus-button-product-cart' },
+      '-'
     );
 
-    cartProductCountMinus.innerHTML = `
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-dash"
-                 viewBox="0 0 16 16">
-              <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8z"/>
-            </svg>`;
+    // cartProductCountMinus.innerHTML = `
+    // <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-dash"
+    //              viewBox="0 0 16 16">
+    //           <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8z"/>
+    //         </svg>`;
 
     cartProductCountMinus.addEventListener('click', (e) => {
       const cart = JSON.parse(localStorage.getItem('cart') || '');
-
       this.inCart = this.inCart ? this.inCart - 1 : 0;
-
-      if (Number(cartProductCountInput.textContent) <= 1) {
+      if (Number(this.cartProductCountInput.textContent) <= 1) {
         cartBlockProductItem.classList.add('d-none');
         cart.splice(cart.id, 1);
       }
-
       localStorage.setItem(
         'cart',
         JSON.stringify(
@@ -294,7 +308,7 @@ class ProductCard extends DomElement {
         )
       );
       e.target?.dispatchEvent(new CustomEvent('recalculatePrice', { bubbles: true }));
-      cartProductCountInput.textContent = this.inCart.toString();
+      this.cartProductCountInput.textContent = this.inCart.toString();
     });
 
     const cartProductPrice: HTMLElement = this.createElement(
@@ -326,7 +340,7 @@ class ProductCard extends DomElement {
     cartProductStockCount.appendChild(cartProductStockCountValue);
     cartProductStock.appendChild(cartProductStockCount);
     cartProductCount.appendChild(cartProductCountMinus);
-    cartProductCount.appendChild(cartProductCountInput);
+    cartProductCount.appendChild(this.cartProductCountInput);
     cartProductCount.appendChild(cartProductCountPlus);
     cartProductStock.appendChild(cartProductCount);
     cartBlockProductItem.appendChild(cartProductStock);
@@ -334,6 +348,21 @@ class ProductCard extends DomElement {
     cartProductStock.appendChild(cartProductPrice);
 
     return this.element;
+  }
+
+  public plusCountProduct(e: Event) {
+    const cart = JSON.parse(localStorage.getItem('cart') || '');
+    if (this.inCart < this.data.stock) {
+      this.inCart += 1;
+    }
+    this.cartProductCountInput.textContent = this.inCart.toString();
+    localStorage.setItem(
+      'cart',
+      JSON.stringify(
+        cart.map((item: { id: number }) => (item.id === this.data.id ? { ...item, count: this.inCart } : item))
+      )
+    );
+    e.target?.dispatchEvent(new CustomEvent('recalculatePrice', { bubbles: true }));
   }
 }
 

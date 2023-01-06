@@ -28,6 +28,7 @@ class App {
 
     document.querySelector('.header__logo')?.addEventListener('click', (e) => {
       this.router.route(e);
+      localStorage.setItem('promo', '0');
       this.controller.getAllProducts((data: ProductsData) => {
         this.cart = JSON.parse(<string>localStorage.getItem('cart')) || [];
         this.view.drawMainPage(data, this.cart, this.router.getQueryParams());
@@ -36,7 +37,28 @@ class App {
 
     this.view.header.cart.addEventListener('click', (e) => {
       this.router.route(e);
-      this.controller.getAllProducts((data: ProductsData) => this.view.drawCartPage(data, this.cart));
+      localStorage.setItem('promo', '0');
+      this.controller.getAllProducts((data: ProductsData) => {
+        this.view.cartPage.summaryCartBlock.recalculatePrice(data);
+        this.view.drawCartPage(data, this.cart);
+        this.view.header.updateData(data, this.cart);
+      });
+    });
+
+    document.addEventListener('click', (e: Event) => {
+      if (
+        (<HTMLElement>e.target).id === 'plus-button-product-cart' ||
+        (<HTMLElement>e.target).id === 'minus-button-product-cart' ||
+        (<HTMLElement>e.target).id === 'add-promo-input' ||
+        (<HTMLElement>e.target).id === 'add-promo-code' ||
+        (<HTMLElement>e.target).id === 'drop-promo0' ||
+        (<HTMLElement>e.target).id === 'drop-promo1'
+      ) {
+        this.cart = JSON.parse(<string>localStorage.getItem('cart')) || [];
+        this.controller.getAllProducts((data: ProductsData) => {
+          this.view.header.updateData(data, this.cart);
+        });
+      }
     });
 
     this.view.mainPage.productsBlock.sortingFilter.addEventListener('change', (e) => this.sortProducts(e));

@@ -6,18 +6,18 @@ class summaryCartBlock extends DomElement {
   countPrice: number;
   countProduct: number;
   countOldPrice: number;
-  data: ProductsData;
+  // data: ProductsData;
   promoCode: string;
   promo: number;
 
-  constructor(data: ProductsData) {
+  constructor() {
     super();
     this.promoCode = '';
     this.promo = 0;
     this.countOldPrice = 0;
     this.countPrice = 0;
     this.countProduct = 0;
-    this.data = data;
+    // this.data = data;
     this.element = this.createElement(
       'div',
       'cart-block__summary fs-6 mw-100 w-25 p-2 d-flex fw-bold border rounded-4 flex-column justify-content-start align-items-center'
@@ -29,16 +29,17 @@ class summaryCartBlock extends DomElement {
     this.promo = promo;
   }
 
-  public recalculatePrice(promo: number): void {
+  public recalculatePrice(data: ProductsData): void {
+    this.promo = Number(localStorage.getItem('promo'));
     const cart = JSON.parse(localStorage.getItem('cart') || '');
     let sum = 0;
     let sumOld = 0;
     let countProduct = 0;
     cart.forEach((itemCart: CartItem) => {
-      this.data.products.forEach((itemData) => {
+      data.products.forEach((itemData) => {
         if (itemCart.id === itemData.id) {
           sumOld += itemCart.count * itemData.price;
-          sum += itemCart.count * itemData.price - ((itemCart.count * itemData.price) / 100) * promo;
+          sum += itemCart.count * itemData.price - ((itemCart.count * itemData.price) / 100) * this.promo;
           countProduct += itemCart.count;
         }
       });
@@ -49,15 +50,16 @@ class summaryCartBlock extends DomElement {
     this.countProduct = countProduct;
   }
 
-  public draw(): HTMLElement {
+  public draw(data: ProductsData): HTMLElement {
     this.element.innerHTML = '';
+    localStorage.setItem('promo', '0');
     let append: HTMLElement;
     const promoArr = [
       { name: 'rs', text: 'Rolling Scopes School - 10%', discont: 10 },
       { name: 'ep', text: 'Epam Systems - 10%', discont: 10 },
     ];
 
-    this.recalculatePrice(this.promo);
+    this.recalculatePrice(data);
 
     const summaryName: HTMLElement = this.createElement(
       'div',
@@ -105,7 +107,7 @@ class summaryCartBlock extends DomElement {
     );
 
     document.addEventListener('recalculatePrice', () => {
-      this.recalculatePrice(this.promo);
+      this.recalculatePrice(data);
       summaryTotalPriceValue.innerHTML = `$${this.countPrice}`;
       summaryOldTotalPriceValue.innerHTML = `$${this.countOldPrice}`;
       summaryProductCountValue.innerHTML = `${this.countProduct}`;
@@ -114,7 +116,6 @@ class summaryCartBlock extends DomElement {
     document.addEventListener('changePromo', () => {
       this.changePromo(this.promo, this.promoCode);
       addPromoCheck.textContent = `${this.promoCode}`;
-      // addedPromoCodesName.textContent = `${promoCode}`;
     });
 
     const addPromoBlock: HTMLElement = this.createElement(
@@ -126,6 +127,7 @@ class summaryCartBlock extends DomElement {
       type: 'text',
       placeholder: 'Enter promo code',
       value: '',
+      id: 'add-promo-input',
     });
 
     const addPromoHint: HTMLElement = this.createElement('div', 'mb-2', undefined, 'Test promo "rs", "ep"');
@@ -138,6 +140,7 @@ class summaryCartBlock extends DomElement {
       'btn btn-secondary',
       {
         type: 'button',
+        id: 'add-promo-code',
       },
       'Add'
     );
@@ -153,7 +156,12 @@ class summaryCartBlock extends DomElement {
       undefined,
       `${promoArr[0].text}`
     );
-    const addedPromoCodesDrop0: HTMLElement = this.createElement('button', 'btn btn-secondary', undefined, 'Drop');
+    const addedPromoCodesDrop0: HTMLElement = this.createElement(
+      'button',
+      'btn btn-secondary',
+      { id: 'drop-promo0' },
+      'Drop'
+    );
 
     const addedPromoCodesItem1: HTMLElement = this.createElement('div', 'text-end d-none list-group-item');
     const addedPromoCodesName1: HTMLElement = this.createElement(
@@ -162,7 +170,12 @@ class summaryCartBlock extends DomElement {
       undefined,
       `${promoArr[1].text}`
     );
-    const addedPromoCodesDrop1: HTMLElement = this.createElement('button', 'btn btn-secondary', undefined, 'Drop');
+    const addedPromoCodesDrop1: HTMLElement = this.createElement(
+      'button',
+      'btn btn-secondary',
+      { id: 'drop-promo1' },
+      'Drop'
+    );
 
     addPromoInput.addEventListener('input', (e: Event) => {
       const currentText = (<HTMLInputElement>e.target).value;
@@ -182,6 +195,7 @@ class summaryCartBlock extends DomElement {
       } else {
         promoCodeButton.classList.add('d-none');
       }
+      localStorage.setItem('promo', `${this.promo}`);
       addPromoButton.addEventListener('click', () => {
         (<HTMLInputElement>e.target).value = '';
       });
@@ -197,6 +211,7 @@ class summaryCartBlock extends DomElement {
     addedPromoCodesDrop0.addEventListener('click', (e) => {
       this.promo -= promoArr[0].discont;
       addedPromoCodesItem0.classList.add('d-none');
+      localStorage.setItem('promo', `${this.promo}`);
       e.target?.dispatchEvent(new CustomEvent('recalculatePrice', { bubbles: true }));
       if (this.countOldPrice === this.countPrice) {
         summaryOldTotalPriceBlock.classList.add('d-none');
@@ -206,6 +221,7 @@ class summaryCartBlock extends DomElement {
     addedPromoCodesDrop1.addEventListener('click', (e) => {
       this.promo -= promoArr[1].discont;
       addedPromoCodesItem1.classList.add('d-none');
+      localStorage.setItem('promo', `${this.promo}`);
       e.target?.dispatchEvent(new CustomEvent('recalculatePrice', { bubbles: true }));
       if (this.countOldPrice === this.countPrice) {
         summaryOldTotalPriceBlock.classList.add('d-none');
