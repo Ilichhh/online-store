@@ -23,6 +23,7 @@ class App {
     this.controller.getAllProducts((data: ProductsData) => {
       this.view.drawHeader(data, this.cart);
       this.view.drawMainPage(data, this.cart, this.router.getQueryParams());
+      this.view.mainPage.filtersBlock.initSlider(data);
     });
 
     window.addEventListener('popstate', this.router.handleLocation);
@@ -76,7 +77,8 @@ class App {
     });
 
     this.view.mainPage.filtersBlock.priceFilter.addEventListener('click', () => {
-      console.log(this.view.mainPage.filtersBlock.priceFilter.noUiSlider!.get());
+      const priceSlider: noUiSlider.API = <noUiSlider.API>this.view.mainPage.filtersBlock.priceFilter.noUiSlider;
+      console.log(priceSlider.get());
     });
   }
 

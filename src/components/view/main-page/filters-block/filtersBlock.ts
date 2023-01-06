@@ -64,24 +64,6 @@ class FiltersBlock extends DomElement {
     priceWrapper.appendChild(priceHeader);
     priceWrapper.appendChild(this.priceFilter);
 
-    const lowestPrice = data.products.reduce((prev, curr) => (curr.price < prev.price ? curr : prev), data.products[0])
-      .price;
-    const highestPrice = data.products.reduce((prev, curr) => (curr.price > prev.price ? curr : prev), data.products[0])
-      .price;
-    console.log(highestPrice);
-
-    noUiSlider.create(this.priceFilter, {
-      start: [lowestPrice, highestPrice],
-      tooltips: true,
-      connect: true,
-      range: {
-        min: [lowestPrice],
-        max: [highestPrice],
-      },
-    });
-
-    console.log(this.priceFilter.noUiSlider!.get());
-
     // Draw Category
     const categoryWrapper = this.createElement('div', 'filters-block__category mb-4');
     const categoryHeader = this.createElement('h5', 'filters-block__category-header', {}, 'Category');
@@ -134,6 +116,23 @@ class FiltersBlock extends DomElement {
     // `;
 
     return this.element;
+  }
+
+  public initSlider(data: ProductsData) {
+    const lowestPrice = data.products.reduce((prev, curr) => (curr.price < prev.price ? curr : prev), data.products[0])
+      .price;
+    const highestPrice = data.products.reduce((prev, curr) => (curr.price > prev.price ? curr : prev), data.products[0])
+      .price;
+
+    noUiSlider.create(this.priceFilter, {
+      start: [lowestPrice, highestPrice],
+      tooltips: true,
+      connect: true,
+      range: {
+        min: [lowestPrice],
+        max: [highestPrice],
+      },
+    });
   }
 
   private drawCheckBoxFilter(data: string[], filterElement: HTMLElement, filter: string, params: QueryParams): void {
