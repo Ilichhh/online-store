@@ -82,11 +82,25 @@ class App {
       const max: number = Math.round(+range[1]);
       this.filterByPrice(min, max);
     });
+
+    this.view.mainPage.filtersBlock.stockFilter.addEventListener('click', () => {
+      const stockSlider: noUiSlider.API = <noUiSlider.API>this.view.mainPage.filtersBlock.stockFilter.noUiSlider;
+      const range = <string[]>stockSlider.get(true);
+      const min: number = Math.round(+range[0]);
+      const max: number = Math.round(+range[1]);
+      this.filterByStock(min, max);
+    });
   }
 
   private filterByPrice(min: number, max: number): void {
     this.router.setQueryString({ price: `${min}%${max}` });
-    console.log(min, max);
+    this.controller.getAllProducts((data: ProductsData) => {
+      this.view.mainPage.productsBlock.draw(data, this.cart, this.router.getQueryParams());
+    });
+  }
+
+  private filterByStock(min: number, max: number): void {
+    this.router.setQueryString({ stock: `${min}%${max}` });
     this.controller.getAllProducts((data: ProductsData) => {
       this.view.mainPage.productsBlock.draw(data, this.cart, this.router.getQueryParams());
     });

@@ -146,10 +146,15 @@ class ProductsBlock extends DomElement {
       .price;
     const highestPrice = data.products.reduce((prev, curr) => (curr.price > prev.price ? curr : prev), data.products[0])
       .price;
+    const lowestStock = data.products.reduce((prev, curr) => (curr.stock < prev.stock ? curr : prev), data.products[0])
+      .stock;
+    const highestStock = data.products.reduce((prev, curr) => (curr.stock > prev.stock ? curr : prev), data.products[0])
+      .stock;
 
     const categoryArr: string[] = params.category?.split('%') || [];
     const brandArr: string[] = params.brand?.split('%') || [];
     const priceRange: number[] = params.price?.split('%').map((i) => +i) || [lowestPrice, highestPrice];
+    const stockRange: number[] = params.stock?.split('%').map((i) => +i) || [lowestStock, highestStock];
 
     let filteredByCategory = data.products.filter((item) => categoryArr.includes(item.category));
     if (!filteredByCategory.length) filteredByCategory = data.products;
@@ -158,10 +163,14 @@ class ProductsBlock extends DomElement {
     const filteredByPrice = data.products.filter((item) => {
       return item.price >= priceRange[0] && item.price <= priceRange[1];
     });
+    const filteredByStock = data.products.filter((item) => {
+      return item.stock >= stockRange[0] && item.stock <= stockRange[1];
+    });
 
     const filteredData = filteredByCategory
       .filter((brand) => filteredByBrand.includes(brand))
-      .filter((price) => filteredByPrice.includes(price));
+      .filter((price) => filteredByPrice.includes(price))
+      .filter((stock) => filteredByStock.includes(stock));
 
     return filteredData;
   }

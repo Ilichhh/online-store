@@ -9,6 +9,7 @@ class FiltersBlock extends DomElement {
   priceFilter: noUiSlider.target;
   categoryFilter: HTMLElement;
   brandFilter: HTMLElement;
+  stockFilter: noUiSlider.target;
 
   constructor() {
     super();
@@ -22,6 +23,7 @@ class FiltersBlock extends DomElement {
     this.priceFilter = <noUiSlider.target>this.createElement('div', 'filters-block__price-range mb-4');
     this.categoryFilter = this.createElement('div', 'filters-block__category-items');
     this.brandFilter = this.createElement('div', 'filters-block__brand-items mb-4');
+    this.stockFilter = <noUiSlider.target>this.createElement('div', 'filters-block__stock-range mb-4');
   }
 
   public draw(data: ProductsData, params: QueryParams): HTMLElement {
@@ -64,7 +66,7 @@ class FiltersBlock extends DomElement {
     priceWrapper.appendChild(priceHeader);
     priceWrapper.appendChild(this.priceFilter);
 
-    this.initSlider(data, params);
+    this.drawRangeFilter(data, this.priceFilter, 'price', params);
 
     // Draw Category
     const categoryWrapper = this.createElement('div', 'filters-block__category mb-4');
@@ -74,7 +76,7 @@ class FiltersBlock extends DomElement {
     categoryWrapper.appendChild(categoryHeader);
     categoryWrapper.appendChild(this.categoryFilter);
 
-    this.drawCheckBoxFilter(categoriesData, this.categoryFilter, 'category', params);
+    this.drawCheckboxFilter(categoriesData, this.categoryFilter, 'category', params);
 
     // Draw Brand
     const brandWrapper = this.createElement('div', 'filters-block__brand mb-4');
@@ -84,68 +86,56 @@ class FiltersBlock extends DomElement {
     brandWrapper.appendChild(brandHeader);
     brandWrapper.appendChild(this.brandFilter);
 
-    this.drawCheckBoxFilter(brandsData, this.brandFilter, 'brand', params);
-
-    // this.element.innerHTML += `
-    //   <div class="filters-block__price mb-4">
-    //     <h5>Price</h5>
-    //     <input type="range" class="form-range mb-2" id="price" value="0">
-    //     <div class="row mb-2">
-    //       <div class="col">
-    //         <input type="text" class="form-control" placeholder="from: 0" aria-label="from">
-    //       </div>
-    //       <div class="col">
-    //         <input type="text" class="form-control" placeholder="to: 999" aria-label="to">
-    //       </div>
-    //     </div>
-    //   </div>
-    // `;
+    this.drawCheckboxFilter(brandsData, this.brandFilter, 'brand', params);
 
     // Draw Stock
-    // this.element.innerHTML += `
-    //   <div class="filters-block__stock mb-3">
-    //     <h5>Stock</h5>
-    //     <input type="range" class="form-range mb-2" id="stock" value="0">
-    //     <div class="row mb-2">
-    //       <div class="col">
-    //         <input type="text" class="form-control" placeholder="from: 0" aria-label="from">
-    //       </div>
-    //       <div class="col">
-    //         <input type="text" class="form-control" placeholder="to: 999" aria-label="to">
-    //       </div>
-    //     </div>
-    //   </div>
-    // `;
+    const stockWrapper = this.createElement('div', 'filters-block__stock mb-4');
+    const stockHeader = this.createElement('h5', 'filters-block__stock-header mb-5', {}, 'Stock');
+
+    this.element.appendChild(stockWrapper);
+    stockWrapper.appendChild(stockHeader);
+    stockWrapper.appendChild(this.stockFilter);
+
+    this.drawRangeFilter(data, this.stockFilter, 'stock', params);
 
     return this.element;
   }
 
-  public initSlider(data: ProductsData, params: QueryParams) {
-    const lowestPrice = data.products.reduce((prev, curr) => (curr.price < prev.price ? curr : prev), data.products[0])
-      .price;
-    const highestPrice = data.products.reduce((prev, curr) => (curr.price > prev.price ? curr : prev), data.products[0])
-      .price;
+  private drawRangeFilter(
+    data: ProductsData,
+    filterElement: noUiSlider.target,
+    filter: 'price' | 'stock',
+    params: QueryParams
+  ) {
+    const lowestData: number = data.products.reduce(
+      (prev, curr) => (curr[filter] < prev[filter] ? curr : prev),
+      data.products[0]
+    )[filter];
+    const highestData: number = data.products.reduce(
+      (prev, curr) => (curr[filter] > prev[filter] ? curr : prev),
+      data.products[0]
+    )[filter];
 
-    const priceRange = params.price?.split('%') || [lowestPrice, highestPrice];
-    const min: number = +priceRange[0];
-    const max: number = +priceRange[1];
+    const dataRange = params[filter]?.split('%') || [lowestData, highestData];
+    const min: number = +dataRange[0];
+    const max: number = +dataRange[1];
 
     try {
-      noUiSlider.create(this.priceFilter, {
+      noUiSlider.create(filterElement, {
         start: [min, max],
         tooltips: true,
         connect: true,
         range: {
-          min: [lowestPrice],
-          max: [highestPrice],
+          min: [lowestData],
+          max: [highestData],
         },
       });
     } catch {
-      this.priceFilter.noUiSlider?.set([lowestPrice, highestPrice]);
+      filterElement.noUiSlider?.set([lowestData, highestData]);
     }
   }
 
-  private drawCheckBoxFilter(data: string[], filterElement: HTMLElement, filter: string, params: QueryParams): void {
+  private drawCheckboxFilter(data: string[], filterElement: HTMLElement, filter: string, params: QueryParams): void {
     filterElement.innerHTML = '';
     const checkedArr: string[] = params[filter]?.split('%');
 
