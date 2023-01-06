@@ -23,7 +23,7 @@ class MainPage extends DomElement {
     const wrapper: HTMLElement = this.createElement('div', 'products-filters-wrapper row');
 
     main.appendChild(container);
-    container.appendChild(this.searchBar.draw());
+    container.appendChild(this.searchBar.draw(params));
     container.appendChild(wrapper);
     wrapper.appendChild(this.filtersBlock.draw(data, params));
     wrapper.appendChild(this.productsBlock.draw(data, cart, params));

@@ -86,6 +86,14 @@ class App {
       const range = <string[]>stockSlider.get(true);
       this.sliderFilterProducts(range, 'stock');
     });
+
+    this.view.mainPage.searchBar.searchButton.addEventListener('click', () => {
+      const inputValue = this.view.mainPage.searchBar.input.value;
+      this.router.setQueryString({ search: inputValue.toLowerCase() });
+      this.controller.getAllProducts((data: ProductsData) =>
+        this.view.drawAllProducts(data, this.cart, this.router.getQueryParams())
+      );
+    });
   }
 
   private sliderFilterProducts(range: string[], filter: string): void {
