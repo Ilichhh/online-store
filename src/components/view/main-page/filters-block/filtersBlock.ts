@@ -107,15 +107,12 @@ class FiltersBlock extends DomElement {
     filter: 'price' | 'stock',
     params: QueryParams
   ) {
-    const lowestData: number = data.products.reduce(
-      (prev, curr) => (curr[filter] < prev[filter] ? curr : prev),
-      data.products[0]
-    )[filter];
-    const highestData: number = data.products.reduce(
-      (prev, curr) => (curr[filter] > prev[filter] ? curr : prev),
-      data.products[0]
-    )[filter];
-
+    const lowestData: number = data.products.reduce((pr, cu) => (cu[filter] < pr[filter] ? cu : pr), data.products[0])[
+      filter
+    ];
+    const highestData: number = data.products.reduce((pr, cu) => (cu[filter] > pr[filter] ? cu : pr), data.products[0])[
+      filter
+    ];
     const dataRange = params[filter]?.split('%') || [lowestData, highestData];
     const min: number = +dataRange[0];
     const max: number = +dataRange[1];

@@ -68,45 +68,36 @@ class App {
     });
 
     this.view.mainPage.filtersBlock.categoryFilter.addEventListener('change', (e) => {
-      this.filterProducts(e, 'category');
+      this.checkboxFilterProducts(e, 'category');
     });
 
     this.view.mainPage.filtersBlock.brandFilter.addEventListener('change', (e) => {
-      this.filterProducts(e, 'brand');
+      this.checkboxFilterProducts(e, 'brand');
     });
 
     this.view.mainPage.filtersBlock.priceFilter.addEventListener('click', () => {
       const priceSlider: noUiSlider.API = <noUiSlider.API>this.view.mainPage.filtersBlock.priceFilter.noUiSlider;
       const range = <string[]>priceSlider.get(true);
-      const min: number = Math.round(+range[0]);
-      const max: number = Math.round(+range[1]);
-      this.filterByPrice(min, max);
+      this.sliderFilterProducts(range, 'price');
     });
 
     this.view.mainPage.filtersBlock.stockFilter.addEventListener('click', () => {
       const stockSlider: noUiSlider.API = <noUiSlider.API>this.view.mainPage.filtersBlock.stockFilter.noUiSlider;
       const range = <string[]>stockSlider.get(true);
-      const min: number = Math.round(+range[0]);
-      const max: number = Math.round(+range[1]);
-      this.filterByStock(min, max);
+      this.sliderFilterProducts(range, 'stock');
     });
   }
 
-  private filterByPrice(min: number, max: number): void {
-    this.router.setQueryString({ price: `${min}%${max}` });
+  private sliderFilterProducts(range: string[], filter: string): void {
+    const min: number = Math.round(+range[0]);
+    const max: number = Math.round(+range[1]);
+    this.router.setQueryString({ [filter]: `${min}%${max}` });
     this.controller.getAllProducts((data: ProductsData) => {
       this.view.mainPage.productsBlock.draw(data, this.cart, this.router.getQueryParams());
     });
   }
 
-  private filterByStock(min: number, max: number): void {
-    this.router.setQueryString({ stock: `${min}%${max}` });
-    this.controller.getAllProducts((data: ProductsData) => {
-      this.view.mainPage.productsBlock.draw(data, this.cart, this.router.getQueryParams());
-    });
-  }
-
-  private filterProducts(e: Event, filter: string): void {
+  private checkboxFilterProducts(e: Event, filter: string): void {
     const target: HTMLElement = <HTMLElement>e.target;
     if (target.closest('input')) {
       const item: HTMLInputElement = <HTMLInputElement>target.closest('input');

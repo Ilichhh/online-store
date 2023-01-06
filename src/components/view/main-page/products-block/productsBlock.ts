@@ -142,14 +142,10 @@ class ProductsBlock extends DomElement {
   }
 
   private filterData(data: ProductsData, params: QueryParams): Product[] {
-    const lowestPrice = data.products.reduce((prev, curr) => (curr.price < prev.price ? curr : prev), data.products[0])
-      .price;
-    const highestPrice = data.products.reduce((prev, curr) => (curr.price > prev.price ? curr : prev), data.products[0])
-      .price;
-    const lowestStock = data.products.reduce((prev, curr) => (curr.stock < prev.stock ? curr : prev), data.products[0])
-      .stock;
-    const highestStock = data.products.reduce((prev, curr) => (curr.stock > prev.stock ? curr : prev), data.products[0])
-      .stock;
+    const lowestPrice = data.products.reduce((pr, cu) => (cu.price < pr.price ? cu : pr), data.products[0]).price;
+    const highestPrice = data.products.reduce((pr, cu) => (cu.price > pr.price ? cu : pr), data.products[0]).price;
+    const lowestStock = data.products.reduce((pr, cu) => (cu.stock < pr.stock ? cu : pr), data.products[0]).stock;
+    const highestStock = data.products.reduce((pr, cu) => (cu.stock > pr.stock ? cu : pr), data.products[0]).stock;
 
     const categoryArr: string[] = params.category?.split('%') || [];
     const brandArr: string[] = params.brand?.split('%') || [];
