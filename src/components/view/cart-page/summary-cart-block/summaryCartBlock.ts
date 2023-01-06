@@ -7,9 +7,13 @@ class summaryCartBlock extends DomElement {
   countProduct: number;
   countOldPrice: number;
   data: ProductsData;
+  promoCode: string;
+  promo: number;
 
   constructor(data: ProductsData) {
     super();
+    this.promoCode = '';
+    this.promo = 0;
     this.countOldPrice = 0;
     this.countPrice = 0;
     this.countProduct = 0;
@@ -18,6 +22,11 @@ class summaryCartBlock extends DomElement {
       'div',
       'cart-block__summary fs-6 mw-100 w-25 p-2 d-flex fw-bold border rounded-4 flex-column justify-content-start align-items-center'
     );
+  }
+
+  public changePromo(promo: number, promoCode: string): void {
+    this.promoCode = promoCode;
+    this.promo = promo;
   }
 
   public recalculatePrice(promo: number): void {
@@ -40,12 +49,15 @@ class summaryCartBlock extends DomElement {
     this.countProduct = countProduct;
   }
 
-  public draw(cart: CartItem[]): HTMLElement {
+  public draw(): HTMLElement {
     this.element.innerHTML = '';
+    let append: HTMLElement;
+    const promoArr = [
+      { name: 'rs', text: 'Rolling Scopes School - 10%', discont: 10 },
+      { name: 'ep', text: 'Epam Systems - 10%', discont: 10 },
+    ];
 
-    let promoCode = 'Rolling Scopes School - 10%';
-    let promo = 0;
-    this.recalculatePrice(promo);
+    this.recalculatePrice(this.promo);
 
     const summaryName: HTMLElement = this.createElement(
       'div',
@@ -93,10 +105,16 @@ class summaryCartBlock extends DomElement {
     );
 
     document.addEventListener('recalculatePrice', () => {
-      this.recalculatePrice(promo);
+      this.recalculatePrice(this.promo);
       summaryTotalPriceValue.innerHTML = `$${this.countPrice}`;
       summaryOldTotalPriceValue.innerHTML = `$${this.countOldPrice}`;
       summaryProductCountValue.innerHTML = `${this.countProduct}`;
+    });
+
+    document.addEventListener('changePromo', () => {
+      this.changePromo(this.promo, this.promoCode);
+      addPromoCheck.textContent = `${this.promoCode}`;
+      // addedPromoCodesName.textContent = `${promoCode}`;
     });
 
     const addPromoBlock: HTMLElement = this.createElement(
@@ -110,10 +128,10 @@ class summaryCartBlock extends DomElement {
       value: '',
     });
 
-    const addPromoHint: HTMLElement = this.createElement('div', 'mb-2', undefined, 'Test promo "rs"');
+    const addPromoHint: HTMLElement = this.createElement('div', 'mb-2', undefined, 'Test promo "rs", "ep"');
 
     const promoCodeButton: HTMLElement = this.createElement('div', 'mt-2 d-flex align-items-center d-none');
-    const addPromoCheck: HTMLElement = this.createElement('span', 'me-2 fs-7', undefined, `${promoCode}`);
+    const addPromoCheck: HTMLElement = this.createElement('span', 'me-2 fs-7', undefined, `${this.promoCode}`);
 
     const addPromoButton: HTMLElement = this.createElement(
       'button',
@@ -124,25 +142,74 @@ class summaryCartBlock extends DomElement {
       'Add'
     );
 
-    const addedPromoCodesUl: HTMLElement = this.createElement('ul', '');
-    const addedPromoCodesLi: HTMLElement = this.createElement('li', '');
-    const addedPromoCodesItem: HTMLElement = this.createElement('li', '');
+    const addedPromoCodesUl: HTMLElement = this.createElement(
+      'div',
+      'fw-normal list-group d-flex mb-2 justify-content-center'
+    );
+    const addedPromoCodesItem0: HTMLElement = this.createElement('div', 'text-center d-none list-group-item w-100');
+    const addedPromoCodesName0: HTMLElement = this.createElement(
+      'span',
+      'text-center me-2',
+      undefined,
+      `${promoArr[0].text}`
+    );
+    const addedPromoCodesDrop0: HTMLElement = this.createElement('button', 'btn btn-secondary', undefined, 'Drop');
 
+    const addedPromoCodesItem1: HTMLElement = this.createElement('div', 'text-end d-none list-group-item');
+    const addedPromoCodesName1: HTMLElement = this.createElement(
+      'span',
+      'text-center me-2',
+      undefined,
+      `${promoArr[1].text}`
+    );
+    const addedPromoCodesDrop1: HTMLElement = this.createElement('button', 'btn btn-secondary', undefined, 'Drop');
 
     addPromoInput.addEventListener('input', (e: Event) => {
       const currentText = (<HTMLInputElement>e.target).value;
-      if (currentText === 'rs') {
-        promo = 10;
-        promoCode = '';
+      e.target?.dispatchEvent(new CustomEvent('changePromo', { bubbles: true }));
+      if (currentText === promoArr[0].name && addedPromoCodesItem0.classList.contains('d-none')) {
         promoCodeButton.classList.remove('d-none');
+        this.promo += promoArr[0].discont;
+        this.promoCode = promoArr[0].text;
+        append = addedPromoCodesItem0;
+        e.target?.dispatchEvent(new CustomEvent('changePromo', { bubbles: true }));
+      } else if (currentText === promoArr[1].name && addedPromoCodesItem1.classList.contains('d-none')) {
+        promoCodeButton.classList.remove('d-none');
+        this.promo += promoArr[1].discont;
+        this.promoCode = promoArr[1].text;
+        append = addedPromoCodesItem1;
+        e.target?.dispatchEvent(new CustomEvent('changePromo', { bubbles: true }));
       } else {
         promoCodeButton.classList.add('d-none');
       }
+      addPromoButton.addEventListener('click', () => {
+        (<HTMLInputElement>e.target).value = '';
+      });
     });
 
     addPromoButton.addEventListener('click', (e) => {
       e.target?.dispatchEvent(new CustomEvent('recalculatePrice', { bubbles: true }));
       summaryOldTotalPriceBlock.classList.remove('d-none');
+      append.classList.remove('d-none');
+      promoCodeButton.classList.add('d-none');
+    });
+
+    addedPromoCodesDrop0.addEventListener('click', (e) => {
+      this.promo -= promoArr[0].discont;
+      addedPromoCodesItem0.classList.add('d-none');
+      e.target?.dispatchEvent(new CustomEvent('recalculatePrice', { bubbles: true }));
+      if (this.countOldPrice === this.countPrice) {
+        summaryOldTotalPriceBlock.classList.add('d-none');
+      }
+    });
+
+    addedPromoCodesDrop1.addEventListener('click', (e) => {
+      this.promo -= promoArr[1].discont;
+      addedPromoCodesItem1.classList.add('d-none');
+      e.target?.dispatchEvent(new CustomEvent('recalculatePrice', { bubbles: true }));
+      if (this.countOldPrice === this.countPrice) {
+        summaryOldTotalPriceBlock.classList.add('d-none');
+      }
     });
 
     const buyNowButton: HTMLElement = this.createElement(
@@ -169,11 +236,18 @@ class summaryCartBlock extends DomElement {
     summaryTotalPriceBlock.appendChild(summaryTotalPriceValue);
     summaryOldTotalPriceBlock.appendChild(summaryOldTotalPriceName);
     summaryOldTotalPriceBlock.appendChild(summaryOldTotalPriceValue);
+    addPromoBlock.appendChild(addedPromoCodesUl);
     addPromoBlock.appendChild(addPromoInput);
     addPromoBlock.appendChild(addPromoHint);
     addPromoBlock.appendChild(promoCodeButton);
     promoCodeButton.appendChild(addPromoCheck);
     promoCodeButton.appendChild(addPromoButton);
+    addedPromoCodesUl.appendChild(addedPromoCodesItem0);
+    addedPromoCodesUl.appendChild(addedPromoCodesItem1);
+    addedPromoCodesItem0.appendChild(addedPromoCodesName0);
+    addedPromoCodesItem0.appendChild(addedPromoCodesDrop0);
+    addedPromoCodesItem1.appendChild(addedPromoCodesName1);
+    addedPromoCodesItem1.appendChild(addedPromoCodesDrop1);
 
     return this.element;
   }
