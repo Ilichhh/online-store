@@ -6,12 +6,23 @@ class ProductCard extends DomElement {
   data: Product;
   inCart: number;
   element: HTMLElement;
+  cartProductCountInput: HTMLElement;
+  index: number | undefined;
 
-  constructor(data: Product, inCart: number) {
+  constructor(data: Product, inCart: number, index?: number) {
     super();
     this.data = data;
     this.inCart = inCart;
+    this.index = index;
     this.element = this.createElement('div', 'product-card card');
+    this.cartProductCountInput = this.createElement(
+      'label',
+      'cart-block__product-general__number fw-bold border rounded-2 me-1 ms-1 text-center',
+      {
+        type: 'text',
+      },
+      `${this.inCart}`
+    );
   }
 
   public drawGridView(): HTMLElement {
@@ -130,7 +141,228 @@ class ProductCard extends DomElement {
   }
 
   public drawCartView() {
-    // for cart page
+    const cartBlockProductItem: HTMLElement = this.createElement(
+      'div',
+      'p-2 cart-block__product-item border-bottom d-flex justify-content-between align-items-center'
+    );
+
+    const cartNumberImageBlock: HTMLElement = this.createElement(
+      'div',
+      'd-flex align-items-center justify-content-start w-25'
+    );
+
+    const cartBlockNumber: HTMLElement = this.createElement('div', 'me-2 fw-bold fs-6', undefined, `${this.index}`);
+
+    const cartBlockImgBlock: HTMLElement = this.createElement('div', 'me-2 w-100');
+
+    const cartBlockImg: HTMLElement = this.createElement(
+      'img',
+      'w-100 cart-block__product-item__photo border rounded-4',
+      {
+        src: this.data.thumbnail,
+        alt: 'card thumbnail',
+      }
+    );
+
+    const cartProductItemInfo: HTMLElement = this.createElement(
+      'div',
+      'd-flex flex-column justify-content-center align-items-center'
+    );
+
+    const cartProductName: HTMLElement = this.createElement(
+      'div',
+      'cart-block__product-item__name mb-2 fs-4 fw-bold border-bottom',
+      undefined,
+      `${this.data.title}`
+    );
+
+    const cartProductCategoryBlock: HTMLElement = this.createElement('div', 'd-flex fw-bolder');
+
+    const cartProductCategoryText: HTMLElement = this.createElement('span', 'me-2', undefined, 'Category:');
+
+    const cartProductCategory: HTMLElement = this.createElement('span', '', undefined, `${this.data.category}`);
+
+    const cartProductDescription: HTMLElement = this.createElement(
+      'div',
+      'cart-block__product-item__description p-1 text-center',
+      undefined,
+      `${this.data.description}`
+    );
+
+    const cartProductInfoBlock: HTMLElement = this.createElement(
+      'div',
+      'd-flex justify-content-between mw-100 mb-2 w-75 text-muted'
+    );
+
+    const cartProductRatingInfo: HTMLElement = this.createElement('div', 'cart-block__product-item__info me-2');
+
+    const cartProductRatingText: HTMLElement = this.createElement('span', 'me-2', undefined, 'Rating: ');
+
+    const cartProductRatingValue: HTMLElement = this.createElement(
+      'span',
+      'cart-block__product-item__rating',
+      undefined,
+      `${this.data.rating}`
+    );
+
+    const cartProductDiscountInfo: HTMLElement = this.createElement('div', '');
+
+    const cartProductDiscountText: HTMLElement = this.createElement('span', 'me-2', undefined, 'Discount: ');
+
+    const cartProductDiscountValue: HTMLElement = this.createElement(
+      'span',
+      'cart-block__product-item__discount',
+      undefined,
+      `${this.data.discountPercentage}`
+    );
+
+    const cartProductStock: HTMLElement = this.createElement(
+      'div',
+      'd-flex flex-column align-items-center justify-content-around fw-bold'
+    );
+
+    const cartProductStockCount: HTMLElement = this.createElement('div', 'mb-2');
+
+    const cartProductStockCountText: HTMLElement = this.createElement(
+      'span',
+      'cart-block__product-general__item me-2',
+      undefined,
+      'Stock:'
+    );
+
+    const cartProductStockCountValue: HTMLElement = this.createElement(
+      'span',
+      'cart-block__product-item__stock',
+      undefined,
+      `${this.data.stock}`
+    );
+
+    const cartProductCount: HTMLElement = this.createElement('div', 'd-flex align-items-center mb-2');
+
+    const cartProductCountPlus: HTMLElement = this.createElement(
+      'div',
+      'plus-button-product-cart btn btn-warning me-1 d-flex justify-content-center align-items-center',
+      { id: 'plus-button-product-cart' },
+      '+'
+    );
+
+    // cartProductCountPlus.innerHTML = `
+    // <svg id='plus-button-product-cart-svg' xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus"
+    //              viewBox="0 0 16 16">
+    //           <path
+    //               d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+    //         </svg>`;
+
+    // const cartProductCountInput: HTMLElement = this.createElement(
+    //   'label',
+    //   'cart-block__product-general__number fw-bold border rounded-2 me-1 ms-1 text-center',
+    //   {
+    //     type: 'text',
+    //   },
+    //   `${this.inCart}`
+    // );
+
+    cartProductCountPlus.addEventListener('click', (e: Event) => {
+      this.plusCountProduct(e);
+    });
+
+    // cartProductCountPlus.addEventListener('click', (e) => {
+    //   const cart = JSON.parse(localStorage.getItem('cart') || '');
+    //   if (this.inCart < this.data.stock) {
+    //     this.inCart += 1;
+    //   }
+    //   cartProductCountInput.textContent = this.inCart.toString();
+    //   localStorage.setItem(
+    //     'cart',
+    //     JSON.stringify(
+    //       cart.map((item: { id: number }) => (item.id === this.data.id ? { ...item, count: this.inCart } : item))
+    //     )
+    //   );
+    //   e.target?.dispatchEvent(new CustomEvent('recalculatePrice', { bubbles: true }));
+    // });
+
+    const cartProductCountMinus: HTMLElement = this.createElement(
+      'div',
+      'btn btn-warning ms-1 d-flex justify-content-center align-items-center',
+      { id: 'minus-button-product-cart' },
+      '-'
+    );
+
+    // cartProductCountMinus.innerHTML = `
+    // <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-dash"
+    //              viewBox="0 0 16 16">
+    //           <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8z"/>
+    //         </svg>`;
+
+    cartProductCountMinus.addEventListener('click', (e) => {
+      const cart = JSON.parse(localStorage.getItem('cart') || '');
+      this.inCart = this.inCart ? this.inCart - 1 : 0;
+      if (Number(this.cartProductCountInput.textContent) <= 1) {
+        cartBlockProductItem.classList.add('d-none');
+        cart.splice(cart.id, 1);
+      }
+      localStorage.setItem(
+        'cart',
+        JSON.stringify(
+          cart.map((item: { id: number }) => (item.id === this.data.id ? { ...item, count: this.inCart } : item))
+        )
+      );
+      e.target?.dispatchEvent(new CustomEvent('recalculatePrice', { bubbles: true }));
+      this.cartProductCountInput.textContent = this.inCart.toString();
+    });
+
+    const cartProductPrice: HTMLElement = this.createElement(
+      'div',
+      'cart-block__product-item__price',
+      undefined,
+      `$${this.data.price}`
+    );
+
+    this.element.appendChild(cartBlockProductItem);
+    cartNumberImageBlock.appendChild(cartBlockNumber);
+    cartNumberImageBlock.appendChild(cartBlockImgBlock);
+    cartBlockImgBlock.appendChild(cartBlockImg);
+    cartBlockProductItem.appendChild(cartNumberImageBlock);
+    cartBlockProductItem.appendChild(cartProductItemInfo);
+    cartProductItemInfo.appendChild(cartProductName);
+    cartProductCategoryBlock.appendChild(cartProductCategoryText);
+    cartProductCategoryBlock.appendChild(cartProductCategory);
+    cartProductItemInfo.appendChild(cartProductCategoryBlock);
+    cartProductItemInfo.appendChild(cartProductDescription);
+    cartProductItemInfo.appendChild(cartProductInfoBlock);
+    cartProductRatingInfo.appendChild(cartProductRatingText);
+    cartProductRatingInfo.appendChild(cartProductRatingValue);
+    cartProductDiscountInfo.appendChild(cartProductDiscountText);
+    cartProductDiscountInfo.appendChild(cartProductDiscountValue);
+    cartProductInfoBlock.appendChild(cartProductRatingInfo);
+    cartProductInfoBlock.appendChild(cartProductDiscountInfo);
+    cartProductStockCount.appendChild(cartProductStockCountText);
+    cartProductStockCount.appendChild(cartProductStockCountValue);
+    cartProductStock.appendChild(cartProductStockCount);
+    cartProductCount.appendChild(cartProductCountMinus);
+    cartProductCount.appendChild(this.cartProductCountInput);
+    cartProductCount.appendChild(cartProductCountPlus);
+    cartProductStock.appendChild(cartProductCount);
+    cartBlockProductItem.appendChild(cartProductStock);
+    cartProductStock.appendChild(cartProductCount);
+    cartProductStock.appendChild(cartProductPrice);
+
+    return this.element;
+  }
+
+  public plusCountProduct(e: Event) {
+    const cart = JSON.parse(localStorage.getItem('cart') || '');
+    if (this.inCart < this.data.stock) {
+      this.inCart += 1;
+    }
+    this.cartProductCountInput.textContent = this.inCart.toString();
+    localStorage.setItem(
+      'cart',
+      JSON.stringify(
+        cart.map((item: { id: number }) => (item.id === this.data.id ? { ...item, count: this.inCart } : item))
+      )
+    );
+    e.target?.dispatchEvent(new CustomEvent('recalculatePrice', { bubbles: true }));
   }
 }
 

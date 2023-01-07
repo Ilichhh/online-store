@@ -34,11 +34,14 @@ class Header extends DomElement {
   public updateData(data: ProductsData, cart: CartItem[]): void {
     let totalItems = 0;
     let totalPrice = 0;
+    const promo = Number(localStorage.getItem('promo') || '');
     cart.forEach((item) => {
       totalItems += item.count;
-      totalPrice += data.products[item.id - 1].price * item.count;
+      totalPrice +=
+        data.products[item.id - 1].price * item.count - ((data.products[item.id - 1].price * item.count) / 100) * promo;
     });
 
+    totalPrice = Math.floor(totalPrice * 100) / 100;
     this.cartTotal.textContent = `Cart total: $${totalPrice}`;
     this.cartItemsCount.textContent = totalItems.toString();
 

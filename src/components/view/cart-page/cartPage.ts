@@ -1,4 +1,4 @@
-import ModalBuyNow from './modal-bay-now/modalBuyNow';
+import ModalBuyNow from './modal-buy-now/modalBuyNow';
 import ProductCartBlock from './product-cart-block/productCartBlock';
 import SummaryCartBlock from './summary-cart-block/summaryCartBlock';
 import DomElement from '../domElement';
@@ -19,15 +19,13 @@ class CartPage extends DomElement {
   public drawCartPage(data: ProductsData, cart: CartItem[]): void {
     const main: HTMLElement = <HTMLElement>document.getElementById('main');
     const cartBlock: HTMLElement = <HTMLElement>document.querySelector('.cart-block');
-    // const container: HTMLElement = this.createElement(
-    //   'div',
-    //   'cart-block container d-flex flex-wrap w-100 mt-2 justify-content-between justify-content-lg-center'
-    // );
+
+    // const summaryCartBlock = new SummaryCartBlock(data);
 
     main.appendChild(cartBlock);
     cartBlock.appendChild(this.productCartBlock.draw(data, cart));
-    cartBlock.appendChild(this.summaryCartBlock.draw(data, cart));
-    cartBlock.appendChild(this.modalBuyNow.draw(data, cart));
+    cartBlock.appendChild(this.summaryCartBlock.draw(data));
+    cartBlock.appendChild(this.modalBuyNow.draw());
   }
 }
 
