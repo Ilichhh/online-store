@@ -58,6 +58,8 @@ class Router {
             newValues.forEach((e) => newUrl.searchParams.append(key, e));
           } else newUrl.searchParams.append(key, value);
         }
+      } else if (key === 'search' && value === '') {
+        newUrl.searchParams.delete(key);
       } else {
         newUrl.searchParams.set(key, value);
       }
