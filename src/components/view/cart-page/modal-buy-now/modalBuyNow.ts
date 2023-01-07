@@ -1,5 +1,4 @@
 import DomElement from '../../domElement';
-import { CartItem, ProductsData } from '../../../../types/types';
 
 class modalBuyNow extends DomElement {
   element: HTMLElement;
@@ -16,7 +15,7 @@ class modalBuyNow extends DomElement {
     });
   }
 
-  public draw(data: ProductsData, cart: CartItem[]): HTMLElement {
+  public draw(): HTMLElement {
     this.element.innerHTML = '';
 
     const modal: HTMLElement = this.createElement('div', 'modal-dialog w-100');
@@ -146,6 +145,11 @@ class modalBuyNow extends DomElement {
       { type: 'button', 'data-bs-dismiss': 'modal' },
       'BUY NOW'
     );
+
+    modalFormNameInput.addEventListener('input', (e: Event) => {
+      const currentText = (<HTMLInputElement>e.target).value;
+      console.log(currentText);
+    });
 
     this.element.appendChild(modal);
     modal.appendChild(modalContent);
