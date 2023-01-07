@@ -1,7 +1,7 @@
 import type { Route, Routes, QueryParams } from '../../types/types';
 
 class Router {
-  public handleLocation(): void {
+  public async handleLocation(): Promise<void> {
     const routes: Routes = {
       404: {
         template: '404.html',
@@ -22,19 +22,24 @@ class Router {
     };
 
     const path: string = window.location.pathname.length === 0 ? '/' : window.location.pathname;
-    const route: Route = routes[path] || routes[404];
-    fetch(route.template)
+    console.log(path);
+    const route: Route = routes[path.split('-')[0]] || routes[404];
+    console.log(path.split('-')[0]);
+
+    await fetch(route.template)
       .then((data: Response) => data.text())
       .then((html: string) => {
-        (<HTMLElement>document.getElementById('main')).innerHTML = html;
+        if (route === routes[404]) (<HTMLElement>document.getElementById('main')).innerHTML = html;
+        else (<HTMLElement>document.getElementById('main')).innerHTML = '';
       });
   }
 
-  public route(event: Event): void {
+  public route(event: Event, id?: number): void {
     const element: HTMLAnchorElement = <HTMLAnchorElement>event.target;
     event = event || window.event;
     event.preventDefault();
-    window.history.pushState({}, '', element.closest('a')?.href);
+    const link = element.closest('a')?.href;
+    window.history.pushState({}, '', id ? `${link}-${id.toString()}` : link);
     this.handleLocation();
   }
 

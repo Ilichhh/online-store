@@ -19,14 +19,16 @@ class App {
 
   public start(): void {
     // Init
-    this.router.handleLocation();
     this.controller.getAllProducts((data: ProductsData) => {
       this.view.drawHeader(data, this.cart);
-      this.view.drawMainPage(data, this.cart, this.router.getQueryParams());
     });
+    this.renderPage();
 
-    window.addEventListener('popstate', this.router.handleLocation);
-    window.route = this.router.route;
+    // Route
+    window.addEventListener('popstate', () => {
+      this.router.handleLocation();
+      this.renderPage();
+    });
 
     // Header
     document.querySelector('.header__logo')?.addEventListener('click', (e) => {
@@ -40,12 +42,7 @@ class App {
 
     this.view.header.cart.addEventListener('click', (e) => {
       this.router.route(e);
-      localStorage.setItem('promo', '0');
-      this.controller.getAllProducts((data: ProductsData) => {
-        this.view.cartPage.summaryCartBlock.recalculatePrice(data);
-        this.view.drawCartPage(data, this.cart);
-        this.view.header.updateData(data, this.cart);
-      });
+      this.renderCart();
     });
 
     document.addEventListener('click', (e: Event) => {
@@ -119,6 +116,28 @@ class App {
     });
   }
 
+  private renderPage(): void {
+    const path = window.location.pathname.slice(1);
+    if (path === '') this.renderMain();
+    if (path === 'cart') this.renderCart();
+    if (path.split('-')[0] === 'product') this.renderProductPage(+path.split('-')[1], this.cart);
+  }
+
+  private renderMain(): void {
+    this.controller.getAllProducts((data: ProductsData) => {
+      this.view.drawMainPage(data, this.cart, this.router.getQueryParams());
+    });
+  }
+
+  private renderCart(): void {
+    localStorage.setItem('promo', '0');
+    this.controller.getAllProducts((data: ProductsData) => {
+      this.view.cartPage.summaryCartBlock.recalculatePrice(data);
+      this.view.drawCartPage(data, this.cart);
+      this.view.header.updateData(data, this.cart);
+    });
+  }
+
   private sliderFilterProducts(range: string[], filter: string): void {
     const min: number = Math.round(+range[0]);
     const max: number = Math.round(+range[1]);
@@ -162,7 +181,10 @@ class App {
       const card: HTMLElement = <HTMLElement>target.closest('.product-card__main');
       this.addRemoveFromCart(card, target, cart);
     } else if (target.closest('.product-card__main')) {
-      this.routeToProductPage(e, target, cart);
+      const card: HTMLElement = <HTMLElement>target.closest('.product-card__main');
+      const id = +card.id;
+      this.router.route(e, id);
+      this.renderProductPage(id, cart);
     }
   }
 
@@ -175,11 +197,9 @@ class App {
     localStorage.setItem('cart', JSON.stringify(this.cart));
   }
 
-  private routeToProductPage(e: Event, target: Element, cart: CartItem[]) {
-    const card: HTMLElement = <HTMLElement>target.closest('.product-card__main');
-    this.router.route(e);
+  private renderProductPage(id: number, cart: CartItem[]) {
     this.controller.getAllProducts((data: ProductsData) =>
-      this.view.productPage.drawProductPage(data.products[+card.id - 1], cart)
+      this.view.productPage.drawProductPage(data.products[id - 1], cart)
     );
   }
 }
