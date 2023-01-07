@@ -1,12 +1,13 @@
 import DomElement from '../../domElement';
 import ProductCard from '../../product-card/productCard';
-import type { ProductsData, CartItem, QueryParams } from '../../../../types/types';
+import type { ProductsData, Product, CartItem, QueryParams } from '../../../../types/types';
 // import gridIcon from '../../../../assets/svg/grid.svg';
 // import listIcon from '../../../../assets/svg/list-ul.svg';
 
 class ProductsBlock extends DomElement {
   element: HTMLElement;
   sortingFilter: HTMLSelectElement;
+  searchResults: HTMLElement;
   viewSwitcher: HTMLButtonElement;
   productsItemsBlock: HTMLElement;
 
@@ -16,6 +17,7 @@ class ProductsBlock extends DomElement {
     this.sortingFilter = <HTMLSelectElement>this.createElement('select', 'products-block__sorting-filter form-select', {
       id: 'sort',
     });
+    this.searchResults = this.createElement('div', 'products-block__found-count');
     this.viewSwitcher = <HTMLButtonElement>this.createElement('div', 'products-block__view-switcher btn-group', {
       role: 'group',
       'aria-label': 'view-switcher',
@@ -25,6 +27,7 @@ class ProductsBlock extends DomElement {
 
   public draw(data: ProductsData, cart: CartItem[], params: QueryParams): HTMLElement {
     this.element.innerHTML = '';
+    const filteredData: Product[] = this.filterData(data, params);
 
     const viewParameters: HTMLElement = this.createElement(
       'div',
@@ -51,8 +54,7 @@ class ProductsBlock extends DomElement {
       this.sortingFilter.appendChild(sortingFilterItem);
     });
 
-    const searchResults = this.createElement('div', 'products-block__found-count');
-    searchResults.textContent = `Found ${data.products.length} items`;
+    this.searchResults.textContent = `Found ${data.products.length} items`;
 
     const gridViewInput = <HTMLInputElement>this.createElement('input', 'btn-check', {
       type: 'radio',
@@ -86,7 +88,7 @@ class ProductsBlock extends DomElement {
     this.element.appendChild(this.productsItemsBlock);
     sortingFilterWrapper.appendChild(this.sortingFilter);
     viewParameters.appendChild(sortingFilterWrapper);
-    viewParameters.appendChild(searchResults);
+    viewParameters.appendChild(this.searchResults);
     viewParameters.appendChild(this.viewSwitcher);
     this.viewSwitcher.appendChild(gridViewInput);
     this.viewSwitcher.appendChild(gridViewLabel);
@@ -96,18 +98,18 @@ class ProductsBlock extends DomElement {
     this.sortingFilter.value = params.sort || 'placeholder';
     params['view-style'] === 'list' ? (listViewInput.checked = true) : (gridViewInput.checked = true);
 
-    this.drawProducts(data, cart, params);
+    this.drawProducts(filteredData, cart, params);
     return this.element;
   }
 
-  public drawProducts(data: ProductsData, cart: CartItem[], params: QueryParams): void {
+  public drawProducts(data: Product[], cart: CartItem[], params: QueryParams): void {
     this.sortData(data, params);
+    this.searchResults.textContent = `Found ${data.length} items`;
 
     this.productsItemsBlock.innerHTML = '';
-    if (!data.products.length)
-      this.productsItemsBlock.innerHTML = "<h3>Oops, looks like we didn't find anything :(</h3>";
+    if (!data.length) this.productsItemsBlock.innerHTML = "<h3>Oops, looks like we didn't find anything :(</h3>";
 
-    data.products.forEach((item) => {
+    data.forEach((item) => {
       let inCart = 0;
       cart.forEach((e) => (e.id === item.id ? (inCart = e.count) : null));
       const wrapper: HTMLElement = this.createElement('div', 'products-block__item');
@@ -132,11 +134,52 @@ class ProductsBlock extends DomElement {
       : (button.textContent = 'Remove from Cart');
   }
 
-  private sortData(data: ProductsData, params: QueryParams): void {
-    if (params.sort === 'price-asc') data.products = data.products.sort((a, b) => a.price - b.price);
-    if (params.sort === 'price-desc') data.products = data.products.sort((a, b) => b.price - a.price);
-    if (params.sort === 'rating-asc') data.products = data.products.sort((a, b) => a.rating - b.rating);
-    if (params.sort === 'rating-desc') data.products = data.products.sort((a, b) => b.rating - a.rating);
+  private sortData(data: Product[], params: QueryParams): void {
+    if (params.sort === 'price-asc') data = data.sort((a, b) => a.price - b.price);
+    if (params.sort === 'price-desc') data = data.sort((a, b) => b.price - a.price);
+    if (params.sort === 'rating-asc') data = data.sort((a, b) => a.rating - b.rating);
+    if (params.sort === 'rating-desc') data = data.sort((a, b) => b.rating - a.rating);
+  }
+
+  private filterData(data: ProductsData, params: QueryParams): Product[] {
+    const lowestPrice = data.products.reduce((pr, cu) => (cu.price < pr.price ? cu : pr), data.products[0]).price;
+    const highestPrice = data.products.reduce((pr, cu) => (cu.price > pr.price ? cu : pr), data.products[0]).price;
+    const lowestStock = data.products.reduce((pr, cu) => (cu.stock < pr.stock ? cu : pr), data.products[0]).stock;
+    const highestStock = data.products.reduce((pr, cu) => (cu.stock > pr.stock ? cu : pr), data.products[0]).stock;
+
+    const categoryArr: string[] = params.category?.split('%') || [];
+    const brandArr: string[] = params.brand?.split('%') || [];
+    const priceRange: number[] = params.price?.split('%').map((i) => +i) || [lowestPrice, highestPrice];
+    const stockRange: number[] = params.stock?.split('%').map((i) => +i) || [lowestStock, highestStock];
+    const searchInput: string = params.search;
+
+    let filteredByCategory = data.products.filter((item) => categoryArr.includes(item.category));
+    if (!filteredByCategory.length) filteredByCategory = data.products;
+    let filteredByBrand = data.products.filter((item) => brandArr.includes(item.brand));
+    if (!filteredByBrand.length) filteredByBrand = data.products;
+    const filteredByPrice = data.products.filter((item) => {
+      return item.price >= priceRange[0] && item.price <= priceRange[1];
+    });
+    const filteredByStock = data.products.filter((item) => {
+      return item.stock >= stockRange[0] && item.stock <= stockRange[1];
+    });
+
+    let filteredData: Product[] = filteredByCategory
+      .filter((brand) => filteredByBrand.includes(brand))
+      .filter((price) => filteredByPrice.includes(price))
+      .filter((stock) => filteredByStock.includes(stock));
+
+    if (searchInput) {
+      filteredData = filteredData.filter((item) => {
+        const isInTitle: boolean = item.title.toLowerCase().includes(searchInput);
+        const isInDescription: boolean = item.description.toLowerCase().includes(searchInput);
+        const isInBrand: boolean = item.brand.toLowerCase().includes(searchInput);
+        const isInCategory: boolean = item.category.includes(searchInput);
+        return isInTitle || isInDescription || isInDescription || isInBrand || isInCategory;
+      });
+    }
+
+    return filteredData;
   }
 }
 

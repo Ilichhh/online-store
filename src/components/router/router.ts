@@ -36,14 +36,35 @@ class Router {
     event.preventDefault();
     window.history.pushState({}, '', element.closest('a')?.href);
     this.handleLocation();
-    console.log(element.closest('a')?.href);
+  }
+
+  public resetFilters(): void {
+    const newUrl: URL = new URL(window.location.href);
+    newUrl.search = '';
+    window.history.pushState({}, '', newUrl.href);
   }
 
   public setQueryString(params: object): void {
     const newUrl: URL = new URL(window.location.href);
+
     for (const [key, value] of Object.entries(params)) {
-      newUrl.searchParams.set(key, value);
+      if (key === 'category' || key === 'brand') {
+        const oldValues = this.getQueryParams()[key]?.split('%');
+        if (!oldValues) newUrl.searchParams.set(key, value);
+        else {
+          if (oldValues.includes(value)) {
+            const newValues = oldValues.filter((e) => e !== value);
+            newUrl.searchParams.delete(key);
+            newValues.forEach((e) => newUrl.searchParams.append(key, e));
+          } else newUrl.searchParams.append(key, value);
+        }
+      } else if (key === 'search' && value === '') {
+        newUrl.searchParams.delete(key);
+      } else {
+        newUrl.searchParams.set(key, value);
+      }
     }
+
     window.history.pushState({}, '', newUrl.href);
   }
 
@@ -52,7 +73,7 @@ class Router {
     const searchParams = new URLSearchParams(paramsString);
     const paramsList: QueryParams = {};
     for (const [key, value] of searchParams.entries()) {
-      paramsList[key] = value;
+      paramsList[key] ? (paramsList[key] += `%${value}`) : (paramsList[key] = value);
     }
     return paramsList;
   }

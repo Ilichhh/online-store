@@ -18,13 +18,14 @@ class MainPage extends DomElement {
 
   public drawMainPage(data: ProductsData, cart: CartItem[], params: QueryParams): void {
     const main: HTMLElement = <HTMLElement>document.getElementById('main');
+    main.innerHTML = '';
     const container: HTMLElement = this.createElement('div', 'container');
     const wrapper: HTMLElement = this.createElement('div', 'products-filters-wrapper row');
 
     main.appendChild(container);
-    container.appendChild(this.searchBar.draw());
+    container.appendChild(this.searchBar.draw(params));
     container.appendChild(wrapper);
-    wrapper.appendChild(this.filtersBlock.draw(data));
+    wrapper.appendChild(this.filtersBlock.draw(data, params));
     wrapper.appendChild(this.productsBlock.draw(data, cart, params));
   }
 }
