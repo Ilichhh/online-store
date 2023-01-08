@@ -25,3 +25,26 @@
     text-align: right;
   }
 }
+
+.noUi-target {
+  margin-right: 12px;
+}
+
+.noUi-ltr {
+  height: 10px;
+}
+
+.noUi-handle {
+  height: 22px !important;
+  width: 22px !important;
+}
+
+.slider {
+  &__connects {
+    height: 10px;
+  }
+  &__connect {
+    background: #a0a0a0; 
+  }
+}
+

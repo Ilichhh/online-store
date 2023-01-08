@@ -110,11 +110,31 @@ class FiltersBlock extends DomElement {
     const min: number = filteredData.reduce((pr, cu) => (cu[filter] < pr[filter] ? cu : pr), data.products[0])[filter];
     const max: number = filteredData.reduce((pr, cu) => (cu[filter] > pr[filter] ? cu : pr), data.products[0])[filter];
 
+    const numberFormat = {
+      price: {
+        to: function (value: number) {
+          return '$' + Math.round(value);
+        },
+        from: function (value: string) {
+          return Number(value.replace('$', ''));
+        },
+      },
+      stock: {
+        to: function (value: number) {
+          return Math.round(value);
+        },
+        from: function (value: string) {
+          return Number(value);
+        },
+      },
+    };
+
     try {
       noUiSlider.create(filterElement, {
         start: [min, max],
         tooltips: true,
         connect: true,
+        format: numberFormat[filter],
         range: {
           min: [lowestData],
           max: [highestData],
@@ -123,6 +143,9 @@ class FiltersBlock extends DomElement {
     } catch {
       filterElement.noUiSlider?.set([min, max]);
     }
+
+    filterElement.querySelector('.noUi-base')?.classList.add('slider__connects');
+    filterElement.querySelectorAll('.noUi-connect')[0].classList.add('slider__connect');
   }
 
   private drawCheckboxFilter(
@@ -148,7 +171,7 @@ class FiltersBlock extends DomElement {
       const foundItems = filteredData.filter((e) => e[filter] === item).length;
       const totalItems = data.products.filter((e) => e[filter] === item).length;
 
-      const countItemsElement = this.createElement('span', 'checkbox-filter__count flex-fill', {});
+      const countItemsElement = this.createElement('span', 'checkbox-filter__count flex-fill');
       countItemsElement.textContent = `${foundItems}/${totalItems}`;
 
       if (checkedArr && checkedArr.includes(item)) {
