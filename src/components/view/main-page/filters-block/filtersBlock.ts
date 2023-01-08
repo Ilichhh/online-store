@@ -105,9 +105,10 @@ class FiltersBlock extends DomElement {
     const highestData: number = data.products.reduce((pr, cu) => (cu[filter] > pr[filter] ? cu : pr), data.products[0])[
       filter
     ];
-    const dataRange = params[filter]?.split('%') || [lowestData, highestData];
-    const min: number = +dataRange[0];
-    const max: number = +dataRange[1];
+
+    const filteredData = this.filter.filterData(data, params);
+    const min: number = filteredData.reduce((pr, cu) => (cu[filter] < pr[filter] ? cu : pr), data.products[0])[filter];
+    const max: number = filteredData.reduce((pr, cu) => (cu[filter] > pr[filter] ? cu : pr), data.products[0])[filter];
 
     try {
       noUiSlider.create(filterElement, {
@@ -120,7 +121,7 @@ class FiltersBlock extends DomElement {
         },
       });
     } catch {
-      filterElement.noUiSlider?.set([lowestData, highestData]);
+      filterElement.noUiSlider?.set([min, max]);
     }
   }
 
