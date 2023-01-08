@@ -41,8 +41,8 @@ export class AppView {
     this.cartPage.productCartBlock.draw(data, cart);
   }
 
-  public drawAllFilters(data: ProductsData): void {
-    this.mainPage.filtersBlock.draw(data);
+  public drawAllFilters(data: ProductsData, params: QueryParams): void {
+    this.mainPage.filtersBlock.draw(data, params);
   }
 
   public drawProductPage(data: Product, cart: CartItem[]): void {
