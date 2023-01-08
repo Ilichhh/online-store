@@ -2,9 +2,11 @@ import DomElement from '../../domElement';
 
 class modalBuyNow extends DomElement {
   element: HTMLElement;
+  cardSource: string;
 
   constructor() {
     super();
+    this.cardSource = 'https://toplogos.ru/images/thumbs/preview-logo-visa.png';
     this.element = this.createElement('div', 'modal fade', {
       id: 'staticBackdrop',
       'data-bs-backdrop': 'static',
@@ -13,6 +15,10 @@ class modalBuyNow extends DomElement {
       'aria-labelledby': 'staticBackdropLabel',
       'aria-hidden': 'true',
     });
+  }
+
+  public changeCardImage(cardSource: string): void {
+    this.cardSource = cardSource;
   }
 
   public draw(): HTMLElement {
@@ -101,7 +107,7 @@ class modalBuyNow extends DomElement {
 
     const modalFormCreditCardNumber: HTMLElement = this.createElement('div', 'form-floating mb-3 me-2');
     const modalFormCreditCardNumberInput: HTMLElement = this.createElement('input', 'field form-control', {
-      type: 'text',
+      type: 'number',
       // required: 'required',
       id: 'card-number-input',
       placeholder: 'Credit card number',
@@ -113,6 +119,11 @@ class modalBuyNow extends DomElement {
       { for: 'card-number-input' },
       'Credit card number'
     );
+    const modalCardNumberImg: HTMLElement = this.createElement('img', 'w-25 d-none', {
+      alt: 'card image',
+      width: '50',
+      src: `${this.cardSource}`,
+    });
 
     const modalFormCreditCardDC: HTMLElement = this.createElement('div', 'd-flex');
 
@@ -128,13 +139,20 @@ class modalBuyNow extends DomElement {
 
     const modalFormCreditCardCVV: HTMLElement = this.createElement('div', 'form-floating mb-3');
     const modalFormCreditCardCVVInput: HTMLElement = this.createElement('input', 'field form-control', {
-      type: 'text',
+      type: 'number',
+      min: '0',
+      maxlength: '999',
       // required: 'required',
       id: 'code-input',
       placeholder: 'Code',
     });
     const modalCardCVVInValid: HTMLElement = this.createElement('div', '', undefined, '');
     const modalFormCreditCardCVVLabel: HTMLElement = this.createElement('label', '', { for: 'code-input' }, 'CVV');
+
+    document.addEventListener('changeCardImage', () => {
+      this.changeCardImage(this.cardSource);
+      modalCardNumberImg.setAttribute('src', `${this.cardSource}`);
+    });
 
     const modalFooter: HTMLElement = this.createElement('div', 'modal-footer');
     const modalFooterCloseButton: HTMLElement = this.createElement(
@@ -154,14 +172,66 @@ class modalBuyNow extends DomElement {
       'BUY NOW'
     );
 
-    // modalFormNameInput.addEventListener('input', (e: Event) => {
-    //   const currentText = (<HTMLInputElement>e.target).value;
-    //   console.log(currentText);
-    // });
+    modalFormCreditCardNumberInput.addEventListener('input', (e: Event) => {
+      const currentText = (<HTMLInputElement>e.target).value;
+      if (currentText[0] === '5') {
+        this.cardSource = 'https://toplogos.ru/images/thumbs/preview-logo-mastercard.png';
+        modalCardNumberImg.classList.remove('d-none');
+        e.target?.dispatchEvent(new CustomEvent('changeCardImage', { bubbles: true }));
+      } else if (currentText[0] === '4') {
+        this.cardSource = 'https://toplogos.ru/images/thumbs/preview-logo-visa.png';
+        modalCardNumberImg.classList.remove('d-none');
+        e.target?.dispatchEvent(new CustomEvent('changeCardImage', { bubbles: true }));
+      } else if (currentText[0] === '3') {
+        this.cardSource = 'https://toplogos.ru/images/thumbs/preview-logo-maestro.png';
+        modalCardNumberImg.classList.remove('d-none');
+        e.target?.dispatchEvent(new CustomEvent('changeCardImage', { bubbles: true }));
+      } else if (currentText[0] === '2') {
+        this.cardSource = 'https://toplogos.ru/images/thumbs/preview-logo-mir.png';
+        modalCardNumberImg.classList.remove('d-none');
+        e.target?.dispatchEvent(new CustomEvent('changeCardImage', { bubbles: true }));
+      } else {
+        modalCardNumberImg.classList.add('d-none');
+      }
+      if (currentText.length <= 16) {
+        return true;
+      } else {
+        let str = currentText;
+        str = str.substring(0, str.length - 1);
+        (<HTMLInputElement>e.target).value = str;
+      }
+    });
 
-    modalForm.addEventListener('submit', function (event: Event) {
+    modalFormCreditCardDateInput.addEventListener('input', (e: Event) => {
+      const currentText = (<HTMLInputElement>e.target).value;
+      const mounth = currentText.substring(0, 2);
+      const year = currentText.substring(2, 2);
+      if (currentText.length <= 5) {
+        if (currentText.length === 2 && Number(mounth) <= 31) {
+          (<HTMLInputElement>e.target).value += '/';
+        }
+        return true;
+      } else {
+        let str = currentText;
+        str = str.substring(0, str.length - 1);
+        (<HTMLInputElement>e.target).value = str;
+      }
+    });
+
+    modalForm.addEventListener('submit', function (e: Event) {
       validateForm();
-      event.preventDefault();
+      e.preventDefault();
+    });
+
+    modalFormCreditCardCVVInput.addEventListener('input', function (e: Event) {
+      const currentNum = (<HTMLInputElement>e.target).value;
+      if (currentNum.length <= 3) {
+        return true;
+      } else {
+        let str = currentNum;
+        str = str.substring(0, str.length - 1);
+        (<HTMLInputElement>e.target).value = str;
+      }
     });
 
     function printError(elemId: HTMLElement, hintMsg: string) {
@@ -173,9 +243,9 @@ class modalBuyNow extends DomElement {
       let phoneErr = true;
       let addressErr = true;
       let emailErr = true;
-      const cardNumErr = true;
-      const cardDatErr = true;
-      const cardCvvErr = true;
+      let cardNumErr = true;
+      let cardDatErr = true;
+      let cardCvvErr = true;
 
       if ((<HTMLInputElement>modalFormNameInput).value == '') {
         printError(modalNameInValid, 'Please, enter your name');
@@ -192,7 +262,7 @@ class modalBuyNow extends DomElement {
       if ((<HTMLInputElement>modalFormPhoneInput).value === '') {
         printError(modalPhoneInValid, 'Please, enter your phone number');
       } else {
-        const regex = /^\+[1-9]\d{9}$/;
+        const regex = /^\+[1-9]\d{9,}$/;
         if (regex.test((<HTMLInputElement>modalFormPhoneInput).value) === false) {
           printError(modalPhoneInValid, 'Please, enter a valid 9-digit phone number starting with the + sign');
         } else {
@@ -204,9 +274,9 @@ class modalBuyNow extends DomElement {
       if ((<HTMLInputElement>modalFormAddressInput).value == '') {
         printError(modalAddressInValid, 'Please, enter your address');
       } else {
-        const regex = /^([a-zA-Z]{5,}\s[a-zA-Z]{5,}\s[a-zA-Z]{5,}\s([a-zA-Z]{5,})?)/;
+        const regex = /^([a-zA-Z]{5,}\s[a-zA-Z]{5,}\s[a-zA-Z]{5,}([a-zA-Z]{5,})?)/;
         if (regex.test((<HTMLInputElement>modalFormAddressInput).value) === false) {
-          printError(modalAddressInValid, '3 words name, space');
+          printError(modalAddressInValid, '3 words, space');
         } else {
           printError(modalAddressInValid, '');
           addressErr = false;
@@ -214,7 +284,7 @@ class modalBuyNow extends DomElement {
       }
 
       if ((<HTMLInputElement>modalFormEmailInput).value === '') {
-        printError(modalEmailInValid, 'Please, enter your email address');
+        printError(modalEmailInValid, 'Please, enter email address');
       } else {
         const regex = /^\S+@\S+\.\S+$/;
         if (regex.test((<HTMLInputElement>modalFormEmailInput).value) === false) {
@@ -223,6 +293,37 @@ class modalBuyNow extends DomElement {
           printError(modalEmailInValid, '');
           emailErr = false;
         }
+      }
+
+      if ((<HTMLInputElement>modalFormCreditCardNumberInput).value === '') {
+        printError(modalCardNumberInValid, 'Please, enter card number');
+      } else {
+        const regex = /^[0-9]{16}$/;
+        if (regex.test((<HTMLInputElement>modalFormCreditCardNumberInput).value) === false) {
+          printError(modalCardNumberInValid, 'Please, enter a valid 16-digit card number');
+        } else {
+          printError(modalCardNumberInValid, '');
+          cardNumErr = false;
+        }
+      }
+
+      if ((<HTMLInputElement>modalFormCreditCardDateInput).value == '') {
+        printError(modalCardDateInValid, 'Please, enter card date');
+      } else {
+        const regex = /^([0-9]{2}\/[0-9]{2})/;
+        if (regex.test((<HTMLInputElement>modalFormCreditCardDateInput).value) === false) {
+          printError(modalCardDateInValid, 'Enter valid date and year');
+        } else {
+          printError(modalCardDateInValid, '');
+          cardDatErr = false;
+        }
+      }
+
+      if ((<HTMLInputElement>modalFormCreditCardCVVInput).value == '') {
+        printError(modalCardCVVInValid, 'Please, enter CVV');
+      } else {
+        printError(modalCardCVVInValid, '');
+        cardCvvErr = false;
       }
 
       if ((nameErr || phoneErr || addressErr || emailErr || cardNumErr || cardDatErr || cardCvvErr) === true) {
@@ -260,6 +361,7 @@ class modalBuyNow extends DomElement {
     modalFormCreditCard.appendChild(modalFormCreditCardNumber);
     modalFormCreditCardNumber.appendChild(modalFormCreditCardNumberInput);
     modalFormCreditCardNumber.appendChild(modalFormCreditCardNumberLabel);
+    modalFormCreditCardNumber.appendChild(modalCardNumberImg);
     modalFormCreditCardNumber.appendChild(modalCardNumberInValid);
     modalFormCreditCard.appendChild(modalFormCreditCardDC);
     modalFormCreditCardDC.appendChild(modalFormCreditCardDate);
