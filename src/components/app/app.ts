@@ -89,10 +89,16 @@ class App {
 
     this.view.mainPage.filtersBlock.categoryFilter.addEventListener('change', (e) => {
       this.checkboxFilterProducts(e, 'category');
+      this.controller.getAllProducts((data: ProductsData) => {
+        this.view.mainPage.filtersBlock.draw(data, this.router.getQueryParams());
+      });
     });
 
     this.view.mainPage.filtersBlock.brandFilter.addEventListener('change', (e) => {
       this.checkboxFilterProducts(e, 'brand');
+      this.controller.getAllProducts((data: ProductsData) => {
+        this.view.mainPage.filtersBlock.draw(data, this.router.getQueryParams());
+      });
     });
 
     this.view.mainPage.filtersBlock.priceFilter.addEventListener('click', () => {

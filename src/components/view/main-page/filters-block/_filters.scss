@@ -5,3 +5,13 @@
     overflow: auto;
   }
 }
+
+.checkbox-filter {
+  &__cb {
+    margin-right: 10px;
+  }
+  &__count {
+    margin-right: 5px;
+    text-align: right;
+  }
+}

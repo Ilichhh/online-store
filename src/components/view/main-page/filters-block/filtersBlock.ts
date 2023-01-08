@@ -1,8 +1,10 @@
 import DomElement from '../../domElement';
 import * as noUiSlider from 'nouislider';
+import Filter from '../../../controller/filter';
 import type { ProductsData, QueryParams } from '../../../../types/types';
 
 class FiltersBlock extends DomElement {
+  filter: Filter;
   element: HTMLElement;
   resetBtn: HTMLButtonElement;
   copyLInkBtn: HTMLButtonElement;
@@ -13,6 +15,7 @@ class FiltersBlock extends DomElement {
 
   constructor() {
     super();
+    this.filter = new Filter();
     this.element = this.createElement('div', 'filters-block col-3');
     this.resetBtn = <HTMLButtonElement>(
       this.createElement('button', 'filters-block__reset-btn btn btn-secondary btn-sm')
@@ -28,17 +31,6 @@ class FiltersBlock extends DomElement {
 
   public draw(data: ProductsData, params: QueryParams): HTMLElement {
     this.element.innerHTML = '';
-    // Create categories and brands arrays
-    let categoriesData: string[] = [];
-    let brandsData: string[] = [];
-
-    data.products.forEach((e) => {
-      categoriesData.push(e.category);
-      brandsData.push(e.brand);
-    });
-
-    categoriesData = [...new Set(categoriesData)];
-    brandsData = [...new Set(brandsData)];
 
     // Draw buttons
     const buttonsWrapper = this.createElement('div', 'filters-block__buttons row mb-3');
@@ -76,7 +68,7 @@ class FiltersBlock extends DomElement {
     categoryWrapper.appendChild(categoryHeader);
     categoryWrapper.appendChild(this.categoryFilter);
 
-    this.drawCheckboxFilter(categoriesData, this.categoryFilter, 'category', params);
+    this.drawCheckboxFilter(data, this.categoryFilter, 'category', params);
 
     // Draw Brand
     const brandWrapper = this.createElement('div', 'filters-block__brand mb-4');
@@ -86,7 +78,7 @@ class FiltersBlock extends DomElement {
     brandWrapper.appendChild(brandHeader);
     brandWrapper.appendChild(this.brandFilter);
 
-    this.drawCheckboxFilter(brandsData, this.brandFilter, 'brand', params);
+    this.drawCheckboxFilter(data, this.brandFilter, 'brand', params);
 
     // Draw Stock
     const stockWrapper = this.createElement('div', 'filters-block__stock mb-4');
@@ -132,23 +124,47 @@ class FiltersBlock extends DomElement {
     }
   }
 
-  private drawCheckboxFilter(data: string[], filterElement: HTMLElement, filter: string, params: QueryParams): void {
+  private drawCheckboxFilter(
+    data: ProductsData,
+    filterElement: HTMLElement,
+    filter: 'category' | 'brand',
+    params: QueryParams
+  ): void {
     filterElement.innerHTML = '';
-    const checkedArr: string[] = params[filter]?.split('%');
 
-    data.forEach((item) => {
-      const wrapper = this.createElement('div', 'form-check');
+    let allFiltersArr = data.products.map((e) => e[filter]);
+    allFiltersArr = [...new Set(allFiltersArr)];
+    const checkedArr: string[] = params[filter]?.split('%');
+    const filteredData = this.filter.filterData(data, params);
+
+    allFiltersArr.forEach((item) => {
+      const wrapper = this.createElement('div', 'checkbox-filter d-flex form-check');
       const input: HTMLInputElement = <HTMLInputElement>(
-        this.createElement('input', 'form-check-input', { type: 'checkbox', value: item, id: item })
+        this.createElement('input', 'checkbox-filter__cb form-check-input', { type: 'checkbox', value: item, id: item })
       );
       const label = this.createElement('label', 'form-check-label', { for: item }, item);
+
+      const foundItems = filteredData.filter((e) => e[filter] === item).length;
+      const totalItems = data.products.filter((e) => e[filter] === item).length;
+
+      const countItemsElement = this.createElement('span', 'checkbox-filter__count flex-fill', {});
+      countItemsElement.textContent = `${foundItems}/${totalItems}`;
 
       if (checkedArr && checkedArr.includes(item)) {
         input.checked = true;
       }
 
+      if (foundItems) {
+        label.classList.remove('text-muted');
+        countItemsElement.classList.remove('text-muted');
+      } else {
+        label.classList.add('text-muted');
+        countItemsElement.classList.add('text-muted');
+      }
+
       wrapper.appendChild(input);
       wrapper.appendChild(label);
+      wrapper.appendChild(countItemsElement);
       filterElement.appendChild(wrapper);
     });
   }

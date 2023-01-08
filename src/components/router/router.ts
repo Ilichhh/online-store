@@ -22,9 +22,7 @@ class Router {
     };
 
     const path: string = window.location.pathname.length === 0 ? '/' : window.location.pathname;
-    console.log(path);
     const route: Route = routes[path.split('-')[0]] || routes[404];
-    console.log(path.split('-')[0]);
 
     await fetch(route.template)
       .then((data: Response) => data.text())

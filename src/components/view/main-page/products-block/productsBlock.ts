@@ -1,10 +1,12 @@
 import DomElement from '../../domElement';
 import ProductCard from '../../product-card/productCard';
+import Filter from '../../../controller/filter';
 import type { ProductsData, Product, CartItem, QueryParams } from '../../../../types/types';
 // import gridIcon from '../../../../assets/svg/grid.svg';
 // import listIcon from '../../../../assets/svg/list-ul.svg';
 
 class ProductsBlock extends DomElement {
+  filter: Filter;
   element: HTMLElement;
   sortingFilter: HTMLSelectElement;
   searchResults: HTMLElement;
@@ -13,6 +15,7 @@ class ProductsBlock extends DomElement {
 
   constructor() {
     super();
+    this.filter = new Filter();
     this.element = this.createElement('div', 'products-block col-9 mb-5');
     this.sortingFilter = <HTMLSelectElement>this.createElement('select', 'products-block__sorting-filter form-select', {
       id: 'sort',
@@ -27,7 +30,7 @@ class ProductsBlock extends DomElement {
 
   public draw(data: ProductsData, cart: CartItem[], params: QueryParams): HTMLElement {
     this.element.innerHTML = '';
-    const filteredData: Product[] = this.filterData(data, params);
+    const filteredData: Product[] = this.filter.filterData(data, params);
 
     const viewParameters: HTMLElement = this.createElement(
       'div',
@@ -139,47 +142,6 @@ class ProductsBlock extends DomElement {
     if (params.sort === 'price-desc') data = data.sort((a, b) => b.price - a.price);
     if (params.sort === 'rating-asc') data = data.sort((a, b) => a.rating - b.rating);
     if (params.sort === 'rating-desc') data = data.sort((a, b) => b.rating - a.rating);
-  }
-
-  private filterData(data: ProductsData, params: QueryParams): Product[] {
-    const lowestPrice = data.products.reduce((pr, cu) => (cu.price < pr.price ? cu : pr), data.products[0]).price;
-    const highestPrice = data.products.reduce((pr, cu) => (cu.price > pr.price ? cu : pr), data.products[0]).price;
-    const lowestStock = data.products.reduce((pr, cu) => (cu.stock < pr.stock ? cu : pr), data.products[0]).stock;
-    const highestStock = data.products.reduce((pr, cu) => (cu.stock > pr.stock ? cu : pr), data.products[0]).stock;
-
-    const categoryArr: string[] = params.category?.split('%') || [];
-    const brandArr: string[] = params.brand?.split('%') || [];
-    const priceRange: number[] = params.price?.split('%').map((i) => +i) || [lowestPrice, highestPrice];
-    const stockRange: number[] = params.stock?.split('%').map((i) => +i) || [lowestStock, highestStock];
-    const searchInput: string = params.search;
-
-    let filteredByCategory = data.products.filter((item) => categoryArr.includes(item.category));
-    if (!filteredByCategory.length) filteredByCategory = data.products;
-    let filteredByBrand = data.products.filter((item) => brandArr.includes(item.brand));
-    if (!filteredByBrand.length) filteredByBrand = data.products;
-    const filteredByPrice = data.products.filter((item) => {
-      return item.price >= priceRange[0] && item.price <= priceRange[1];
-    });
-    const filteredByStock = data.products.filter((item) => {
-      return item.stock >= stockRange[0] && item.stock <= stockRange[1];
-    });
-
-    let filteredData: Product[] = filteredByCategory
-      .filter((brand) => filteredByBrand.includes(brand))
-      .filter((price) => filteredByPrice.includes(price))
-      .filter((stock) => filteredByStock.includes(stock));
-
-    if (searchInput) {
-      filteredData = filteredData.filter((item) => {
-        const isInTitle: boolean = item.title.toLowerCase().includes(searchInput);
-        const isInDescription: boolean = item.description.toLowerCase().includes(searchInput);
-        const isInBrand: boolean = item.brand.toLowerCase().includes(searchInput);
-        const isInCategory: boolean = item.category.includes(searchInput);
-        return isInTitle || isInDescription || isInDescription || isInBrand || isInCategory;
-      });
-    }
-
-    return filteredData;
   }
 }
 
