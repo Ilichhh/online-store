@@ -3,6 +3,9 @@
   &__main {
     color: black;
     text-decoration: none;
+    &:hover {
+      color: black;
+    }
   }
   
   &__thumbnail {
@@ -15,10 +18,7 @@
   }
 
   &_list-view {
+    padding-right: 50px;
     height: 200px;
   }
-
-  // &:hover {
-  //   transform: scale(1.05);
-  // }
 }
