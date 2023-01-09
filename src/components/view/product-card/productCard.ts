@@ -80,12 +80,12 @@ class ProductCard extends DomElement {
   }
 
   public drawListView() {
-    const thumbnail: HTMLElement = this.createElement('img', 'product-card__thumbnail rounded-start', {
-      src: this.data.thumbnail,
-      alt: 'card thumbnail',
-      height: 220,
-      width: 220,
-    });
+    const card = this.createElement('a', 'product-card__main', { href: `/product`, id: this.data.id });
+    const thumbnail: HTMLElement = this.createElement(
+      'img',
+      'product-card__thumbnail product-card__thumbnail_list-view rounded-start',
+      { src: this.data.thumbnail, alt: 'card thumbnail', height: 220, width: 220 }
+    );
     const discount: HTMLElement = this.createElement(
       'span',
       'product-card__discount position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger'
@@ -103,7 +103,7 @@ class ProductCard extends DomElement {
       { id: this.data.id },
       !this.inCart ? 'Add to Cart' : 'Remove from Cart'
     );
-    const wrapper = this.createElement('div', 'product-card card_list-view row g-0');
+    const wrapper = this.createElement('div', 'product-card card_list-view row g-3');
     const leftBlockWrapper = this.createElement('div', 'col-md-3');
     const centralBlockWrapper = this.createElement('div', 'col-md-6');
     const rightBlockWrapper = this.createElement('div', 'col-md-3');
@@ -114,8 +114,9 @@ class ProductCard extends DomElement {
     description.textContent = this.data.description;
     stock.textContent = `${this.data.stock}pcs.`;
 
-    this.element.appendChild(discount);
-    this.element.appendChild(wrapper);
+    this.element.appendChild(card);
+    card.appendChild(discount);
+    card.appendChild(wrapper);
     wrapper.appendChild(leftBlockWrapper);
     wrapper.appendChild(centralBlockWrapper);
     wrapper.appendChild(rightBlockWrapper);
