@@ -27,6 +27,7 @@ class Router {
     await fetch(route.template)
       .then((data: Response) => data.text())
       .then((html: string) => {
+        console.log(route);
         if (route === routes[404]) (<HTMLElement>document.getElementById('main')).innerHTML = html;
         else (<HTMLElement>document.getElementById('main')).innerHTML = '';
       });

@@ -26,6 +26,7 @@ class App {
     this.renderPage();
 
     // Route
+    this.router.handleLocation();
     window.addEventListener('popstate', () => {
       this.router.handleLocation();
       this.renderPage();
@@ -159,9 +160,9 @@ class App {
 
   private renderCart(): void {
     localStorage.setItem('promo', '0');
-    this.controller.getAllProducts(async (data: ProductsData) => {
+    this.controller.getAllProducts((data: ProductsData) => {
       this.view.cartPage.summaryCartBlock.recalculatePrice(data);
-      await this.view.drawCartPage(data, this.cart);
+      this.view.drawCartPage(data, this.cart);
       this.view.header.updateData(data, this.cart);
     });
   }
