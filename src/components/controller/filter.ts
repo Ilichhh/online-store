@@ -7,6 +7,11 @@ class Filter {
     const lowestStock = data.products.reduce((pr, cu) => (cu.stock < pr.stock ? cu : pr), data.products[0]).stock;
     const highestStock = data.products.reduce((pr, cu) => (cu.stock > pr.stock ? cu : pr), data.products[0]).stock;
 
+    let allCategories = data.products.map((e) => e.category);
+    allCategories = [...new Set(allCategories)];
+    let allBrands = data.products.map((e) => e.brand);
+    allBrands = [...new Set(allBrands)];
+
     const categoryArr: string[] = params.category?.split('%') || [];
     const brandArr: string[] = params.brand?.split('%') || [];
     const priceRange: number[] = params.price?.split('%').map((i) => +i) || [lowestPrice, highestPrice];
@@ -14,9 +19,13 @@ class Filter {
     const searchInput: string = params.search;
 
     let filteredByCategory = data.products.filter((item) => categoryArr.includes(item.category));
-    if (!filteredByCategory.length) filteredByCategory = data.products;
+    const wrongCategories = categoryArr.filter((item) => !allCategories.includes(item));
+    if (!filteredByCategory.length && !categoryArr.length) filteredByCategory = data.products;
+
     let filteredByBrand = data.products.filter((item) => brandArr.includes(item.brand));
-    if (!filteredByBrand.length) filteredByBrand = data.products;
+    const wrongBrands = brandArr.filter((item) => !allBrands.includes(item));
+    if (!filteredByBrand.length && !brandArr.length) filteredByBrand = data.products;
+
     const filteredByPrice = data.products.filter((item) => {
       return item.price >= priceRange[0] && item.price <= priceRange[1];
     });
@@ -38,6 +47,8 @@ class Filter {
         return isInTitle || isInDescription || isInDescription || isInBrand || isInCategory;
       });
     }
+
+    if (wrongCategories.length || wrongBrands.length) filteredData = [];
 
     return filteredData;
   }

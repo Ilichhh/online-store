@@ -8,10 +8,14 @@ class ProductPage extends DomElement {
   constructor() {
     super();
     this.addToCart = this.createElement('button', 'product-page__add-to-cart-btn btn', { type: 'button' });
-    this.buy = this.createElement('button', 'product-page__buy-now-btn btn btn-warning', { type: 'button' });
+    this.buy = this.createElement('a', 'product-page__buy-now-btn btn btn-outline-danger', {
+      type: 'button',
+      href: 'cart',
+    });
   }
 
   public drawProductPage(data: Product, cart: CartItem[]): void {
+    if (!data) console.log('s');
     const main: HTMLElement = <HTMLElement>document.getElementById('main');
     const container = this.createElement('div', 'container');
     const breadcrumbs = this.createElement('div', 'product-page__breadcrumbs pt-4 mb-3');
@@ -89,8 +93,7 @@ class ProductPage extends DomElement {
     rating.textContent = `Rating: ${data.rating}`;
     discount.textContent = `Discount: ${Math.round(data.discountPercentage)}%`;
     stock.textContent = `Stock: ${data.stock}`;
-    priceFinal.textContent = `$${Math.round(data.price * ((100 - data.discountPercentage) / 100))}`;
-    price.textContent = `$${data.price}`;
+    priceFinal.textContent = `$${data.price}`;
     this.buy.textContent = 'Buy Now';
     this.addToCart.id = data.id.toString();
 

@@ -93,7 +93,7 @@ class FiltersBlock extends DomElement {
     return this.element;
   }
 
-  private drawRangeFilter(
+  public drawRangeFilter(
     data: ProductsData,
     filterElement: noUiSlider.target,
     filter: 'price' | 'stock',
@@ -148,7 +148,7 @@ class FiltersBlock extends DomElement {
     filterElement.querySelectorAll('.noUi-connect')[0].classList.add('slider__connect');
   }
 
-  private drawCheckboxFilter(
+  public drawCheckboxFilter(
     data: ProductsData,
     filterElement: HTMLElement,
     filter: 'category' | 'brand',
