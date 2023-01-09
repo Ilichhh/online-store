@@ -62,13 +62,6 @@ class ProductCartBlock extends DomElement {
     this.draw(data, cart);
   }
 
-  public arrowRight() {
-    // this.cartPageArrowRight.addEventListener('click', (e: Event) => {
-    //   this.arrowRightListener(e);
-    //   console.log(111);
-    // });
-  }
-
   public addCartListeners(data: ProductsData) {
     document.addEventListener('changeProductInCartCount', () => {
       this.changeProductInCartCount(data);

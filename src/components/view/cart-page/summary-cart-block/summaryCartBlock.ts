@@ -44,7 +44,6 @@ class summaryCartBlock extends DomElement {
         }
       });
     });
-
     this.countPrice = Math.floor(sum * 100) / 100;
     this.countOldPrice = Math.floor(sumOld * 100) / 100;
     this.countProduct = countProduct;
@@ -59,7 +58,7 @@ class summaryCartBlock extends DomElement {
       { name: 'ep', text: 'Epam Systems - 10%', discont: 10 },
     ];
 
-    // this.recalculatePrice(data);
+    this.recalculatePrice(data);
 
     const summaryName: HTMLElement = this.createElement(
       'div',
