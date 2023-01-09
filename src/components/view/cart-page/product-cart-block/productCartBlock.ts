@@ -6,6 +6,7 @@ import type { CartItem, ProductsData } from '../../../../types/types';
 
 class ProductCartBlock extends DomElement {
   element: HTMLElement;
+  inputItemsCount: HTMLElement;
   productInCartCount: number;
   productInPage: number;
   pageCount: number;
@@ -18,6 +19,15 @@ class ProductCartBlock extends DomElement {
     this.pageCount = 1;
     this.currentPage = 1;
     this.element = this.createElement('div', 'cart-block__product border rounded-4 w-75 p-2');
+    this.inputItemsCount = this.createElement(
+      'input',
+      'cart-block__product-general__number fw-bold me-1 ms-1 text-center border rounded-2 d-flex align-items-center',
+      {
+        type: 'text',
+        value: this.productInPage,
+      },
+      ''
+    );
   }
 
   public changeProductInCartCount(data: ProductsData): void {
@@ -32,6 +42,25 @@ class ProductCartBlock extends DomElement {
     const cart = JSON.parse(localStorage.getItem('cart') || '');
     this.draw(data, cart);
     console.log('changeCurrentPage');
+  }
+
+  public addCartListeners(data: ProductsData) {
+    document.addEventListener('changeProductInCartCount', () => {
+      this.changeProductInCartCount(data);
+      this.inputItemsCount.textContent = `${this.productInPage}`;
+      if (this.currentPage >= this.pageCount) {
+        // this.inputPageCount.textContent = `${this.pageCount}`;
+      }
+    });
+
+    document.addEventListener('changeCurrentPage', () => {
+      this.changeCurrentPage(data);
+      if (this.currentPage >= this.pageCount) {
+        this.currentPage = this.pageCount;
+        // this.inputPageCount.textContent = `${this.pageCount}`;
+      }
+      // this.inputPageCount.textContent = `${this.currentPage}`;
+    });
   }
 
   public drawProductInCart(data: ProductsData, cart: CartItem[]) {
@@ -53,23 +82,6 @@ class ProductCartBlock extends DomElement {
     this.pageCount = Math.ceil(this.productInCartCount / this.productInPage);
     this.element.innerHTML = '';
 
-    document.addEventListener('changeProductInCartCount', () => {
-      this.changeProductInCartCount(data);
-      inputItemsCount.textContent = `${this.productInPage}`;
-      if (this.currentPage >= this.pageCount) {
-        inputPageCount.textContent = `${this.pageCount}`;
-      }
-    });
-
-    document.addEventListener('changeCurrentPage', () => {
-      this.changeCurrentPage(data);
-      if (this.currentPage >= this.pageCount) {
-        this.currentPage = this.pageCount;
-        inputPageCount.textContent = `${this.pageCount}`;
-      }
-      inputPageCount.textContent = `${this.currentPage}`;
-    });
-
     const cartBlockGeneral: HTMLElement = this.createElement(
       'div',
       'cart-block__product-general border-bottom fs-3 fw-bold pb-1 mb-2 d-flex flex-column justify-content-around align-items-center'
@@ -88,17 +100,7 @@ class ProductCartBlock extends DomElement {
 
     const pageItemsCount: HTMLElement = this.createElement('span', 'me-2', undefined, 'ITEMS');
 
-    const inputItemsCount: HTMLElement = this.createElement(
-      'input',
-      'cart-block__product-general__number fw-bold me-1 ms-1 text-center border rounded-2 d-flex align-items-center',
-      {
-        type: 'text',
-        value: this.productInPage,
-      },
-      ''
-    );
-
-    inputItemsCount.addEventListener('change', (e: Event) => {
+    this.inputItemsCount.addEventListener('change', (e: Event) => {
       this.productInPage = Number((<HTMLInputElement>e.target).value);
       this.changeProductInCartCount(data);
       e.target?.dispatchEvent(new CustomEvent('changeProductInCartCount', { bubbles: true }));
@@ -160,7 +162,7 @@ class ProductCartBlock extends DomElement {
     this.element.appendChild(cartBlockGeneral);
     cartBlockGeneral.appendChild(cartBlockGeneralName);
     cartSettingItems.appendChild(pageItemsCount);
-    cartSettingItems.appendChild(inputItemsCount);
+    cartSettingItems.appendChild(this.inputItemsCount);
     cartSettingCount.appendChild(cartPageCount);
     cartSettingCount.appendChild(cartPageArrowLeft);
     cartSettingCount.appendChild(inputPageCount);
