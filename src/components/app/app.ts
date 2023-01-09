@@ -167,12 +167,18 @@ class App {
     });
   }
 
-  private sliderFilterProducts(range: string[], filter: string): void {
+  private sliderFilterProducts(range: string[], filter: 'price' | 'stock'): void {
     const min: number = Math.round(+range[0]);
     const max: number = Math.round(+range[1]);
     this.router.setQueryString({ [filter]: `${min}%${max}` });
     this.controller.getAllProducts((data: ProductsData) => {
       this.view.mainPage.productsBlock.draw(data, this.cart, this.router.getQueryParams());
+      this.view.mainPage.filtersBlock.drawRangeFilter(
+        data,
+        filter === 'stock' ? this.view.mainPage.filtersBlock.priceFilter : this.view.mainPage.filtersBlock.stockFilter,
+        filter === 'stock' ? 'price' : 'stock',
+        this.router.getQueryParams()
+      );
     });
   }
 

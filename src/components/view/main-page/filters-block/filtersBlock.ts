@@ -93,7 +93,7 @@ class FiltersBlock extends DomElement {
     return this.element;
   }
 
-  private drawRangeFilter(
+  public drawRangeFilter(
     data: ProductsData,
     filterElement: noUiSlider.target,
     filter: 'price' | 'stock',
