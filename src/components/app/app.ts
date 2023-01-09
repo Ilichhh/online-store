@@ -142,7 +142,7 @@ class App {
     this.controller.getAllProducts((data: ProductsData) => this.view.header.updateData(data, this.cart));
     this.renderCart();
     const myModal = new Modal(this.view.cartPage.modalBuyNow.element);
-    myModal.show();
+    setTimeout(() => myModal.show(), 1000);
   }
 
   private renderPage(): void {
