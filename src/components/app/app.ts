@@ -179,6 +179,18 @@ class App {
         filter === 'stock' ? 'price' : 'stock',
         this.router.getQueryParams()
       );
+      this.view.mainPage.filtersBlock.drawCheckboxFilter(
+        data,
+        this.view.mainPage.filtersBlock.brandFilter,
+        'brand',
+        this.router.getQueryParams()
+      );
+      this.view.mainPage.filtersBlock.drawCheckboxFilter(
+        data,
+        this.view.mainPage.filtersBlock.categoryFilter,
+        'category',
+        this.router.getQueryParams()
+      );
     });
   }
 
