@@ -15,6 +15,7 @@ class ProductPage extends DomElement {
   }
 
   public drawProductPage(data: Product, cart: CartItem[]): void {
+    if (!data) console.log('s');
     const main: HTMLElement = <HTMLElement>document.getElementById('main');
     const container = this.createElement('div', 'container');
     const breadcrumbs = this.createElement('div', 'product-page__breadcrumbs pt-4 mb-3');

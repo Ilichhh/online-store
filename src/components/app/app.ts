@@ -149,7 +149,13 @@ class App {
     const path = window.location.pathname.slice(1);
     if (path === '') this.renderMain();
     if (path === 'cart') this.renderCart();
-    if (path.split('-')[0] === 'product') this.renderProductPage(+path.split('-')[1], this.cart);
+    if (path === 'product') {
+      if (+this.router.getQueryParams().id) {
+        this.renderProductPage(+this.router.getQueryParams().id, this.cart);
+      } else {
+        this.renderMain();
+      }
+    }
   }
 
   private renderMain(): void {
@@ -230,7 +236,7 @@ class App {
     } else if (target.closest('.product-card__main')) {
       const card: HTMLElement = <HTMLElement>target.closest('.product-card__main');
       const id: number = +card.id;
-      await this.router.route(e, id);
+      await this.router.route(e);
       this.renderProductPage(id, cart);
     }
   }
@@ -245,9 +251,11 @@ class App {
   }
 
   private renderProductPage(id: number, cart: CartItem[]) {
-    this.controller.getAllProducts((data: ProductsData) =>
-      this.view.productPage.drawProductPage(data.products[id - 1], cart)
-    );
+    this.router.setQueryString({ id: id });
+    this.controller.getAllProducts((data: ProductsData) => {
+      const i: number = +this.router.getQueryParams().id - 1;
+      this.view.productPage.drawProductPage(data.products[i], cart);
+    });
   }
 }
 

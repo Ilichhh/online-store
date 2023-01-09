@@ -33,12 +33,12 @@ class Router {
       });
   }
 
-  public async route(event: Event, id?: number): Promise<void> {
+  public async route(event: Event): Promise<void> {
     const element: HTMLAnchorElement = <HTMLAnchorElement>event.target;
     event = event || window.event;
     event.preventDefault();
     const link = element.closest('a')?.href;
-    window.history.pushState({}, '', id ? `${link}-${id.toString()}` : link);
+    window.history.pushState({}, '', link);
     await this.handleLocation();
   }
 
@@ -64,6 +64,10 @@ class Router {
         }
       } else if (key === 'search' && value === '') {
         newUrl.searchParams.delete(key);
+      } else if (key === 'id' && isNaN(value)) {
+        newUrl.searchParams.delete(key);
+        // window.history.pushState({}, '', window.location.origin);
+        // this.handleLocation();
       } else {
         newUrl.searchParams.set(key, value);
       }
