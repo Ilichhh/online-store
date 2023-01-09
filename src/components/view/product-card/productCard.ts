@@ -266,21 +266,6 @@ class ProductCard extends DomElement {
       this.plusCountProduct(e);
     });
 
-    // cartProductCountPlus.addEventListener('click', (e) => {
-    //   const cart = JSON.parse(localStorage.getItem('cart') || '');
-    //   if (this.inCart < this.data.stock) {
-    //     this.inCart += 1;
-    //   }
-    //   cartProductCountInput.textContent = this.inCart.toString();
-    //   localStorage.setItem(
-    //     'cart',
-    //     JSON.stringify(
-    //       cart.map((item: { id: number }) => (item.id === this.data.id ? { ...item, count: this.inCart } : item))
-    //     )
-    //   );
-    //   e.target?.dispatchEvent(new CustomEvent('recalculatePrice', { bubbles: true }));
-    // });
-
     const cartProductCountMinus: HTMLElement = this.createElement(
       'div',
       'btn btn-warning ms-1 d-flex justify-content-center align-items-center',
@@ -288,18 +273,19 @@ class ProductCard extends DomElement {
       '-'
     );
 
-    // cartProductCountMinus.innerHTML = `
-    // <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-dash"
-    //              viewBox="0 0 16 16">
-    //           <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8z"/>
-    //         </svg>`;
-
     cartProductCountMinus.addEventListener('click', (e) => {
       const cart = JSON.parse(localStorage.getItem('cart') || '');
       this.inCart = this.inCart ? this.inCart - 1 : 0;
       if (Number(this.cartProductCountInput.textContent) <= 1) {
         cartBlockProductItem.classList.add('d-none');
         cart.splice(cart.id, 1);
+        localStorage.setItem(
+          'cart',
+          JSON.stringify(
+            cart.map((item: { id: number }) => (item.id === this.data.id ? { ...item, count: this.inCart } : item))
+          )
+        );
+        e.target?.dispatchEvent(new CustomEvent('changeProductInCartCount', { bubbles: true }));
       }
       localStorage.setItem(
         'cart',
