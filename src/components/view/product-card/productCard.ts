@@ -39,6 +39,7 @@ class ProductCard extends DomElement {
     );
     const price: HTMLElement = this.createElement('h4', 'product-card__price', undefined, `$${this.data.price}`);
     const title: HTMLElement = this.createElement('h5', 'product-card__title card-title mt-1');
+    const brand: HTMLElement = this.createElement('h6', 'product-card__brand card-title mt-1');
     const category: HTMLElement = this.createElement('h6', 'product-card__category card-subtitle mb-2 text-muted');
     const description: HTMLElement = this.createElement('p', 'product-card__description card-text');
     const wrapper: HTMLElement = this.createElement('div', 'product-card__rating-stock-wrapper col mb-3');
@@ -59,7 +60,8 @@ class ProductCard extends DomElement {
 
     discount.textContent = `-${Math.round(this.data.discountPercentage)}%`;
     title.textContent = this.data.title;
-    category.textContent = this.data.category;
+    brand.textContent = `Brand: ${this.data.brand}`;
+    category.textContent = `Category: ${this.data.category}`;
     description.textContent = this.data.description;
     stock.textContent = `${this.data.stock}pcs.`;
 
@@ -69,6 +71,7 @@ class ProductCard extends DomElement {
     card.appendChild(discount);
     body.appendChild(price);
     body.appendChild(title);
+    body.appendChild(brand);
     body.appendChild(category);
     body.appendChild(description);
     body.appendChild(wrapper);
@@ -80,48 +83,52 @@ class ProductCard extends DomElement {
   }
 
   public drawListView() {
-    const thumbnail: HTMLElement = this.createElement('img', 'product-card__thumbnail rounded-start', {
-      src: this.data.thumbnail,
-      alt: 'card thumbnail',
-      height: 220,
-      width: 220,
-    });
+    const card = this.createElement('a', 'product-card__main', { href: `/product`, id: this.data.id });
+    const thumbnail: HTMLElement = this.createElement(
+      'img',
+      'product-card__thumbnail product-card__thumbnail_list-view rounded-start',
+      { src: this.data.thumbnail, alt: 'card thumbnail', height: 220, width: 220 }
+    );
     const discount: HTMLElement = this.createElement(
       'span',
       'product-card__discount position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger'
     );
-    const price: HTMLElement = this.createElement('h4', 'product-card__price', undefined, `$${this.data.price}`);
-    const title: HTMLElement = this.createElement('h5', 'product-card__title card-title mt-1');
-    const category: HTMLElement = this.createElement('h6', 'product-card__category card-subtitle mb-2 text-muted');
+    const price: HTMLElement = this.createElement('h4', 'product-card__price mt-1', undefined, `$${this.data.price}`);
+    const title: HTMLElement = this.createElement('h5', 'product-card__title card-title mt-2');
+    const brand: HTMLElement = this.createElement('h6', 'product-card__brand card-title mt-1');
+    const category: HTMLElement = this.createElement('h6', 'product-card__category card-subtitle mb-3 text-muted');
     const description: HTMLElement = this.createElement('p', 'product-card__description card-text');
     const ratingStockwrapper: HTMLElement = this.createElement('div', 'product-card__rating-stock-wrapper col mb-3');
     const rating: HTMLElement = this.createElement('span', 'product-card__rating', undefined, `${this.data.rating}`);
     const stock: HTMLElement = this.createElement('span', 'product-card__stock badge text-bg-light');
     const addToCartButton: HTMLElement = this.createElement(
       'button',
-      `product-card__add-to-cart-button btn ${!this.inCart ? 'btn-warning' : 'btn-danger'}`,
+      `product-card__add-to-cart-button btn mb-1 ${!this.inCart ? 'btn-warning' : 'btn-danger'}`,
       { id: this.data.id },
       !this.inCart ? 'Add to Cart' : 'Remove from Cart'
     );
-    const wrapper = this.createElement('div', 'product-card card_list-view row g-0');
+    const wrapper = this.createElement('div', 'product-card card_list-view row g-3');
     const leftBlockWrapper = this.createElement('div', 'col-md-3');
     const centralBlockWrapper = this.createElement('div', 'col-md-6');
-    const rightBlockWrapper = this.createElement('div', 'col-md-3');
+    const rightBlockWrapper = this.createElement('div', 'product-card_list-view col-md-3 d-flex flex-column');
 
     discount.textContent = `-${Math.round(this.data.discountPercentage)}%`;
     title.textContent = this.data.title;
-    category.textContent = this.data.category;
+    brand.textContent = `Brand: ${this.data.brand}`;
+    category.textContent = `Category: ${this.data.category}`;
     description.textContent = this.data.description;
     stock.textContent = `${this.data.stock}pcs.`;
 
-    this.element.appendChild(discount);
-    this.element.appendChild(wrapper);
+    this.element.appendChild(card);
+    card.appendChild(discount);
+    card.appendChild(wrapper);
     wrapper.appendChild(leftBlockWrapper);
     wrapper.appendChild(centralBlockWrapper);
     wrapper.appendChild(rightBlockWrapper);
 
     leftBlockWrapper.appendChild(thumbnail);
     centralBlockWrapper.appendChild(title);
+    centralBlockWrapper.appendChild(brand);
     centralBlockWrapper.appendChild(category);
     centralBlockWrapper.appendChild(description);
     rightBlockWrapper.appendChild(price);

@@ -8,15 +8,15 @@ class Router {
         component: '',
       },
       '/': {
-        template: 'mainPage.html',
+        template: 'main.html',
         component: '',
       },
       '/cart': {
-        template: 'cartPage.html',
+        template: 'cart.html',
         component: '',
       },
       '/product': {
-        template: 'productPage.html',
+        template: 'product.html',
         component: '',
       },
     };
@@ -27,18 +27,19 @@ class Router {
     await fetch(route.template)
       .then((data: Response) => data.text())
       .then((html: string) => {
-        if (route === routes[404]) (<HTMLElement>document.getElementById('main')).innerHTML = html;
-        else (<HTMLElement>document.getElementById('main')).innerHTML = '';
+        if (route === routes[404]) {
+          (<HTMLElement>document.querySelector('body')).innerHTML = html;
+        } else (<HTMLElement>document.getElementById('main')).innerHTML = '';
       });
   }
 
-  public route(event: Event, id?: number): void {
+  public async route(event: Event): Promise<void> {
     const element: HTMLAnchorElement = <HTMLAnchorElement>event.target;
     event = event || window.event;
     event.preventDefault();
     const link = element.closest('a')?.href;
-    window.history.pushState({}, '', id ? `${link}-${id.toString()}` : link);
-    this.handleLocation();
+    window.history.pushState({}, '', link);
+    await this.handleLocation();
   }
 
   public resetFilters(): void {
@@ -63,6 +64,10 @@ class Router {
         }
       } else if (key === 'search' && value === '') {
         newUrl.searchParams.delete(key);
+      } else if (key === 'id' && isNaN(value)) {
+        newUrl.searchParams.delete(key);
+        // window.history.pushState({}, '', window.location.origin);
+        // this.handleLocation();
       } else {
         newUrl.searchParams.set(key, value);
       }

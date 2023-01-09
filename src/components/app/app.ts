@@ -2,6 +2,7 @@ import AppView from '../view/appView';
 import AppController from '../controller/appController';
 import Router from '../router/router';
 import * as noUiSlider from 'nouislider';
+import { Modal } from 'bootstrap';
 import type { ProductsData, CartItem } from '../../types/types';
 
 class App {
@@ -17,22 +18,23 @@ class App {
     this.cart = JSON.parse(<string>localStorage.getItem('cart')) || [];
   }
 
-  public start(): void {
+  public async start(): Promise<void> {
     // Init
+    await this.router.handleLocation();
     this.controller.getAllProducts((data: ProductsData) => {
       this.view.drawHeader(data, this.cart);
     });
     this.renderPage();
 
     // Route
-    window.addEventListener('popstate', () => {
-      this.router.handleLocation();
+    window.addEventListener('popstate', async () => {
+      await this.router.handleLocation();
       this.renderPage();
     });
 
     // Header
-    document.querySelector('.header__logo')?.addEventListener('click', (e) => {
-      this.router.route(e);
+    document.querySelector('.header__logo')?.addEventListener('click', async (e) => {
+      await this.router.route(e);
       localStorage.setItem('promo', '0');
       this.controller.getAllProducts((data: ProductsData) => {
         this.cart = JSON.parse(<string>localStorage.getItem('cart')) || [];
@@ -40,8 +42,8 @@ class App {
       });
     });
 
-    this.view.header.cart.addEventListener('click', (e) => {
-      this.router.route(e);
+    this.view.header.cart.addEventListener('click', async (e) => {
+      await this.router.route(e);
       this.renderCart();
     });
 
@@ -67,6 +69,10 @@ class App {
       this.addRemoveFromCart(target, target, this.cart);
     });
 
+    this.view.productPage.buy.addEventListener('click', (e) => {
+      this.buyNowFromProductPage(e);
+    });
+
     // Main page
     this.view.mainPage.productsBlock.sortingFilter.addEventListener('change', (e) => this.sortProducts(e));
     this.view.mainPage.productsBlock.viewSwitcher.addEventListener('change', (e) => this.changeProductsView(e));
@@ -80,8 +86,8 @@ class App {
       setTimeout(() => (this.view.mainPage.filtersBlock.copyLInkBtn.textContent = 'Copy link'), 2000);
     });
 
-    this.view.mainPage.filtersBlock.resetBtn.addEventListener('click', () => {
-      this.router.resetFilters();
+    this.view.mainPage.filtersBlock.resetBtn.addEventListener('click', async () => {
+      await this.router.resetFilters();
       this.controller.getAllProducts((data: ProductsData) => {
         this.view.drawMainPage(data, this.cart, this.router.getQueryParams());
       });
@@ -122,11 +128,34 @@ class App {
     });
   }
 
+  private async buyNowFromProductPage(e: Event): Promise<void> {
+    const buyNowBtn: HTMLElement = <HTMLElement>e.target;
+    const AddToCartBtn: HTMLElement = <HTMLElement>buyNowBtn?.parentNode?.childNodes[1];
+    const id: number = +AddToCartBtn.id;
+
+    if (!this.cart.filter((e) => e.id === id).length) {
+      this.cart.push({ id: +AddToCartBtn.id, count: 1 });
+    }
+    localStorage.setItem('cart', JSON.stringify(this.cart));
+
+    await this.router.route(e);
+    this.controller.getAllProducts((data: ProductsData) => this.view.header.updateData(data, this.cart));
+    this.renderCart();
+    const myModal = new Modal(this.view.cartPage.modalBuyNow.element);
+    setTimeout(() => myModal.show(), 1000);
+  }
+
   private renderPage(): void {
     const path = window.location.pathname.slice(1);
     if (path === '') this.renderMain();
     if (path === 'cart') this.renderCart();
-    if (path.split('-')[0] === 'product') this.renderProductPage(+path.split('-')[1], this.cart);
+    if (path === 'product') {
+      if (+this.router.getQueryParams().id) {
+        this.renderProductPage(+this.router.getQueryParams().id, this.cart);
+      } else {
+        this.renderMain();
+      }
+    }
   }
 
   private renderMain(): void {
@@ -144,12 +173,30 @@ class App {
     });
   }
 
-  private sliderFilterProducts(range: string[], filter: string): void {
+  private sliderFilterProducts(range: string[], filter: 'price' | 'stock'): void {
     const min: number = Math.round(+range[0]);
     const max: number = Math.round(+range[1]);
     this.router.setQueryString({ [filter]: `${min}%${max}` });
     this.controller.getAllProducts((data: ProductsData) => {
       this.view.mainPage.productsBlock.draw(data, this.cart, this.router.getQueryParams());
+      this.view.mainPage.filtersBlock.drawRangeFilter(
+        data,
+        filter === 'stock' ? this.view.mainPage.filtersBlock.priceFilter : this.view.mainPage.filtersBlock.stockFilter,
+        filter === 'stock' ? 'price' : 'stock',
+        this.router.getQueryParams()
+      );
+      this.view.mainPage.filtersBlock.drawCheckboxFilter(
+        data,
+        this.view.mainPage.filtersBlock.brandFilter,
+        'brand',
+        this.router.getQueryParams()
+      );
+      this.view.mainPage.filtersBlock.drawCheckboxFilter(
+        data,
+        this.view.mainPage.filtersBlock.categoryFilter,
+        'category',
+        this.router.getQueryParams()
+      );
     });
   }
 
@@ -180,7 +227,7 @@ class App {
     );
   }
 
-  private productCardEventListener(e: Event, cart: CartItem[]): void {
+  private async productCardEventListener(e: Event, cart: CartItem[]): Promise<void> {
     const target: Element = <Element>e.target;
     e.preventDefault();
     if (target.classList.contains('product-card__add-to-cart-button')) {
@@ -188,8 +235,8 @@ class App {
       this.addRemoveFromCart(card, target, cart);
     } else if (target.closest('.product-card__main')) {
       const card: HTMLElement = <HTMLElement>target.closest('.product-card__main');
-      const id = +card.id;
-      this.router.route(e, id);
+      const id: number = +card.id;
+      await this.router.route(e);
       this.renderProductPage(id, cart);
     }
   }
@@ -204,9 +251,11 @@ class App {
   }
 
   private renderProductPage(id: number, cart: CartItem[]) {
-    this.controller.getAllProducts((data: ProductsData) =>
-      this.view.productPage.drawProductPage(data.products[id - 1], cart)
-    );
+    this.router.setQueryString({ id: id });
+    this.controller.getAllProducts((data: ProductsData) => {
+      const i: number = +this.router.getQueryParams().id - 1;
+      this.view.productPage.drawProductPage(data.products[i], cart);
+    });
   }
 }
 
