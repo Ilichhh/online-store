@@ -28,12 +28,16 @@ class CartPage extends DomElement {
 
   public drawCartPage(data: ProductsData, cart: CartItem[]): void {
     const main: HTMLElement = <HTMLElement>document.getElementById('main');
-    const cartBlock: HTMLElement = <HTMLElement>document.querySelector('.cart-block');
 
-    main.appendChild(cartBlock);
-    cartBlock.appendChild(this.productCartBlock.draw(data, cart));
-    cartBlock.appendChild(this.summaryCartBlock.draw(data));
-    cartBlock.appendChild(this.modalBuyNow.draw());
+    const container: HTMLElement = this.createElement(
+      'div',
+      'cart-block container d-flex flex-wrap w-100 mt-2 justify-content-between justify-content-lg-center'
+    );
+
+    main.appendChild(container);
+    container.appendChild(this.productCartBlock.draw(data, cart));
+    container.appendChild(this.summaryCartBlock.draw(data));
+    container.appendChild(this.modalBuyNow.draw());
   }
 }
 

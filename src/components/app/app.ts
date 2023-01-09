@@ -40,16 +40,12 @@ class App {
 
     this.view.header.cart.addEventListener('click', (e) => {
       this.router.route(e);
-      if (this.cart.length === 0) {
-        this.view.drawCartPageNone();
-      } else {
-        localStorage.setItem('promo', '0');
-        this.controller.getAllProducts((data: ProductsData) => {
-          this.view.cartPage.summaryCartBlock.recalculatePrice(data);
-          this.view.drawCartPage(data, this.cart);
-          this.view.header.updateData(data, this.cart);
-        });
-      }
+      localStorage.setItem('promo', '0');
+      this.controller.getAllProducts((data: ProductsData) => {
+        this.view.cartPage.summaryCartBlock.recalculatePrice(data);
+        this.view.drawCartPage(data, this.cart);
+        this.view.header.updateData(data, this.cart);
+      });
     });
 
     document.addEventListener('click', (e: Event) => {

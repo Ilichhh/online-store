@@ -7,6 +7,7 @@ class ProductCard extends DomElement {
   inCart: number;
   element: HTMLElement;
   cartProductCountInput: HTMLElement;
+  cartBlockProductItem: HTMLElement;
   index: number | undefined;
 
   constructor(data: Product, inCart: number, index?: number) {
@@ -15,6 +16,10 @@ class ProductCard extends DomElement {
     this.inCart = inCart;
     this.index = index;
     this.element = this.createElement('div', 'product-card card');
+    this.cartBlockProductItem = this.createElement(
+      'div',
+      'p-2 cart-block__product-item border-bottom d-flex justify-content-between align-items-center'
+    );
     this.cartProductCountInput = this.createElement(
       'label',
       'cart-block__product-general__number fw-bold border rounded-2 me-1 ms-1 text-center',
@@ -141,11 +146,6 @@ class ProductCard extends DomElement {
   }
 
   public drawCartView() {
-    const cartBlockProductItem: HTMLElement = this.createElement(
-      'div',
-      'p-2 cart-block__product-item border-bottom d-flex justify-content-between align-items-center'
-    );
-
     const cartNumberImageBlock: HTMLElement = this.createElement(
       'div',
       'd-flex align-items-center justify-content-start w-25'
@@ -246,22 +246,6 @@ class ProductCard extends DomElement {
       '+'
     );
 
-    // cartProductCountPlus.innerHTML = `
-    // <svg id='plus-button-product-cart-svg' xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus"
-    //              viewBox="0 0 16 16">
-    //           <path
-    //               d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
-    //         </svg>`;
-
-    // const cartProductCountInput: HTMLElement = this.createElement(
-    //   'label',
-    //   'cart-block__product-general__number fw-bold border rounded-2 me-1 ms-1 text-center',
-    //   {
-    //     type: 'text',
-    //   },
-    //   `${this.inCart}`
-    // );
-
     cartProductCountPlus.addEventListener('click', (e: Event) => {
       this.plusCountProduct(e);
     });
@@ -274,27 +258,7 @@ class ProductCard extends DomElement {
     );
 
     cartProductCountMinus.addEventListener('click', (e) => {
-      const cart = JSON.parse(localStorage.getItem('cart') || '');
-      this.inCart = this.inCart ? this.inCart - 1 : 0;
-      if (Number(this.cartProductCountInput.textContent) <= 1) {
-        cartBlockProductItem.classList.add('d-none');
-        cart.splice(cart.id, 1);
-        localStorage.setItem(
-          'cart',
-          JSON.stringify(
-            cart.map((item: { id: number }) => (item.id === this.data.id ? { ...item, count: this.inCart } : item))
-          )
-        );
-        e.target?.dispatchEvent(new CustomEvent('changeProductInCartCount', { bubbles: true }));
-      }
-      localStorage.setItem(
-        'cart',
-        JSON.stringify(
-          cart.map((item: { id: number }) => (item.id === this.data.id ? { ...item, count: this.inCart } : item))
-        )
-      );
-      e.target?.dispatchEvent(new CustomEvent('recalculatePrice', { bubbles: true }));
-      this.cartProductCountInput.textContent = this.inCart.toString();
+      this.minusCountProduct(e);
     });
 
     const cartProductPrice: HTMLElement = this.createElement(
@@ -304,12 +268,12 @@ class ProductCard extends DomElement {
       `$${this.data.price}`
     );
 
-    this.element.appendChild(cartBlockProductItem);
+    this.element.appendChild(this.cartBlockProductItem);
     cartNumberImageBlock.appendChild(cartBlockNumber);
     cartNumberImageBlock.appendChild(cartBlockImgBlock);
     cartBlockImgBlock.appendChild(cartBlockImg);
-    cartBlockProductItem.appendChild(cartNumberImageBlock);
-    cartBlockProductItem.appendChild(cartProductItemInfo);
+    this.cartBlockProductItem.appendChild(cartNumberImageBlock);
+    this.cartBlockProductItem.appendChild(cartProductItemInfo);
     cartProductItemInfo.appendChild(cartProductName);
     cartProductCategoryBlock.appendChild(cartProductCategoryText);
     cartProductCategoryBlock.appendChild(cartProductCategory);
@@ -329,11 +293,35 @@ class ProductCard extends DomElement {
     cartProductCount.appendChild(this.cartProductCountInput);
     cartProductCount.appendChild(cartProductCountPlus);
     cartProductStock.appendChild(cartProductCount);
-    cartBlockProductItem.appendChild(cartProductStock);
+    this.cartBlockProductItem.appendChild(cartProductStock);
     cartProductStock.appendChild(cartProductCount);
     cartProductStock.appendChild(cartProductPrice);
 
     return this.element;
+  }
+
+  public minusCountProduct(e: Event) {
+    const cart = JSON.parse(localStorage.getItem('cart') || '');
+    this.inCart = this.inCart ? this.inCart - 1 : 0;
+    if (Number(this.cartProductCountInput.textContent) <= 1) {
+      this.cartBlockProductItem.classList.add('d-none');
+      cart.splice(cart.id, 1);
+      localStorage.setItem(
+        'cart',
+        JSON.stringify(
+          cart.map((item: { id: number }) => (item.id === this.data.id ? { ...item, count: this.inCart } : item))
+        )
+      );
+      e.target?.dispatchEvent(new CustomEvent('changeProductInCartCount', { bubbles: true }));
+    }
+    localStorage.setItem(
+      'cart',
+      JSON.stringify(
+        cart.map((item: { id: number }) => (item.id === this.data.id ? { ...item, count: this.inCart } : item))
+      )
+    );
+    e.target?.dispatchEvent(new CustomEvent('recalculatePrice', { bubbles: true }));
+    this.cartProductCountInput.textContent = this.inCart.toString();
   }
 
   public plusCountProduct(e: Event) {
