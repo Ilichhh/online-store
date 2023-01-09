@@ -48,6 +48,10 @@ class App {
       });
     });
 
+    this.controller.getAllProducts((data: ProductsData) => {
+      this.view.cartPage.productCartBlock.addCartListeners(data);
+    });
+
     document.addEventListener('click', (e: Event) => {
       if (
         (<HTMLElement>e.target).id === 'plus-button-product-cart' ||
