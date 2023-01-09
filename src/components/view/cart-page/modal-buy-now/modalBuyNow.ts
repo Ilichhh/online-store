@@ -55,19 +55,17 @@ class modalBuyNow extends DomElement {
       id: 'name-input',
       placeholder: 'Name',
     });
-    const modalNameValid: HTMLElement = this.createElement('div', 'd-none', undefined, 'Ok');
-    const modalNameInValid: HTMLElement = this.createElement('div', '', undefined, '');
+    const modalNameInValid: HTMLElement = this.createElement('div', 'text-danger', undefined, '');
     const modalFormNameLabel: HTMLElement = this.createElement('label', '', { for: 'name-input' }, 'Name');
 
     const modalFormPhone: HTMLElement = this.createElement('div', 'form-floating mb-3 w-100');
     const modalFormPhoneInput: HTMLElement = this.createElement('input', 'field form-control', {
       type: 'tel',
       minlength: '10',
-      // required: 'required',
       id: 'phone-number-input',
       placeholder: 'Phone number',
     });
-    const modalPhoneInValid: HTMLElement = this.createElement('div', '', undefined, '');
+    const modalPhoneInValid: HTMLElement = this.createElement('div', 'text-danger', undefined, '');
     const modalFormPhoneLabel: HTMLElement = this.createElement(
       'label',
       '',
@@ -78,11 +76,10 @@ class modalBuyNow extends DomElement {
     const modalFormAddress: HTMLElement = this.createElement('div', 'form-floating mb-3 w-100');
     const modalFormAddressInput: HTMLElement = this.createElement('input', 'field form-control', {
       type: 'text',
-      // required: 'required',
       id: 'address-input',
       placeholder: 'Delivery address',
     });
-    const modalAddressInValid: HTMLElement = this.createElement('div', '', undefined, '');
+    const modalAddressInValid: HTMLElement = this.createElement('div', 'text-danger', undefined, '');
     const modalFormAddressLabel: HTMLElement = this.createElement(
       'label',
       '',
@@ -92,12 +89,11 @@ class modalBuyNow extends DomElement {
 
     const modalFormEmail: HTMLElement = this.createElement('div', 'form-floating mb-3 w-100');
     const modalFormEmailInput: HTMLElement = this.createElement('input', 'field form-control', {
-      type: 'email',
-      // required: 'required',
+      type: 'text',
       id: 'email-input',
       placeholder: 'name@example.com',
     });
-    const modalEmailInValid: HTMLElement = this.createElement('div', '', undefined, '');
+    const modalEmailInValid: HTMLElement = this.createElement('div', 'text-danger', undefined, '');
     const modalFormEmailLabel: HTMLElement = this.createElement('label', '', { for: 'email-input' }, 'Email address');
 
     const modalFormCreditCard: HTMLElement = this.createElement(
@@ -108,11 +104,10 @@ class modalBuyNow extends DomElement {
     const modalFormCreditCardNumber: HTMLElement = this.createElement('div', 'form-floating mb-3 me-2');
     const modalFormCreditCardNumberInput: HTMLElement = this.createElement('input', 'field form-control', {
       type: 'number',
-      // required: 'required',
       id: 'card-number-input',
       placeholder: 'Credit card number',
     });
-    const modalCardNumberInValid: HTMLElement = this.createElement('div', '', undefined, '');
+    const modalCardNumberInValid: HTMLElement = this.createElement('div', 'text-danger', undefined, '');
     const modalFormCreditCardNumberLabel: HTMLElement = this.createElement(
       'label',
       '',
@@ -130,11 +125,10 @@ class modalBuyNow extends DomElement {
     const modalFormCreditCardDate: HTMLElement = this.createElement('div', 'form-floating mb-3 me-2');
     const modalFormCreditCardDateInput: HTMLElement = this.createElement('input', 'field form-control', {
       type: 'text',
-      // required: 'required',
       id: 'date-input',
       placeholder: 'Data',
     });
-    const modalCardDateInValid: HTMLElement = this.createElement('div', '', undefined, '');
+    const modalCardDateInValid: HTMLElement = this.createElement('div', 'text-danger', undefined, '');
     const modalFormCreditCardDateLabel: HTMLElement = this.createElement('label', '', { for: 'date-input' }, 'Data');
 
     const modalFormCreditCardCVV: HTMLElement = this.createElement('div', 'form-floating mb-3');
@@ -142,11 +136,10 @@ class modalBuyNow extends DomElement {
       type: 'number',
       min: '0',
       maxlength: '999',
-      // required: 'required',
       id: 'code-input',
       placeholder: 'Code',
     });
-    const modalCardCVVInValid: HTMLElement = this.createElement('div', '', undefined, '');
+    const modalCardCVVInValid: HTMLElement = this.createElement('div', 'text-danger', undefined, '');
     const modalFormCreditCardCVVLabel: HTMLElement = this.createElement('label', '', { for: 'code-input' }, 'CVV');
 
     document.addEventListener('changeCardImage', () => {
@@ -343,7 +336,6 @@ class modalBuyNow extends DomElement {
     modalForm.appendChild(modalFormName);
     modalFormName.appendChild(modalFormNameInput);
     modalFormName.appendChild(modalFormNameLabel);
-    modalFormName.appendChild(modalNameValid);
     modalFormName.appendChild(modalNameInValid);
     modalForm.appendChild(modalFormPhone);
     modalFormPhone.appendChild(modalFormPhoneInput);
@@ -361,8 +353,8 @@ class modalBuyNow extends DomElement {
     modalFormCreditCard.appendChild(modalFormCreditCardNumber);
     modalFormCreditCardNumber.appendChild(modalFormCreditCardNumberInput);
     modalFormCreditCardNumber.appendChild(modalFormCreditCardNumberLabel);
-    modalFormCreditCardNumber.appendChild(modalCardNumberImg);
     modalFormCreditCardNumber.appendChild(modalCardNumberInValid);
+    modalFormCreditCardNumber.appendChild(modalCardNumberImg);
     modalFormCreditCard.appendChild(modalFormCreditCardDC);
     modalFormCreditCardDC.appendChild(modalFormCreditCardDate);
     modalFormCreditCardDate.appendChild(modalFormCreditCardDateInput);
