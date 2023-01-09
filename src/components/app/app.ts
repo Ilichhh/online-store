@@ -39,6 +39,7 @@ class App {
       this.controller.getAllProducts((data: ProductsData) => {
         this.cart = JSON.parse(<string>localStorage.getItem('cart')) || [];
         this.view.drawMainPage(data, this.cart, this.router.getQueryParams());
+        this.view.header.updateData(data, this.cart);
       });
     });
 

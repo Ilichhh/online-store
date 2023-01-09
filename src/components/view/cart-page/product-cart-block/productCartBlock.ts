@@ -6,14 +6,139 @@ import type { CartItem, ProductsData } from '../../../../types/types';
 
 class ProductCartBlock extends DomElement {
   element: HTMLElement;
+  inputItemsCount: HTMLElement;
+  inputPageCount: HTMLElement;
+  cartPageArrowRight: HTMLElement;
+  cartPageArrowLeft: HTMLElement;
+  productInCartCount: number;
+  productInPage: number;
+  pageCount: number;
+  currentPage: number;
 
   constructor() {
     super();
-
+    this.productInCartCount = 0;
+    this.productInPage = 3;
+    this.pageCount = 1;
+    this.currentPage = 1;
     this.element = this.createElement('div', 'cart-block__product border rounded-4 w-75 p-2');
+    this.inputItemsCount = this.createElement(
+      'input',
+      'cart-block__product-general__number fw-bold me-1 ms-1 text-center border rounded-2 d-flex align-items-center',
+      {
+        type: 'text',
+        value: this.productInPage,
+      },
+      ''
+    );
+    this.inputPageCount = this.createElement(
+      'label',
+      'cart-block__product-general__number fw-bold border rounded-2 me-1 ms-1 text-center',
+      {
+        type: 'text',
+      },
+      `${this.currentPage}`
+    );
+    this.cartPageArrowRight = this.createElement(
+      'span',
+      'btn btn-warning d-flex justify-content-center align-items-center'
+    );
+    this.cartPageArrowLeft = this.createElement(
+      'span',
+      'btn btn-warning d-flex justify-content-center align-items-center'
+    );
+  }
+
+  public changeProductInCartCount(data: ProductsData): void {
+    const cart = JSON.parse(localStorage.getItem('cart') || '');
+    this.productInCartCount = cart.length;
+    this.pageCount = Math.ceil(this.productInCartCount / this.productInPage);
+    console.log('changeProductInCartCount');
+    this.draw(data, cart);
+  }
+
+  public changeCurrentPage(data: ProductsData): void {
+    const cart = JSON.parse(localStorage.getItem('cart') || '');
+    this.draw(data, cart);
+  }
+
+  public addCartListeners(data: ProductsData) {
+    document.addEventListener('changeProductInCartCount', () => {
+      this.changeProductInCartCount(data);
+      this.inputItemsCount.textContent = `${this.productInPage}`;
+      if (this.currentPage >= this.pageCount) {
+        this.inputPageCount.textContent = `${this.pageCount}`;
+      }
+    });
+
+    document.addEventListener('changeCurrentPage', () => {
+      this.changeCurrentPage(data);
+      if (this.currentPage >= this.pageCount) {
+        this.currentPage = this.pageCount;
+        this.inputPageCount.textContent = `${this.pageCount}`;
+      }
+      this.inputPageCount.textContent = `${this.currentPage}`;
+    });
+
+    this.cartPageArrowRight.addEventListener('click', (e: Event) => {
+      this.arrowRightListener(e);
+      console.log(111);
+    });
+
+    this.cartPageArrowLeft.addEventListener('click', (e: Event) => {
+      this.arrowLeftListener(e);
+      console.log(222);
+    });
+
+    this.inputItemsCount.addEventListener('change', (e: Event) => {
+      this.changeCountInPageInput(e, data);
+      console.log(333);
+    });
+  }
+
+  public drawProductInCart(data: ProductsData, cart: CartItem[]) {
+    let index = 1;
+    // const start = (this.currentPage - 1) * this.productInPage + 1;
+    // const end = this.productInPage * (this.currentPage + 1) - 1;
+    for (let i = 0; i < cart.length; i++) {
+      data.products.forEach((itemData) => {
+        if (cart[i].id === itemData.id && cart[i].count !== 0) {
+          this.element.appendChild(new ProductCard(itemData, cart[i].count, index).drawCartView());
+          index += 1;
+        }
+      });
+    }
+  }
+
+  public arrowRightListener(e: Event) {
+    this.currentPage += 1;
+    if (this.currentPage >= this.pageCount && this.pageCount !== 0) {
+      this.currentPage = this.pageCount;
+    } else if (this.pageCount === 0) {
+      this.currentPage = 1;
+    }
+    this.inputPageCount.textContent = this.currentPage.toString();
+    e.target?.dispatchEvent(new CustomEvent('changeCurrentPage', { bubbles: true }));
+  }
+
+  public arrowLeftListener(e: Event) {
+    this.currentPage -= 1;
+    if (this.currentPage <= 1) {
+      this.currentPage = 1;
+    }
+    this.inputPageCount.textContent = this.currentPage.toString();
+    e.target?.dispatchEvent(new CustomEvent('changeCurrentPage', { bubbles: true }));
+  }
+
+  public changeCountInPageInput(e: Event, data: ProductsData) {
+    this.productInPage = Number((<HTMLInputElement>e.target).value);
+    this.changeProductInCartCount(data);
+    // e.target?.dispatchEvent(new CustomEvent('changeProductInCartCount', { bubbles: true }));
   }
 
   public draw(data: ProductsData, cart: CartItem[]): HTMLElement {
+    this.productInCartCount = cart.length;
+    this.pageCount = Math.ceil(this.productInCartCount / this.productInPage);
     this.element.innerHTML = '';
 
     const cartBlockGeneral: HTMLElement = this.createElement(
@@ -34,101 +159,44 @@ class ProductCartBlock extends DomElement {
 
     const pageItemsCount: HTMLElement = this.createElement('span', 'me-2', undefined, 'ITEMS');
 
-    const productInCartCount: number = cart.length;
-    const productInPage = 3;
-    const pageCount: number = Math.ceil(productInCartCount / productInPage);
-    let currentPage = 1;
-
-    const inputItemsCount: HTMLElement = this.createElement(
-      'input',
-      'cart-block__product-general__number fw-bold me-1 ms-1 text-center border rounded-2 d-flex align-items-center',
-      {
-        type: 'text',
-        value: productInPage,
-      },
-      ''
-    );
-
     const cartSettingCount: HTMLElement = this.createElement('div', 'd-flex align-items-center');
 
     const cartPageCount: HTMLElement = this.createElement('span', 'me-2', undefined, 'PAGE');
 
-    const cartPageArrowLeft: HTMLElement = this.createElement(
-      'span',
-      'btn btn-warning d-flex justify-content-center align-items-center'
-    );
-
-    cartPageArrowLeft.innerHTML = `
+    this.cartPageArrowLeft.innerHTML = `
     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-double-left" viewBox="0 0 16 16">
   <path fill-rule="evenodd" d="M8.354 1.646a.5.5 0 0 1 0 .708L2.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/>
   <path fill-rule="evenodd" d="M12.354 1.646a.5.5 0 0 1 0 .708L6.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/>
             </svg>`;
 
-    const inputPageCount: HTMLElement = this.createElement(
-      'label',
-      'cart-block__product-general__number fw-bold border rounded-2 me-1 ms-1 text-center',
-      {
-        type: 'text',
-        value: currentPage,
-      },
-      `${currentPage}`
-    );
-
-    const cartPageArrowRight: HTMLElement = this.createElement(
-      'span',
-      'btn btn-warning d-flex justify-content-center align-items-center'
-    );
-
-    cartPageArrowRight.innerHTML = `
+    this.cartPageArrowRight.innerHTML = `
     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-double-right" viewBox="0 0 16 16">
   <path fill-rule="evenodd" d="M3.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L9.293 8 3.646 2.354a.5.5 0 0 1 0-.708z"/>
   <path fill-rule="evenodd" d="M7.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L13.293 8 7.646 2.354a.5.5 0 0 1 0-.708z"/>
             </svg>`;
 
-    cartPageArrowRight.addEventListener('click', () => {
-      currentPage += 1;
-      if (currentPage >= pageCount) {
-        currentPage = pageCount;
-      }
-      inputPageCount.textContent = currentPage.toString();
-    });
-
-    cartPageArrowLeft.addEventListener('click', () => {
-      currentPage -= 1;
-      if (currentPage <= 1) {
-        currentPage = 1;
-      }
-      inputPageCount.textContent = currentPage.toString();
-    });
+    // this.cartPageArrowLeft.addEventListener('click', (e: Event) => {
+    //   this.currentPage -= 1;
+    //   if (this.currentPage <= 1) {
+    //     this.currentPage = 1;
+    //   }
+    //   this.inputPageCount.textContent = this.currentPage.toString();
+    //   // e.target?.dispatchEvent(new CustomEvent('changeCurrentPage', { bubbles: true }));
+    // });
 
     this.element.appendChild(cartBlockGeneral);
     cartBlockGeneral.appendChild(cartBlockGeneralName);
     cartSettingItems.appendChild(pageItemsCount);
-    cartSettingItems.appendChild(inputItemsCount);
+    cartSettingItems.appendChild(this.inputItemsCount);
     cartSettingCount.appendChild(cartPageCount);
-    cartSettingCount.appendChild(cartPageArrowLeft);
-    cartSettingCount.appendChild(inputPageCount);
-    cartSettingCount.appendChild(cartPageArrowRight);
+    cartSettingCount.appendChild(this.cartPageArrowLeft);
+    cartSettingCount.appendChild(this.inputPageCount);
+    cartSettingCount.appendChild(this.cartPageArrowRight);
     cartPageSetting.appendChild(cartSettingItems);
     cartPageSetting.appendChild(cartSettingCount);
     cartBlockGeneral.appendChild(cartPageSetting);
 
-    // for (let i = currentPage; i < pageCount; i++) {
-    //   console.log('currentPage', currentPage);
-    //   console.log('pageCount', pageCount);
-    //   data.products.forEach((itemData) => {
-    //     if (cart[i].id === itemData.id && cart[i].count !== 0) {
-    //       this.element.appendChild(new ProductCard(itemData, cart[i].count, i + 1).drawCartView());
-    //     }
-    //   });
-    // }
-    cart.forEach((item: CartItem, index: number) => {
-      data.products.forEach((itemData) => {
-        if (item.id === itemData.id && item.count !== 0) {
-          this.element.appendChild(new ProductCard(itemData, item.count, index + 1).drawCartView());
-        }
-      });
-    });
+    this.drawProductInCart(data, cart);
     return this.element;
   }
 }

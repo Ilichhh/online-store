@@ -33,6 +33,10 @@ export class AppView {
     this.cartPage.drawCartPage(data, cart);
   }
 
+  public drawCartPageNone(): void {
+    this.cartPage.drawCartPageNone();
+  }
+
   public drawCartElement(data: ProductsData, cart: CartItem[]): void {
     this.cartPage.productCartBlock.draw(data, cart);
   }

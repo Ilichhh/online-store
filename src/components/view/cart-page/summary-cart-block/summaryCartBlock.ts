@@ -42,7 +42,7 @@ class summaryCartBlock extends DomElement {
 
   public recalculatePrice(data: ProductsData): void {
     this.promo = Number(localStorage.getItem('promo'));
-    const cart = JSON.parse(localStorage.getItem('cart') || '');
+    const cart = localStorage.getItem('cart') === null ? [] : JSON.parse(localStorage.getItem('cart') || '');
     let sum = 0;
     let sumOld = 0;
     let countProduct = 0;
@@ -55,7 +55,6 @@ class summaryCartBlock extends DomElement {
         }
       });
     });
-
     this.countPrice = Math.floor(sum * 100) / 100;
     this.countOldPrice = Math.floor(sumOld * 100) / 100;
     this.countProduct = countProduct;
