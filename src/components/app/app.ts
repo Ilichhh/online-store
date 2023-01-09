@@ -169,7 +169,7 @@ class App {
     localStorage.setItem('promo', '0');
     this.controller.getAllProducts((data: ProductsData) => {
       this.view.cartPage.summaryCartBlock.recalculatePrice(data);
-      this.view.drawCartPage(data, this.cart);
+      this.cart.length ? this.view.drawCartPage(data, this.cart) : this.view.drawCartPageNone();
       this.view.header.updateData(data, this.cart);
     });
   }
