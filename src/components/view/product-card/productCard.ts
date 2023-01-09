@@ -8,6 +8,7 @@ class ProductCard extends DomElement {
   element: HTMLElement;
   cartProductCountInput: HTMLElement;
   cartBlockProductItem: HTMLElement;
+  cartProductItemInfo: HTMLElement;
   index: number | undefined;
 
   constructor(data: Product, inCart: number, index?: number) {
@@ -27,6 +28,10 @@ class ProductCard extends DomElement {
         type: 'text',
       },
       `${this.inCart}`
+    );
+    this.cartProductItemInfo = this.createElement(
+      'div',
+      'd-flex flex-column justify-content-center align-items-center'
     );
   }
 
@@ -164,11 +169,6 @@ class ProductCard extends DomElement {
       }
     );
 
-    const cartProductItemInfo: HTMLElement = this.createElement(
-      'div',
-      'd-flex flex-column justify-content-center align-items-center'
-    );
-
     const cartProductName: HTMLElement = this.createElement(
       'div',
       'cart-block__product-item__name mb-2 fs-4 fw-bold border-bottom',
@@ -273,13 +273,13 @@ class ProductCard extends DomElement {
     cartNumberImageBlock.appendChild(cartBlockImgBlock);
     cartBlockImgBlock.appendChild(cartBlockImg);
     this.cartBlockProductItem.appendChild(cartNumberImageBlock);
-    this.cartBlockProductItem.appendChild(cartProductItemInfo);
-    cartProductItemInfo.appendChild(cartProductName);
+    this.cartBlockProductItem.appendChild(this.cartProductItemInfo);
+    this.cartProductItemInfo.appendChild(cartProductName);
     cartProductCategoryBlock.appendChild(cartProductCategoryText);
     cartProductCategoryBlock.appendChild(cartProductCategory);
-    cartProductItemInfo.appendChild(cartProductCategoryBlock);
-    cartProductItemInfo.appendChild(cartProductDescription);
-    cartProductItemInfo.appendChild(cartProductInfoBlock);
+    this.cartProductItemInfo.appendChild(cartProductCategoryBlock);
+    this.cartProductItemInfo.appendChild(cartProductDescription);
+    this.cartProductItemInfo.appendChild(cartProductInfoBlock);
     cartProductRatingInfo.appendChild(cartProductRatingText);
     cartProductRatingInfo.appendChild(cartProductRatingValue);
     cartProductDiscountInfo.appendChild(cartProductDiscountText);
