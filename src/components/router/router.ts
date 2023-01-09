@@ -32,13 +32,13 @@ class Router {
       });
   }
 
-  public route(event: Event, id?: number): void {
+  public async route(event: Event, id?: number): Promise<void> {
     const element: HTMLAnchorElement = <HTMLAnchorElement>event.target;
     event = event || window.event;
     event.preventDefault();
     const link = element.closest('a')?.href;
     window.history.pushState({}, '', id ? `${link}-${id.toString()}` : link);
-    this.handleLocation();
+    await this.handleLocation();
   }
 
   public resetFilters(): void {

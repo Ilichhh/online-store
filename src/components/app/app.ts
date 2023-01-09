@@ -2,6 +2,7 @@ import AppView from '../view/appView';
 import AppController from '../controller/appController';
 import Router from '../router/router';
 import * as noUiSlider from 'nouislider';
+import { Modal } from 'bootstrap';
 import type { ProductsData, CartItem } from '../../types/types';
 
 class App {
@@ -67,6 +68,10 @@ class App {
       this.addRemoveFromCart(target, target, this.cart);
     });
 
+    this.view.productPage.buy.addEventListener('click', (e) => {
+      this.buyNowFromProductPage(e);
+    });
+
     // Main page
     this.view.mainPage.productsBlock.sortingFilter.addEventListener('change', (e) => this.sortProducts(e));
     this.view.mainPage.productsBlock.viewSwitcher.addEventListener('change', (e) => this.changeProductsView(e));
@@ -122,6 +127,23 @@ class App {
     });
   }
 
+  private async buyNowFromProductPage(e: Event): Promise<void> {
+    const buyNowBtn: HTMLElement = <HTMLElement>e.target;
+    const AddToCartBtn: HTMLElement = <HTMLElement>buyNowBtn?.parentNode?.childNodes[1];
+    const id: number = +AddToCartBtn.id;
+
+    if (!this.cart.filter((e) => e.id === id).length) {
+      this.cart.push({ id: +AddToCartBtn.id, count: 1 });
+    }
+    localStorage.setItem('cart', JSON.stringify(this.cart));
+
+    await this.router.route(e);
+    this.controller.getAllProducts((data: ProductsData) => this.view.header.updateData(data, this.cart));
+    this.renderCart();
+    const myModal = new Modal(this.view.cartPage.modalBuyNow.element);
+    myModal.show();
+  }
+
   private renderPage(): void {
     const path = window.location.pathname.slice(1);
     if (path === '') this.renderMain();
@@ -137,9 +159,9 @@ class App {
 
   private renderCart(): void {
     localStorage.setItem('promo', '0');
-    this.controller.getAllProducts((data: ProductsData) => {
+    this.controller.getAllProducts(async (data: ProductsData) => {
       this.view.cartPage.summaryCartBlock.recalculatePrice(data);
-      this.view.drawCartPage(data, this.cart);
+      await this.view.drawCartPage(data, this.cart);
       this.view.header.updateData(data, this.cart);
     });
   }
@@ -188,7 +210,7 @@ class App {
       this.addRemoveFromCart(card, target, cart);
     } else if (target.closest('.product-card__main')) {
       const card: HTMLElement = <HTMLElement>target.closest('.product-card__main');
-      const id = +card.id;
+      const id: number = +card.id;
       this.router.route(e, id);
       this.renderProductPage(id, cart);
     }

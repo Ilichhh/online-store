@@ -34,12 +34,7 @@
     border-radius: 5px;
   }
 
-  &__price {
-    margin-bottom: 4px;
-    margin-left: 15px;
-    text-decoration: line-through;
-    &_final {
-      margin-bottom: 0;
-    }
+  &__price_final {
+    margin-bottom: 0;
   }
 }
