@@ -7,6 +7,9 @@ import type { CartItem, ProductsData } from '../../../../types/types';
 class ProductCartBlock extends DomElement {
   element: HTMLElement;
   inputItemsCount: HTMLElement;
+  inputPageCount: HTMLElement;
+  cartPageArrowRight: HTMLElement;
+  cartPageArrowLeft: HTMLElement;
   productInCartCount: number;
   productInPage: number;
   pageCount: number;
@@ -28,6 +31,22 @@ class ProductCartBlock extends DomElement {
       },
       ''
     );
+    this.inputPageCount = this.createElement(
+      'label',
+      'cart-block__product-general__number fw-bold border rounded-2 me-1 ms-1 text-center',
+      {
+        type: 'text',
+      },
+      `${this.currentPage}`
+    );
+    this.cartPageArrowRight = this.createElement(
+      'span',
+      'btn btn-warning d-flex justify-content-center align-items-center'
+    );
+    this.cartPageArrowLeft = this.createElement(
+      'span',
+      'btn btn-warning d-flex justify-content-center align-items-center'
+    );
   }
 
   public changeProductInCartCount(data: ProductsData): void {
@@ -43,12 +62,19 @@ class ProductCartBlock extends DomElement {
     this.draw(data, cart);
   }
 
+  public arrowRight() {
+    // this.cartPageArrowRight.addEventListener('click', (e: Event) => {
+    //   this.arrowRightListener(e);
+    //   console.log(111);
+    // });
+  }
+
   public addCartListeners(data: ProductsData) {
     document.addEventListener('changeProductInCartCount', () => {
       this.changeProductInCartCount(data);
       this.inputItemsCount.textContent = `${this.productInPage}`;
       if (this.currentPage >= this.pageCount) {
-        // this.inputPageCount.textContent = `${this.pageCount}`;
+        this.inputPageCount.textContent = `${this.pageCount}`;
       }
     });
 
@@ -56,9 +82,24 @@ class ProductCartBlock extends DomElement {
       this.changeCurrentPage(data);
       if (this.currentPage >= this.pageCount) {
         this.currentPage = this.pageCount;
-        // this.inputPageCount.textContent = `${this.pageCount}`;
+        this.inputPageCount.textContent = `${this.pageCount}`;
       }
-      // this.inputPageCount.textContent = `${this.currentPage}`;
+      this.inputPageCount.textContent = `${this.currentPage}`;
+    });
+
+    this.cartPageArrowRight.addEventListener('click', (e: Event) => {
+      this.arrowRightListener(e);
+      console.log(111);
+    });
+
+    this.cartPageArrowLeft.addEventListener('click', (e: Event) => {
+      this.arrowLeftListener(e);
+      console.log(222);
+    });
+
+    this.inputItemsCount.addEventListener('change', (e: Event) => {
+      this.changeCountInPageInput(e, data);
+      console.log(333);
     });
   }
 
@@ -74,6 +115,32 @@ class ProductCartBlock extends DomElement {
         }
       });
     }
+  }
+
+  public arrowRightListener(e: Event) {
+    this.currentPage += 1;
+    if (this.currentPage >= this.pageCount && this.pageCount !== 0) {
+      this.currentPage = this.pageCount;
+    } else if (this.pageCount === 0) {
+      this.currentPage = 1;
+    }
+    this.inputPageCount.textContent = this.currentPage.toString();
+    e.target?.dispatchEvent(new CustomEvent('changeCurrentPage', { bubbles: true }));
+  }
+
+  public arrowLeftListener(e: Event) {
+    this.currentPage -= 1;
+    if (this.currentPage <= 1) {
+      this.currentPage = 1;
+    }
+    this.inputPageCount.textContent = this.currentPage.toString();
+    e.target?.dispatchEvent(new CustomEvent('changeCurrentPage', { bubbles: true }));
+  }
+
+  public changeCountInPageInput(e: Event, data: ProductsData) {
+    this.productInPage = Number((<HTMLInputElement>e.target).value);
+    this.changeProductInCartCount(data);
+    // e.target?.dispatchEvent(new CustomEvent('changeProductInCartCount', { bubbles: true }));
   }
 
   public draw(data: ProductsData, cart: CartItem[]): HTMLElement {
@@ -99,75 +166,39 @@ class ProductCartBlock extends DomElement {
 
     const pageItemsCount: HTMLElement = this.createElement('span', 'me-2', undefined, 'ITEMS');
 
-    this.inputItemsCount.addEventListener('change', (e: Event) => {
-      this.productInPage = Number((<HTMLInputElement>e.target).value);
-      this.changeProductInCartCount(data);
-      e.target?.dispatchEvent(new CustomEvent('changeProductInCartCount', { bubbles: true }));
-    });
-
     const cartSettingCount: HTMLElement = this.createElement('div', 'd-flex align-items-center');
 
     const cartPageCount: HTMLElement = this.createElement('span', 'me-2', undefined, 'PAGE');
 
-    const cartPageArrowLeft: HTMLElement = this.createElement(
-      'span',
-      'btn btn-warning d-flex justify-content-center align-items-center'
-    );
-
-    cartPageArrowLeft.innerHTML = `
+    this.cartPageArrowLeft.innerHTML = `
     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-double-left" viewBox="0 0 16 16">
   <path fill-rule="evenodd" d="M8.354 1.646a.5.5 0 0 1 0 .708L2.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/>
   <path fill-rule="evenodd" d="M12.354 1.646a.5.5 0 0 1 0 .708L6.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/>
             </svg>`;
 
-    const inputPageCount: HTMLElement = this.createElement(
-      'label',
-      'cart-block__product-general__number fw-bold border rounded-2 me-1 ms-1 text-center',
-      {
-        type: 'text',
-      },
-      `${this.currentPage}`
-    );
-
-    const cartPageArrowRight: HTMLElement = this.createElement(
-      'span',
-      'btn btn-warning d-flex justify-content-center align-items-center'
-    );
-
-    cartPageArrowRight.innerHTML = `
+    this.cartPageArrowRight.innerHTML = `
     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-double-right" viewBox="0 0 16 16">
   <path fill-rule="evenodd" d="M3.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L9.293 8 3.646 2.354a.5.5 0 0 1 0-.708z"/>
   <path fill-rule="evenodd" d="M7.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L13.293 8 7.646 2.354a.5.5 0 0 1 0-.708z"/>
             </svg>`;
 
-    cartPageArrowRight.addEventListener('click', (e: Event) => {
-      this.currentPage += 1;
-      if (this.currentPage >= this.pageCount && this.pageCount !== 0) {
-        this.currentPage = this.pageCount;
-      } else if (this.pageCount === 0) {
-        this.currentPage = 1;
-      }
-      inputPageCount.textContent = this.currentPage.toString();
-      // e.target?.dispatchEvent(new CustomEvent('changeCurrentPage', { bubbles: true }));
-    });
-
-    cartPageArrowLeft.addEventListener('click', (e: Event) => {
-      this.currentPage -= 1;
-      if (this.currentPage <= 1) {
-        this.currentPage = 1;
-      }
-      inputPageCount.textContent = this.currentPage.toString();
-      // e.target?.dispatchEvent(new CustomEvent('changeCurrentPage', { bubbles: true }));
-    });
+    // this.cartPageArrowLeft.addEventListener('click', (e: Event) => {
+    //   this.currentPage -= 1;
+    //   if (this.currentPage <= 1) {
+    //     this.currentPage = 1;
+    //   }
+    //   this.inputPageCount.textContent = this.currentPage.toString();
+    //   // e.target?.dispatchEvent(new CustomEvent('changeCurrentPage', { bubbles: true }));
+    // });
 
     this.element.appendChild(cartBlockGeneral);
     cartBlockGeneral.appendChild(cartBlockGeneralName);
     cartSettingItems.appendChild(pageItemsCount);
     cartSettingItems.appendChild(this.inputItemsCount);
     cartSettingCount.appendChild(cartPageCount);
-    cartSettingCount.appendChild(cartPageArrowLeft);
-    cartSettingCount.appendChild(inputPageCount);
-    cartSettingCount.appendChild(cartPageArrowRight);
+    cartSettingCount.appendChild(this.cartPageArrowLeft);
+    cartSettingCount.appendChild(this.inputPageCount);
+    cartSettingCount.appendChild(this.cartPageArrowRight);
     cartPageSetting.appendChild(cartSettingItems);
     cartPageSetting.appendChild(cartSettingCount);
     cartBlockGeneral.appendChild(cartPageSetting);

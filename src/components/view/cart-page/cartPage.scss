@@ -1,8 +1,10 @@
-.cart-block__product-general__number {
-  width: 30px;
-  height: 30px;
-}
+.cart-block__product {
+  &-general__number {
+    width: 30px;
+    height: 30px;
+  }
 
-.cart-block__product-item {
-  cursor: pointer;
+  &-item {
+    cursor: auto;
+  }
 }

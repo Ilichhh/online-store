@@ -31,7 +31,7 @@ class summaryCartBlock extends DomElement {
 
   public recalculatePrice(data: ProductsData): void {
     this.promo = Number(localStorage.getItem('promo'));
-    const cart = JSON.parse(localStorage.getItem('cart') || '');
+    const cart = localStorage.getItem('cart') === null ? [] : JSON.parse(localStorage.getItem('cart') || '');
     let sum = 0;
     let sumOld = 0;
     let countProduct = 0;
@@ -59,7 +59,7 @@ class summaryCartBlock extends DomElement {
       { name: 'ep', text: 'Epam Systems - 10%', discont: 10 },
     ];
 
-    this.recalculatePrice(data);
+    // this.recalculatePrice(data);
 
     const summaryName: HTMLElement = this.createElement(
       'div',
