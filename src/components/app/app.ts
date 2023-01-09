@@ -18,7 +18,7 @@ class App {
     this.cart = JSON.parse(<string>localStorage.getItem('cart')) || [];
   }
 
-  public start(): void {
+  public async start(): Promise<void> {
     // Init
     this.controller.getAllProducts((data: ProductsData) => {
       this.view.drawHeader(data, this.cart);
@@ -26,15 +26,15 @@ class App {
     this.renderPage();
 
     // Route
-    this.router.handleLocation();
-    window.addEventListener('popstate', () => {
-      this.router.handleLocation();
+    await this.router.handleLocation();
+    window.addEventListener('popstate', async () => {
+      await this.router.handleLocation();
       this.renderPage();
     });
 
     // Header
-    document.querySelector('.header__logo')?.addEventListener('click', (e) => {
-      this.router.route(e);
+    document.querySelector('.header__logo')?.addEventListener('click', async (e) => {
+      await this.router.route(e);
       localStorage.setItem('promo', '0');
       this.controller.getAllProducts((data: ProductsData) => {
         this.cart = JSON.parse(<string>localStorage.getItem('cart')) || [];
@@ -42,8 +42,8 @@ class App {
       });
     });
 
-    this.view.header.cart.addEventListener('click', (e) => {
-      this.router.route(e);
+    this.view.header.cart.addEventListener('click', async (e) => {
+      await this.router.route(e);
       this.renderCart();
     });
 
@@ -86,8 +86,8 @@ class App {
       setTimeout(() => (this.view.mainPage.filtersBlock.copyLInkBtn.textContent = 'Copy link'), 2000);
     });
 
-    this.view.mainPage.filtersBlock.resetBtn.addEventListener('click', () => {
-      this.router.resetFilters();
+    this.view.mainPage.filtersBlock.resetBtn.addEventListener('click', async () => {
+      await this.router.resetFilters();
       this.controller.getAllProducts((data: ProductsData) => {
         this.view.drawMainPage(data, this.cart, this.router.getQueryParams());
       });
@@ -203,7 +203,7 @@ class App {
     );
   }
 
-  private productCardEventListener(e: Event, cart: CartItem[]): void {
+  private async productCardEventListener(e: Event, cart: CartItem[]): Promise<void> {
     const target: Element = <Element>e.target;
     e.preventDefault();
     if (target.classList.contains('product-card__add-to-cart-button')) {
@@ -212,7 +212,7 @@ class App {
     } else if (target.closest('.product-card__main')) {
       const card: HTMLElement = <HTMLElement>target.closest('.product-card__main');
       const id: number = +card.id;
-      this.router.route(e, id);
+      await this.router.route(e, id);
       this.renderProductPage(id, cart);
     }
   }
