@@ -8,15 +8,15 @@ class Router {
         component: '',
       },
       '/': {
-        template: 'mainPage.html',
+        template: 'main.html',
         component: '',
       },
       '/cart': {
-        template: 'cartPage.html',
+        template: 'cart.html',
         component: '',
       },
       '/product': {
-        template: 'productPage.html',
+        template: 'product.html',
         component: '',
       },
     };
@@ -27,8 +27,9 @@ class Router {
     await fetch(route.template)
       .then((data: Response) => data.text())
       .then((html: string) => {
-        if (route === routes[404]) (<HTMLElement>document.getElementById('main')).innerHTML = html;
-        else (<HTMLElement>document.getElementById('main')).innerHTML = '';
+        if (route === routes[404]) {
+          (<HTMLElement>document.querySelector('body')).innerHTML = html;
+        } else (<HTMLElement>document.getElementById('main')).innerHTML = '';
       });
   }
 
