@@ -20,10 +20,10 @@ class App {
 
   public async start(): Promise<void> {
     // Init
+    await this.router.handleLocation();
     this.controller.getAllProducts((data: ProductsData) => {
       this.view.drawHeader(data, this.cart);
     });
-    await this.router.handleLocation();
     this.renderPage();
 
     // Route
