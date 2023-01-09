@@ -23,10 +23,10 @@ class App {
     this.controller.getAllProducts((data: ProductsData) => {
       this.view.drawHeader(data, this.cart);
     });
+    await this.router.handleLocation();
     this.renderPage();
 
     // Route
-    await this.router.handleLocation();
     window.addEventListener('popstate', async () => {
       await this.router.handleLocation();
       this.renderPage();
