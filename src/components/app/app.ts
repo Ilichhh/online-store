@@ -35,17 +35,24 @@ class App {
       this.controller.getAllProducts((data: ProductsData) => {
         this.cart = JSON.parse(<string>localStorage.getItem('cart')) || [];
         this.view.drawMainPage(data, this.cart, this.router.getQueryParams());
+        this.view.header.updateData(data, this.cart);
       });
     });
 
     this.view.header.cart.addEventListener('click', (e) => {
       this.router.route(e);
       localStorage.setItem('promo', '0');
-      this.controller.getAllProducts((data: ProductsData) => {
-        this.view.cartPage.summaryCartBlock.recalculatePrice(data);
-        this.view.drawCartPage(data, this.cart);
-        this.view.header.updateData(data, this.cart);
-      });
+      this.cart = JSON.parse(<string>localStorage.getItem('cart')) || [];
+      if (this.cart === null || this.cart.length === 0) {
+        this.view.drawCartPageNone();
+        console.log('555');
+      } else {
+        this.controller.getAllProducts((data: ProductsData) => {
+          this.view.cartPage.summaryCartBlock.recalculatePrice(data);
+          this.view.drawCartPage(data, this.cart);
+          this.view.header.updateData(data, this.cart);
+        });
+      }
     });
 
     this.controller.getAllProducts((data: ProductsData) => {

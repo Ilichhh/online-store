@@ -198,7 +198,7 @@ class modalBuyNow extends DomElement {
     modalFormCreditCardDateInput.addEventListener('input', (e: Event) => {
       const currentText = (<HTMLInputElement>e.target).value;
       const mounth = currentText.substring(0, 2);
-      const year = currentText.substring(2, 2);
+      // const year = currentText.substring(2, 2);
       if (currentText.length <= 5) {
         if (currentText.length === 2 && Number(mounth) <= 31) {
           (<HTMLInputElement>e.target).value += '/';
@@ -212,7 +212,7 @@ class modalBuyNow extends DomElement {
     });
 
     modalForm.addEventListener('submit', function (e: Event) {
-      validateForm();
+      validateForm(e);
       e.preventDefault();
     });
 
@@ -231,7 +231,7 @@ class modalBuyNow extends DomElement {
       elemId.textContent = hintMsg;
     }
 
-    function validateForm() {
+    function validateForm(e: Event) {
       let nameErr = true;
       let phoneErr = true;
       let addressErr = true;
@@ -322,7 +322,12 @@ class modalBuyNow extends DomElement {
       if ((nameErr || phoneErr || addressErr || emailErr || cardNumErr || cardDatErr || cardCvvErr) === true) {
         return false;
       } else {
-        alert("It's ok");
+        setTimeout(() => {
+          localStorage.setItem('cart', JSON.stringify([]));
+          // localStorage.setItem('cart', '');
+          e.target?.dispatchEvent(new CustomEvent('recalculatePrice', { bubbles: true }));
+        }, 4000);
+        alert('the order has been placed');
       }
     }
 
