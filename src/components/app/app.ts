@@ -58,6 +58,10 @@ class App {
       }
     });
 
+    this.controller.getAllProducts((data: ProductsData) => {
+      this.view.cartPage.productCartBlock.addCartListeners(data);
+    });
+
     // Product page
     this.view.productPage.addToCart.addEventListener('click', (e) => {
       const target: HTMLSelectElement = <HTMLSelectElement>e.target;
@@ -127,6 +131,8 @@ class App {
       setTimeout(() => {
         if (target.id === 'minus-button-product-cart' && !this.cart.length) {
           this.view.drawCartPageNone();
+        } else if (target.id === 'minus-button-product-cart') {
+          // e.target?.dispatchEvent(new CustomEvent('changeCurrentPage', { bubbles: true }));
         }
       });
     });
