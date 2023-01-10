@@ -107,8 +107,8 @@ class FiltersBlock extends DomElement {
     ];
 
     const filteredData = this.filter.filterData(data, params);
-    const min: number = filteredData.reduce((pr, cu) => (cu[filter] < pr[filter] ? cu : pr), data.products[0])[filter];
-    const max: number = filteredData.reduce((pr, cu) => (cu[filter] > pr[filter] ? cu : pr), data.products[0])[filter];
+    const min: number = filteredData.reduce((pr, cu) => (cu[filter] < pr[filter] ? cu : pr), filteredData[0])[filter];
+    const max: number = filteredData.reduce((pr, cu) => (cu[filter] > pr[filter] ? cu : pr), filteredData[0])[filter];
 
     const numberFormat = {
       price: {
