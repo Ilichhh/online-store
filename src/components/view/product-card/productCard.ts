@@ -9,6 +9,7 @@ class ProductCard extends DomElement {
   cartProductCountInput: HTMLElement;
   cartBlockProductItem: HTMLElement;
   cartProductItemInfo: HTMLElement;
+  cartProductCountMinus: HTMLElement;
   index: number | undefined;
 
   constructor(data: Product, inCart: number, index?: number) {
@@ -32,6 +33,12 @@ class ProductCard extends DomElement {
     this.cartProductItemInfo = this.createElement(
       'div',
       'd-flex flex-column justify-content-center align-items-center'
+    );
+    this.cartProductCountMinus = this.createElement(
+      'div',
+      'btn btn-warning ms-1 d-flex justify-content-center align-items-center',
+      { id: 'minus-button-product-cart' },
+      '-'
     );
   }
 
@@ -257,17 +264,6 @@ class ProductCard extends DomElement {
       this.plusCountProduct(e);
     });
 
-    const cartProductCountMinus: HTMLElement = this.createElement(
-      'div',
-      'btn btn-warning ms-1 d-flex justify-content-center align-items-center',
-      { id: 'minus-button-product-cart' },
-      '-'
-    );
-
-    cartProductCountMinus.addEventListener('click', (e) => {
-      this.minusCountProduct(e);
-    });
-
     const cartProductPrice: HTMLElement = this.createElement(
       'div',
       'cart-block__product-item__price',
@@ -296,7 +292,7 @@ class ProductCard extends DomElement {
     cartProductStockCount.appendChild(cartProductStockCountText);
     cartProductStockCount.appendChild(cartProductStockCountValue);
     cartProductStock.appendChild(cartProductStockCount);
-    cartProductCount.appendChild(cartProductCountMinus);
+    cartProductCount.appendChild(this.cartProductCountMinus);
     cartProductCount.appendChild(this.cartProductCountInput);
     cartProductCount.appendChild(cartProductCountPlus);
     cartProductStock.appendChild(cartProductCount);
@@ -307,20 +303,27 @@ class ProductCard extends DomElement {
     return this.element;
   }
 
+  public addProductCardListeners() {
+    this.cartProductCountMinus.addEventListener('click', (e) => {
+      this.minusCountProduct(e);
+      console.log(156);
+    });
+  }
+
   public minusCountProduct(e: Event) {
     const cart = JSON.parse(localStorage.getItem('cart') || '');
     this.inCart = this.inCart ? this.inCart - 1 : 0;
     if (Number(this.cartProductCountInput.textContent) <= 1) {
       this.cartBlockProductItem.classList.add('d-none');
       cart.splice(cart.id, 1);
-      // localStorage.setItem(
-      //   'cart',
-      //   JSON.stringify(
-      //     cart.map((item: { id: number }) => (item.id === this.data.id ? { ...item, count: this.inCart } : item))
-      //   )
-      // );
-      // e.target?.dispatchEvent(new CustomEvent('changeCountPage', { bubbles: true }));
-      // e.target?.dispatchEvent(new CustomEvent('recalculatePrice', { bubbles: true }));
+      localStorage.setItem(
+        'cart',
+        JSON.stringify(
+          cart.map((item: { id: number }) => (item.id === this.data.id ? { ...item, count: this.inCart } : item))
+        )
+      );
+      console.log('dispatch');
+      e.target?.dispatchEvent(new CustomEvent('changeCountPage', { bubbles: true }));
     }
     localStorage.setItem(
       'cart',

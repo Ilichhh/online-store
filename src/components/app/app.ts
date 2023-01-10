@@ -62,6 +62,8 @@ class App {
       this.view.cartPage.productCartBlock.addCartListeners(data);
     });
 
+    // this.view.productPage.
+
     // Product page
     this.view.productPage.addToCart.addEventListener('click', (e) => {
       const target: HTMLSelectElement = <HTMLSelectElement>e.target;
