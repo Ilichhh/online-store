@@ -313,20 +313,16 @@ class ProductCard extends DomElement {
     if (Number(this.cartProductCountInput.textContent) <= 1) {
       this.cartBlockProductItem.classList.add('d-none');
       cart.splice(cart.id, 1);
+      localStorage.setItem('cart', JSON.stringify(cart));
+      e.target?.dispatchEvent(new CustomEvent('changeCountPage', { bubbles: true }));
+    } else {
       localStorage.setItem(
         'cart',
         JSON.stringify(
           cart.map((item: { id: number }) => (item.id === this.data.id ? { ...item, count: this.inCart } : item))
         )
       );
-      // e.target?.dispatchEvent(new CustomEvent('changeCountPage', { bubbles: true }));
     }
-    localStorage.setItem(
-      'cart',
-      JSON.stringify(
-        cart.map((item: { id: number }) => (item.id === this.data.id ? { ...item, count: this.inCart } : item))
-      )
-    );
     e.target?.dispatchEvent(new CustomEvent('recalculatePrice', { bubbles: true }));
     this.cartProductCountInput.textContent = this.inCart.toString();
   }
