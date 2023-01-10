@@ -116,10 +116,6 @@ class FiltersBlock extends DomElement {
       max = filteredData.reduce((pr, cu) => (cu[filter] > pr[filter] ? cu : pr), filteredData[0])[filter];
     }
 
-    if (!filteredData.length) {
-      console.log('huy');
-    }
-
     const numberFormat = {
       price: {
         to: function (value: number) {
