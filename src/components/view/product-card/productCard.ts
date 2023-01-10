@@ -319,7 +319,7 @@ class ProductCard extends DomElement {
       //     cart.map((item: { id: number }) => (item.id === this.data.id ? { ...item, count: this.inCart } : item))
       //   )
       // );
-      // e.target?.dispatchEvent(new CustomEvent('changeProductInCartCount', { bubbles: true }));
+      // e.target?.dispatchEvent(new CustomEvent('changeCountPage', { bubbles: true }));
       // e.target?.dispatchEvent(new CustomEvent('recalculatePrice', { bubbles: true }));
     }
     localStorage.setItem(
