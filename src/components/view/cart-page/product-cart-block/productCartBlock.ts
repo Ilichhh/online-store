@@ -64,7 +64,7 @@ class ProductCartBlock extends DomElement {
   }
 
   public changeCurrentPage(data: ProductsData): void {
-    const cart = JSON.parse(localStorage.getItem('cart') || '');
+    const cart = JSON.parse(<string>localStorage.getItem('cart') || '');
     if (this.currentPage > this.pageCount) {
       this.currentPage = this.pageCount;
       this.inputPageCount.textContent = `${this.pageCount}`;
