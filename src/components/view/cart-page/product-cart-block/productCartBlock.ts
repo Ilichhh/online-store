@@ -65,10 +65,10 @@ class ProductCartBlock extends DomElement {
 
   public changeCurrentPage(data: ProductsData): void {
     const cart = JSON.parse(<string>localStorage.getItem('cart') || '');
-    if (this.currentPage > this.pageCount) {
+    if (this.currentPage >= this.pageCount) {
       this.currentPage = this.pageCount;
       this.inputPageCount.textContent = `${this.pageCount}`;
-    }
+    } else if (this.currentPage < 1) this.currentPage = 1;
     this.draw(data, cart);
   }
 
@@ -95,17 +95,12 @@ class ProductCartBlock extends DomElement {
   }
 
   public drawProductInCart(data: ProductsData, cart: CartItem[]) {
-    console.log('pageCount', this.pageCount);
-    console.log('current ', this.currentPage);
-    console.log('inCart ', this.productInCartCount);
-    console.log('pageCount ', this.pageCount);
-
     let index = (this.currentPage - 1) * this.productInPage + 1;
     const start = (this.currentPage - 1) * this.productInPage;
     const end = this.currentPage * this.productInPage;
     for (let i = start; i < end; i++) {
       data.products.forEach((itemData: Product) => {
-        if (cart[i].id === itemData.id && cart[i].count !== 0) {
+        if (cart[i] && cart[i].id === itemData.id) {
           this.element.appendChild(new ProductCard(itemData, cart[i].count, index).drawCartView());
           index += 1;
         }

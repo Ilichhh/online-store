@@ -230,6 +230,10 @@ class ProductCard extends DomElement {
       `${this.data.discountPercentage}`
     );
 
+    this.cartProductCountMinus.addEventListener('click', (e) => {
+      this.minusCountProduct(e);
+    });
+
     const cartProductStock: HTMLElement = this.createElement(
       'div',
       'd-flex flex-column align-items-center justify-content-around fw-bold'
@@ -303,13 +307,6 @@ class ProductCard extends DomElement {
     return this.element;
   }
 
-  public addProductCardListeners() {
-    this.cartProductCountMinus.addEventListener('click', (e) => {
-      this.minusCountProduct(e);
-      console.log(156);
-    });
-  }
-
   public minusCountProduct(e: Event) {
     const cart = JSON.parse(localStorage.getItem('cart') || '');
     this.inCart = this.inCart ? this.inCart - 1 : 0;
@@ -322,8 +319,7 @@ class ProductCard extends DomElement {
           cart.map((item: { id: number }) => (item.id === this.data.id ? { ...item, count: this.inCart } : item))
         )
       );
-      console.log('dispatch');
-      e.target?.dispatchEvent(new CustomEvent('changeCountPage', { bubbles: true }));
+      // e.target?.dispatchEvent(new CustomEvent('changeCountPage', { bubbles: true }));
     }
     localStorage.setItem(
       'cart',
