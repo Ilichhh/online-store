@@ -12,14 +12,14 @@ class NoProducts extends DomElement {
     this.element.innerHTML = '';
     const noProductsBlock = this.createElement(
       'div',
-      'fs-6 mw-100 w-25 p-2 d-flex fw-bold border rounded-4 flex-column justify-content-start align-items-center'
+      'fs-6 mw-100 w-100 p-2 d-flex mt-4 fw-bold border rounded-4 flex-column justify-content-start align-items-center'
     );
 
     const noProductsBlockContent = this.createElement(
       'div',
-      'fs-6 mw-100 w-25 text-danger p-2 d-flex fw-bold border rounded-4 flex-column justify-content-start align-items-center',
+      'fs-6 mw-100 w-100 text-danger p-2 d-flex fw-bold border rounded-4 flex-column justify-content-start align-items-center',
       undefined,
-      'No product in cart. KLJhlkjhlkjhlk lkjhl kjhl kjh lkjhlkjhl kjhl kjh'
+      'No product in cart'
     );
 
     this.element.appendChild(noProductsBlock);

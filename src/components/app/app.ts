@@ -127,6 +127,15 @@ class App {
         this.view.drawAllProducts(data, this.cart, this.router.getQueryParams())
       );
     });
+
+    this.view.cartPage.container.addEventListener('click', (e) => {
+      const target: HTMLElement = <HTMLElement>e.target;
+      setTimeout(() => {
+        if (target.id === 'minus-button-product-cart' && !this.cart.length) {
+          this.view.drawCartPageNone();
+        }
+      });
+    });
   }
 
   private async buyNowFromProductPage(e: Event): Promise<void> {
