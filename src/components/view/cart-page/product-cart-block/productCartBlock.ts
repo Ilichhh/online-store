@@ -57,7 +57,7 @@ class ProductCartBlock extends DomElement {
     const cart = JSON.parse(localStorage.getItem('cart') || '');
     this.productInCartCount = cart.length;
     this.pageCount = Math.ceil(this.productInCartCount / this.productInPage);
-    console.log('pageCount ', this.pageCount);
+    this.changeCurrentPage(data);
     // this.inputItemsCount.textContent = `${this.productInPage}`;
     // this.inputPageCount.textContent = `${this.currentPage}`;
     // this.draw(data, cart);
@@ -65,22 +65,20 @@ class ProductCartBlock extends DomElement {
 
   public changeCurrentPage(data: ProductsData): void {
     const cart = JSON.parse(localStorage.getItem('cart') || '');
-    if (this.currentPage >= this.pageCount) {
+    if (this.currentPage > this.pageCount) {
+      this.currentPage = this.pageCount;
       this.inputPageCount.textContent = `${this.pageCount}`;
-    } else this.inputPageCount.textContent = `${this.currentPage}`;
-    console.log('CurrentPage ', this.currentPage);
+    }
     this.draw(data, cart);
   }
 
   public addCartListeners(data: ProductsData) {
     document.addEventListener('changeCountPage', () => {
       this.changeCountPage(data);
-      // this.inputItemsCount.textContent = `${this.productInPage}`;
     });
 
     document.addEventListener('changeCurrentPage', () => {
       this.changeCurrentPage(data);
-      // this.inputPageCount.textContent = `${this.currentPage}`;
     });
 
     this.cartPageArrowRight.addEventListener('click', (e: Event) => {
@@ -100,6 +98,8 @@ class ProductCartBlock extends DomElement {
     console.log('pageCount', this.pageCount);
     console.log('current ', this.currentPage);
     console.log('inCart ', this.productInCartCount);
+    console.log('pageCount ', this.pageCount);
+
     let index = (this.currentPage - 1) * this.productInPage + 1;
     const start = (this.currentPage - 1) * this.productInPage;
     const end = this.currentPage * this.productInPage;
@@ -134,21 +134,18 @@ class ProductCartBlock extends DomElement {
   }
 
   public changeCountInPageInput(e: Event, data: ProductsData) {
-    if (
-      !(<HTMLInputElement>e.target).value ||
-      (<HTMLInputElement>e.target).value === null ||
-      (<HTMLInputElement>e.target).value === '' ||
-      (<HTMLInputElement>e.target).value === undefined
-    ) {
-      this.productInPage = 1;
-      this.inputItemsCount.textContent = `${this.productInPage}`;
-    } else {
-      this.productInPage = Number((<HTMLInputElement>e.target).value);
-    }
+    // if (
+    //   !(<HTMLInputElement>e.target).value ||
+    //   (<HTMLInputElement>e.target).value === null ||
+    //   (<HTMLInputElement>e.target).value === '' ||
+    //   (<HTMLInputElement>e.target).value === undefined
+    // ) {
+    //   this.productInPage = 1;
+    //   this.inputItemsCount.textContent = `${this.productInPage}`;
+    // } else {
+    this.productInPage = Number((<HTMLInputElement>e.target).value);
+    // }
     this.changeCountPage(data);
-    if (this.currentPage > this.pageCount) {
-      this.changeCurrentPage(data);
-    }
   }
 
   public draw(data: ProductsData, cart: CartItem[]): HTMLElement {
