@@ -105,10 +105,16 @@ class FiltersBlock extends DomElement {
     const highestData: number = data.products.reduce((pr, cu) => (cu[filter] > pr[filter] ? cu : pr), data.products[0])[
       filter
     ];
+    const midData: number = (lowestData + highestData) / 2;
+
+    let min: number = midData;
+    let max: number = midData;
 
     const filteredData = this.filter.filterData(data, params);
-    const min: number = filteredData.reduce((pr, cu) => (cu[filter] < pr[filter] ? cu : pr), filteredData[0])[filter];
-    const max: number = filteredData.reduce((pr, cu) => (cu[filter] > pr[filter] ? cu : pr), filteredData[0])[filter];
+    if (filteredData.length) {
+      min = filteredData.reduce((pr, cu) => (cu[filter] < pr[filter] ? cu : pr), filteredData[0])[filter];
+      max = filteredData.reduce((pr, cu) => (cu[filter] > pr[filter] ? cu : pr), filteredData[0])[filter];
+    }
 
     const numberFormat = {
       price: {
