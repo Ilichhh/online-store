@@ -24,10 +24,14 @@ class ProductCartBlock extends DomElement {
     this.element = this.createElement('div', 'cart-block__product border rounded-4 w-75 p-2');
     this.inputItemsCount = this.createElement(
       'input',
-      'cart-block__product-general__number fw-bold me-1 ms-1 text-center border rounded-2 d-flex align-items-center',
+      'cart-block__product-general__number input-count fw-bold me-1 ms-1 text-center border rounded-2 d-flex align-items-center',
       {
-        type: 'text',
+        type: 'number',
+        required: 'required',
         value: this.productInPage,
+        min: 1,
+        max: 20,
+        step: 1,
       },
       ''
     );
@@ -131,9 +135,20 @@ class ProductCartBlock extends DomElement {
   }
 
   public changeCountInPageInput(e: Event, data: ProductsData) {
-    this.productInPage = Number((<HTMLInputElement>e.target).value);
+    console.log((<HTMLInputElement>e.target).value);
+    if (
+      !(<HTMLInputElement>e.target).value
+      // (<HTMLInputElement>e.target).value === '' ||
+      // (<HTMLInputElement>e.target).value === undefined
+    ) {
+      this.productInPage = 1;
+      console.log(this.productInPage);
+      // this.inputItemsCount.textContent = `${this.productInPage}`;
+    } else {
+      this.productInPage = Number((<HTMLInputElement>e.target).value);
+      console.log(this.productInPage);
+    }
     this.changeProductInCartCount(data);
-    // e.target?.dispatchEvent(new CustomEvent('changeProductInCartCount', { bubbles: true }));
   }
 
   public draw(data: ProductsData, cart: CartItem[]): HTMLElement {
