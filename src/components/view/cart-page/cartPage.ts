@@ -10,9 +10,14 @@ class CartPage extends DomElement {
   productCartBlock: ProductCartBlock;
   summaryCartBlock: SummaryCartBlock;
   noProducts: NoProducts;
+  container: HTMLElement;
 
   constructor() {
     super();
+    this.container = this.createElement(
+      'div',
+      'cart-block container d-flex flex-wrap w-100 pt-2 justify-content-between justify-content-lg-center'
+    );
     this.modalBuyNow = new ModalBuyNow();
     this.productCartBlock = new ProductCartBlock();
     this.summaryCartBlock = new SummaryCartBlock();
@@ -21,26 +26,22 @@ class CartPage extends DomElement {
 
   public drawCartPageNone(): void {
     const main: HTMLElement = <HTMLElement>document.getElementById('main');
-    const cartBlock: HTMLElement = this.createElement(
-      'div',
-      'cart-block container d-flex flex-wrap w-100 mt-2 justify-content-between justify-content-lg-center'
-    );
-    main.appendChild(cartBlock);
-    cartBlock.appendChild(this.noProducts.draw());
+    main.innerHTML = '';
+    this.container.innerHTML = '';
+
+    main.appendChild(this.container);
+    this.container.appendChild(this.noProducts.draw());
   }
 
   public drawCartPage(data: ProductsData, cart: CartItem[]): void {
     const main: HTMLElement = <HTMLElement>document.getElementById('main');
+    main.innerHTML = '';
+    this.container.innerHTML = '';
 
-    const container: HTMLElement = this.createElement(
-      'div',
-      'cart-block container d-flex flex-wrap w-100 mt-2 justify-content-between justify-content-lg-center'
-    );
-
-    main.appendChild(container);
-    container.appendChild(this.productCartBlock.draw(data, cart));
-    container.appendChild(this.summaryCartBlock.draw(data));
-    container.appendChild(this.modalBuyNow.draw());
+    main.appendChild(this.container);
+    this.container.appendChild(this.productCartBlock.draw(data, cart));
+    this.container.appendChild(this.summaryCartBlock.draw(data));
+    this.container.appendChild(this.modalBuyNow.draw());
   }
 }
 

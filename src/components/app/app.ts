@@ -33,14 +33,8 @@ class App {
     });
 
     // Header
-    document.querySelector('.header__logo')?.addEventListener('click', async (e) => {
-      await this.router.route(e);
-      localStorage.setItem('promo', '0');
-      this.controller.getAllProducts((data: ProductsData) => {
-        this.cart = JSON.parse(<string>localStorage.getItem('cart')) || [];
-        this.view.drawMainPage(data, this.cart, this.router.getQueryParams());
-        this.view.header.updateData(data, this.cart);
-      });
+    document.querySelector('.header__logo')?.addEventListener('click', (e) => {
+      this.redirectToMainPage(e);
     });
 
     this.view.header.cart.addEventListener('click', async (e) => {
@@ -92,7 +86,7 @@ class App {
     });
 
     this.view.mainPage.filtersBlock.resetBtn.addEventListener('click', async () => {
-      await this.router.resetFilters();
+      this.router.resetFilters();
       this.controller.getAllProducts((data: ProductsData) => {
         this.view.drawMainPage(data, this.cart, this.router.getQueryParams());
       });
@@ -130,6 +124,46 @@ class App {
       this.controller.getAllProducts((data: ProductsData) =>
         this.view.drawAllProducts(data, this.cart, this.router.getQueryParams())
       );
+    });
+
+    this.view.cartPage.container.addEventListener('click', (e) => {
+      const target: HTMLElement = <HTMLElement>e.target;
+      setTimeout(() => {
+        if (target.id === 'minus-button-product-cart' && !this.cart.length) {
+          this.view.drawCartPageNone();
+        }
+      });
+    });
+
+    this.view.cartPage.modalBuyNow.submitButton.addEventListener('click', () => {
+      console.log(this.view.cartPage.modalBuyNow.isValid);
+      if (this.view.cartPage.modalBuyNow.isValid) {
+        this.view.cartPage.modalBuyNow.closeButton.click();
+        this.cart.length = 0;
+        this.view.drawCartPageNone();
+        const alert: HTMLElement = document.createElement('h2');
+        alert.setAttribute('style', 'position:absolute;top:40%;left:35%;background-color:white');
+        alert.innerHTML = 'The order has been placed';
+        document.body.appendChild(alert);
+        this.controller.getAllProducts((data: ProductsData) => {
+          this.view.header.updateData(data, this.cart);
+          setTimeout(() => {
+            const headerLogo: HTMLLinkElement = <HTMLLinkElement>document.querySelector('.header__logo');
+            alert.parentNode?.removeChild(alert);
+            headerLogo.click();
+          }, 3000);
+        });
+      }
+    });
+  }
+
+  private async redirectToMainPage(e: Event): Promise<void> {
+    await this.router.route(e);
+    localStorage.setItem('promo', '0');
+    this.controller.getAllProducts((data: ProductsData) => {
+      this.cart = JSON.parse(<string>localStorage.getItem('cart')) || [];
+      this.view.drawMainPage(data, this.cart, this.router.getQueryParams());
+      this.view.header.updateData(data, this.cart);
     });
   }
 
