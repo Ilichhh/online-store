@@ -1,6 +1,6 @@
 import DomElement from '../../domElement';
 import ProductCard from '../../product-card/productCard';
-import type { CartItem, ProductsData } from '../../../../types/types';
+import type { CartItem, Product, ProductsData } from '../../../../types/types';
 // import gridIcon from '../../../../assets/svg/grid.svg';
 // import listIcon from '../../../../assets/svg/list-ul.svg';
 
@@ -69,7 +69,7 @@ class ProductCartBlock extends DomElement {
       this.inputPageCount.textContent = `${this.pageCount}`;
     } else this.inputPageCount.textContent = `${this.currentPage}`;
     console.log('CurrentPage ', this.currentPage);
-    // this.draw(data, cart);
+    this.draw(data, cart);
   }
 
   public addCartListeners(data: ProductsData) {
@@ -85,26 +85,26 @@ class ProductCartBlock extends DomElement {
 
     this.cartPageArrowRight.addEventListener('click', (e: Event) => {
       this.arrowRightListener(e, data);
-      console.log(111);
     });
 
     this.cartPageArrowLeft.addEventListener('click', (e: Event) => {
       this.arrowLeftListener(e, data);
-      console.log(222);
     });
 
     this.inputItemsCount.addEventListener('change', (e: Event) => {
       this.changeCountInPageInput(e, data);
-      console.log(333);
     });
   }
 
   public drawProductInCart(data: ProductsData, cart: CartItem[]) {
-    let index = 1;
-    // const start = (this.currentPage - 1) * this.productInPage + 1;
-    // const end = this.productInPage * (this.currentPage + 1) - 1;
-    for (let i = 0; i < cart.length; i++) {
-      data.products.forEach((itemData) => {
+    console.log('pageCount', this.pageCount);
+    console.log('current ', this.currentPage);
+    console.log('inCart ', this.productInCartCount);
+    let index = (this.currentPage - 1) * this.productInPage + 1;
+    const start = (this.currentPage - 1) * this.productInPage;
+    const end = this.currentPage * this.productInPage;
+    for (let i = start; i < end; i++) {
+      data.products.forEach((itemData: Product) => {
         if (cart[i].id === itemData.id && cart[i].count !== 0) {
           this.element.appendChild(new ProductCard(itemData, cart[i].count, index).drawCartView());
           index += 1;
@@ -122,7 +122,6 @@ class ProductCartBlock extends DomElement {
     }
     this.inputPageCount.textContent = this.currentPage.toString();
     this.changeCurrentPage(data);
-    // e.target?.dispatchEvent(new CustomEvent('changeCurrentPage', { bubbles: true }));
   }
 
   public arrowLeftListener(e: Event, data: ProductsData) {
@@ -132,7 +131,6 @@ class ProductCartBlock extends DomElement {
     }
     this.inputPageCount.textContent = this.currentPage.toString();
     this.changeCurrentPage(data);
-    // e.target?.dispatchEvent(new CustomEvent('changeCurrentPage', { bubbles: true }));
   }
 
   public changeCountInPageInput(e: Event, data: ProductsData) {
