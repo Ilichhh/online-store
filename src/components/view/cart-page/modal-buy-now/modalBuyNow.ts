@@ -3,6 +3,9 @@ import DomElement from '../../domElement';
 class modalBuyNow extends DomElement {
   element: HTMLElement;
   cardSource: string;
+  submitButton: HTMLElement;
+  closeButton: HTMLElement;
+  isValid: boolean;
 
   constructor() {
     super();
@@ -15,6 +18,17 @@ class modalBuyNow extends DomElement {
       'aria-labelledby': 'staticBackdropLabel',
       'aria-hidden': 'true',
     });
+    this.submitButton = this.createElement('button', 'btn btn-warning', { type: 'submit' }, 'BUY NOW');
+    this.closeButton = this.createElement(
+      'button',
+      'btn btn-secondary',
+      {
+        type: 'button',
+        'data-bs-dismiss': 'modal',
+      },
+      'Close'
+    );
+    this.isValid = false;
   }
 
   public changeCardImage(cardSource: string): void {
@@ -148,22 +162,6 @@ class modalBuyNow extends DomElement {
     });
 
     const modalFooter: HTMLElement = this.createElement('div', 'modal-footer');
-    const modalFooterCloseButton: HTMLElement = this.createElement(
-      'button',
-      'btn btn-secondary',
-      {
-        type: 'button',
-        'data-bs-dismiss': 'modal',
-      },
-      'Close'
-    );
-
-    const modalFooterBuyButton: HTMLElement = this.createElement(
-      'button',
-      'btn btn-warning',
-      { type: 'submit' },
-      'BUY NOW'
-    );
 
     modalFormCreditCardNumberInput.addEventListener('input', (e: Event) => {
       const currentText = (<HTMLInputElement>e.target).value;
@@ -231,7 +229,7 @@ class modalBuyNow extends DomElement {
       elemId.textContent = hintMsg;
     }
 
-    function validateForm(e: Event) {
+    const validateForm = (e: Event) => {
       let nameErr = true;
       let phoneErr = true;
       let addressErr = true;
@@ -322,14 +320,12 @@ class modalBuyNow extends DomElement {
       if ((nameErr || phoneErr || addressErr || emailErr || cardNumErr || cardDatErr || cardCvvErr) === true) {
         return false;
       } else {
-        setTimeout(() => {
-          localStorage.setItem('cart', JSON.stringify([]));
-          // localStorage.setItem('cart', '');
-          e.target?.dispatchEvent(new CustomEvent('recalculatePrice', { bubbles: true }));
-        }, 4000);
-        alert('the order has been placed');
+        localStorage.setItem('cart', JSON.stringify([]));
+        // localStorage.setItem('cart', '');
+        e.target?.dispatchEvent(new CustomEvent('recalculatePrice', { bubbles: true }));
+        this.isValid = true;
       }
-    }
+    };
 
     this.element.appendChild(modal);
     modal.appendChild(modalContent);
@@ -370,8 +366,8 @@ class modalBuyNow extends DomElement {
     modalFormCreditCardCVV.appendChild(modalFormCreditCardCVVLabel);
     modalFormCreditCardCVV.appendChild(modalCardCVVInValid);
     modalForm.appendChild(modalFooter);
-    modalFooter.appendChild(modalFooterCloseButton);
-    modalFooter.appendChild(modalFooterBuyButton);
+    modalFooter.appendChild(this.closeButton);
+    modalFooter.appendChild(this.submitButton);
 
     return this.element;
   }
