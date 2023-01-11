@@ -183,8 +183,10 @@ class App {
     await this.router.route(e);
     this.controller.getAllProducts((data: ProductsData) => this.view.header.updateData(data, this.cart));
     this.renderCart();
-    const myModal = new Modal(this.view.cartPage.modalBuyNow.element);
-    setTimeout(() => myModal.show(), 1000);
+    setTimeout(() => {
+      const myModal = new Modal(this.view.cartPage.modalBuyNow.element);
+      myModal.show();
+    }, 1000);
   }
 
   private renderPage(): void {
