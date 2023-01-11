@@ -130,17 +130,7 @@ class ProductCartBlock extends DomElement {
   }
 
   public changeCountInPageInput(e: Event, data: ProductsData) {
-    // if (
-    //   !(<HTMLInputElement>e.target).value ||
-    //   (<HTMLInputElement>e.target).value === null ||
-    //   (<HTMLInputElement>e.target).value === '' ||
-    //   (<HTMLInputElement>e.target).value === undefined
-    // ) {
-    //   this.productInPage = 1;
-    //   this.inputItemsCount.textContent = `${this.productInPage}`;
-    // } else {
     this.productInPage = Number((<HTMLInputElement>e.target).value);
-    // }
     this.changeCountPage(data);
   }
 

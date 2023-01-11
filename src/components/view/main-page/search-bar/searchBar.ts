@@ -26,8 +26,6 @@ class SearchBar extends DomElement {
   public draw(params: QueryParams): HTMLElement {
     const searchBar: HTMLElement = this.createElement('div', 'search-bar input-group mt-4 mb-4');
     const message = document.createElement('div');
-    message.textContent =
-      'Привет, проверяющий. Мы чуть-чуть не успели доделать корзину и валидацию формы. Сейчас должно быть 282 балла. Будь другом, не проверяй пока, подожди денек (в идеале два). Спасибо. ;)';
 
     this.input.value = params.search || '';
     searchBar.appendChild(message);
