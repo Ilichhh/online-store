@@ -312,10 +312,7 @@ class ProductCard extends DomElement {
   public minusCountProduct(e: Event) {
     const target: Element = <Element>e.target;
     const card: HTMLElement = <HTMLElement>target.closest('.product-card');
-    console.log('target', target);
-    console.log('card', card);
     const cart = JSON.parse(localStorage.getItem('cart') || '');
-    console.log('cart', cart);
     this.inCart = this.inCart ? this.inCart - 1 : 0;
     if (Number(this.cartProductCountInput.textContent) <= 1) {
       this.cartBlockProductItem.classList.add('d-none');
