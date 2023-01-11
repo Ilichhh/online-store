@@ -121,6 +121,7 @@ class modalBuyNow extends DomElement {
       id: 'card-number-input',
       placeholder: 'Credit card number',
     });
+
     const modalCardNumberInValid: HTMLElement = this.createElement('div', 'text-danger', undefined, '');
     const modalFormCreditCardNumberLabel: HTMLElement = this.createElement(
       'label',
@@ -193,19 +194,14 @@ class modalBuyNow extends DomElement {
       }
     });
 
-    modalFormCreditCardDateInput.addEventListener('input', (e: Event) => {
-      const currentText = (<HTMLInputElement>e.target).value;
-      const mounth = currentText.substring(0, 2);
-      // const year = currentText.substring(2, 2);
-      if (currentText.length <= 5) {
-        if (currentText.length === 2 && Number(mounth) <= 31) {
-          (<HTMLInputElement>e.target).value += '/';
-        }
-        return true;
-      } else {
-        let str = currentText;
-        str = str.substring(0, str.length - 1);
-        (<HTMLInputElement>e.target).value = str;
+    modalFormCreditCardDateInput.addEventListener('input', () => {
+      const validDate = <HTMLInputElement>modalFormCreditCardDateInput;
+      if (validDate.value.length === 2 && Number(validDate.value) <= 12) {
+        validDate.value += '/';
+      } else if (validDate.value.length >= 2 && Number(validDate.value.slice(0, 2)) > 12) {
+        validDate.value = validDate.value.slice(0, 2);
+      } else if (validDate.value.length > 5) {
+        validDate.value = validDate.value.slice(0, 5);
       }
     });
 
@@ -303,7 +299,7 @@ class modalBuyNow extends DomElement {
       } else {
         const regex = /^([0-9]{2}\/[0-9]{2})/;
         if (regex.test((<HTMLInputElement>modalFormCreditCardDateInput).value) === false) {
-          printError(modalCardDateInValid, 'Enter valid date and year');
+          printError(modalCardDateInValid, 'Enter valid date: MM/YY');
         } else {
           printError(modalCardDateInValid, '');
           cardDatErr = false;
@@ -321,7 +317,6 @@ class modalBuyNow extends DomElement {
         return false;
       } else {
         localStorage.setItem('cart', JSON.stringify([]));
-        // localStorage.setItem('cart', '');
         e.target?.dispatchEvent(new CustomEvent('recalculatePrice', { bubbles: true }));
         this.isValid = true;
       }

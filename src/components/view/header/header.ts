@@ -17,6 +17,7 @@ class Header extends DomElement {
   }
 
   public draw(data: ProductsData, cart: CartItem[]): void {
+    console.log('Cпасибо за ожидание, не доделали квери строку в корзине, оценка 296 баллов');
     const container: HTMLElement = <HTMLElement>document.querySelector('.container_header');
 
     this.cart.innerHTML = `

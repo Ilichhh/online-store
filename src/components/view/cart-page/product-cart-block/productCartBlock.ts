@@ -58,9 +58,6 @@ class ProductCartBlock extends DomElement {
     this.productInCartCount = cart.length;
     this.pageCount = Math.ceil(this.productInCartCount / this.productInPage);
     this.changeCurrentPage(data);
-    // this.inputItemsCount.textContent = `${this.productInPage}`;
-    // this.inputPageCount.textContent = `${this.currentPage}`;
-    // this.draw(data, cart);
   }
 
   public changeCurrentPage(data: ProductsData): void {
@@ -95,6 +92,10 @@ class ProductCartBlock extends DomElement {
   }
 
   public drawProductInCart(data: ProductsData, cart: CartItem[]) {
+    if (this.currentPage < 1) {
+      this.currentPage = 1;
+      this.inputPageCount.textContent = `${this.currentPage}`;
+    }
     let index = (this.currentPage - 1) * this.productInPage + 1;
     const start = (this.currentPage - 1) * this.productInPage;
     const end = this.currentPage * this.productInPage;
@@ -129,17 +130,7 @@ class ProductCartBlock extends DomElement {
   }
 
   public changeCountInPageInput(e: Event, data: ProductsData) {
-    // if (
-    //   !(<HTMLInputElement>e.target).value ||
-    //   (<HTMLInputElement>e.target).value === null ||
-    //   (<HTMLInputElement>e.target).value === '' ||
-    //   (<HTMLInputElement>e.target).value === undefined
-    // ) {
-    //   this.productInPage = 1;
-    //   this.inputItemsCount.textContent = `${this.productInPage}`;
-    // } else {
     this.productInPage = Number((<HTMLInputElement>e.target).value);
-    // }
     this.changeCountPage(data);
   }
 
