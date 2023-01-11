@@ -102,7 +102,7 @@ class ProductCartBlock extends DomElement {
     for (let i = start; i < end; i++) {
       data.products.forEach((itemData: Product) => {
         if (cart[i] && cart[i].id === itemData.id) {
-          this.element.appendChild(new ProductCard(itemData, cart[i].count, index).drawCartView());
+          this.element.appendChild(new ProductCard(itemData, cart[i].count, index, itemData.id).drawCartView());
           index += 1;
         }
       });
@@ -172,15 +172,6 @@ class ProductCartBlock extends DomElement {
   <path fill-rule="evenodd" d="M3.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L9.293 8 3.646 2.354a.5.5 0 0 1 0-.708z"/>
   <path fill-rule="evenodd" d="M7.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L13.293 8 7.646 2.354a.5.5 0 0 1 0-.708z"/>
             </svg>`;
-
-    // this.cartPageArrowLeft.addEventListener('click', (e: Event) => {
-    //   this.currentPage -= 1;
-    //   if (this.currentPage <= 1) {
-    //     this.currentPage = 1;
-    //   }
-    //   this.inputPageCount.textContent = this.currentPage.toString();
-    //   // e.target?.dispatchEvent(new CustomEvent('changeCurrentPage', { bubbles: true }));
-    // });
 
     this.element.appendChild(cartBlockGeneral);
     cartBlockGeneral.appendChild(cartBlockGeneralName);
