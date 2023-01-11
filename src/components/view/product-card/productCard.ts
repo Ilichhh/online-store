@@ -314,6 +314,7 @@ class ProductCard extends DomElement {
       this.cartBlockProductItem.classList.add('d-none');
       cart.splice(cart.id, 1);
       localStorage.setItem('cart', JSON.stringify(cart));
+      e.target?.dispatchEvent(new CustomEvent('recalculatePrice', { bubbles: true }));
       e.target?.dispatchEvent(new CustomEvent('changeCountPage', { bubbles: true }));
     } else {
       localStorage.setItem(
