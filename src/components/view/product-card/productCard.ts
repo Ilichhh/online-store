@@ -1,6 +1,6 @@
 import DomElement from '../domElement';
 // import ratingIcon from '../../../assets/svg/star.svg';
-import type { Product } from '../../../types/types';
+import type { CartItem, Product } from '../../../types/types';
 
 class ProductCard extends DomElement {
   data: Product;
@@ -11,13 +11,15 @@ class ProductCard extends DomElement {
   cartProductItemInfo: HTMLElement;
   cartProductCountMinus: HTMLElement;
   index: number | undefined;
+  productId: number | undefined;
 
-  constructor(data: Product, inCart: number, index?: number) {
+  constructor(data: Product, inCart: number, index?: number, productId?: number) {
     super();
     this.data = data;
     this.inCart = inCart;
     this.index = index;
-    this.element = this.createElement('div', 'product-card card');
+    this.productId = productId;
+    this.element = this.createElement('div', 'product-card card', { id: `${this.productId}` });
     this.cartBlockProductItem = this.createElement(
       'div',
       'p-2 cart-block__product-item border-bottom d-flex justify-content-between align-items-center'
@@ -308,11 +310,16 @@ class ProductCard extends DomElement {
   }
 
   public minusCountProduct(e: Event) {
+    const target: Element = <Element>e.target;
+    const card: HTMLElement = <HTMLElement>target.closest('.product-card');
+    console.log('target', target);
+    console.log('card', card);
     const cart = JSON.parse(localStorage.getItem('cart') || '');
+    console.log('cart', cart);
     this.inCart = this.inCart ? this.inCart - 1 : 0;
     if (Number(this.cartProductCountInput.textContent) <= 1) {
       this.cartBlockProductItem.classList.add('d-none');
-      cart.splice(cart.id, 1);
+      cart.forEach((product: CartItem, index: number) => (product.id === +card.id ? cart.splice(index, 1) : null));
       localStorage.setItem('cart', JSON.stringify(cart));
       e.target?.dispatchEvent(new CustomEvent('recalculatePrice', { bubbles: true }));
       e.target?.dispatchEvent(new CustomEvent('changeCountPage', { bubbles: true }));
