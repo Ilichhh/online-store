@@ -299,7 +299,7 @@ class modalBuyNow extends DomElement {
       } else {
         const regex = /^([0-9]{2}\/[0-9]{2})/;
         if (regex.test((<HTMLInputElement>modalFormCreditCardDateInput).value) === false) {
-          printError(modalCardDateInValid, 'Enter valid date and year');
+          printError(modalCardDateInValid, 'Enter valid date: MM/YY');
         } else {
           printError(modalCardDateInValid, '');
           cardDatErr = false;
