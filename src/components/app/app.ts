@@ -139,10 +139,10 @@ class App {
     });
 
     this.view.cartPage.modalBuyNow.submitButton.addEventListener('click', () => {
-      console.log(this.view.cartPage.modalBuyNow.isValid);
       if (this.view.cartPage.modalBuyNow.isValid) {
         this.view.cartPage.modalBuyNow.closeButton.click();
         this.cart.length = 0;
+        localStorage.setItem('cart', '[]');
         this.view.drawCartPageNone();
         const alert: HTMLElement = document.createElement('h2');
         alert.setAttribute('style', 'position:absolute;top:40%;left:35%;background-color:white');
