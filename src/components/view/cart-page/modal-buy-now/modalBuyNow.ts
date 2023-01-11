@@ -196,7 +196,6 @@ class modalBuyNow extends DomElement {
 
     modalFormCreditCardDateInput.addEventListener('input', () => {
       const validDate = <HTMLInputElement>modalFormCreditCardDateInput;
-      console.log(validDate);
       if (validDate.value.length === 2 && Number(validDate.value) <= 12) {
         validDate.value += '/';
       } else if (validDate.value.length >= 2 && Number(validDate.value.slice(0, 2)) > 12) {
