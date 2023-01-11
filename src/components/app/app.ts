@@ -154,6 +154,7 @@ class App {
             const headerLogo: HTMLLinkElement = <HTMLLinkElement>document.querySelector('.header__logo');
             alert.parentNode?.removeChild(alert);
             headerLogo.click();
+            this.view.cartPage.modalBuyNow.isValid = false;
           }, 3000);
         });
       }
