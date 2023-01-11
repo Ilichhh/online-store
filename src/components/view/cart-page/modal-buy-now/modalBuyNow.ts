@@ -121,6 +121,7 @@ class modalBuyNow extends DomElement {
       id: 'card-number-input',
       placeholder: 'Credit card number',
     });
+
     const modalCardNumberInValid: HTMLElement = this.createElement('div', 'text-danger', undefined, '');
     const modalFormCreditCardNumberLabel: HTMLElement = this.createElement(
       'label',
@@ -193,19 +194,15 @@ class modalBuyNow extends DomElement {
       }
     });
 
-    modalFormCreditCardDateInput.addEventListener('input', (e: Event) => {
-      const currentText = (<HTMLInputElement>e.target).value;
-      const mounth = currentText.substring(0, 2);
-      // const year = currentText.substring(2, 2);
-      if (currentText.length <= 5) {
-        if (currentText.length === 2 && Number(mounth) <= 31) {
-          (<HTMLInputElement>e.target).value += '/';
-        }
-        return true;
-      } else {
-        let str = currentText;
-        str = str.substring(0, str.length - 1);
-        (<HTMLInputElement>e.target).value = str;
+    modalFormCreditCardDateInput.addEventListener('input', () => {
+      const validDate = <HTMLInputElement>modalFormCreditCardDateInput;
+      console.log(validDate);
+      if (validDate.value.length === 2 && Number(validDate.value) <= 12) {
+        validDate.value += '/';
+      } else if (validDate.value.length >= 2 && Number(validDate.value.slice(0, 2)) > 12) {
+        validDate.value = validDate.value.slice(0, 2);
+      } else if (validDate.value.length > 5) {
+        validDate.value = validDate.value.slice(0, 5);
       }
     });
 
@@ -321,7 +318,6 @@ class modalBuyNow extends DomElement {
         return false;
       } else {
         localStorage.setItem('cart', JSON.stringify([]));
-        // localStorage.setItem('cart', '');
         e.target?.dispatchEvent(new CustomEvent('recalculatePrice', { bubbles: true }));
         this.isValid = true;
       }
