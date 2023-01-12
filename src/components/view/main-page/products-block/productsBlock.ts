@@ -28,12 +28,18 @@ class ProductsBlock extends DomElement {
 
   public draw(data: ProductsData, cart: CartItem[], params: QueryParams): HTMLElement {
     this.element.innerHTML = '';
+    this.sortingFilter.innerHTML = '';
+    this.viewSwitcher.innerHTML = '';
+
     const filteredData: Product[] = this.filter.filterData(data, params);
 
     const viewParameters: HTMLElement = this.createElement(
       'div',
       'products-block__view-parameters g-5 mb-4 d-flex justify-content-between'
     );
+    this.element.appendChild(viewParameters);
+
+    // Sorting filter
     const sortingFilterWrapper: HTMLElement = this.createElement(
       'div',
       'products-block__sorting-filter-wrapper input-group-sm'
@@ -47,30 +53,37 @@ class ProductsBlock extends DomElement {
       ['Rating High to Low', 'rating-desc'],
     ];
 
-    this.sortingFilter.innerHTML = '';
     sortingFiltersArray.forEach((item) => {
-      const sortingFilterItem = <HTMLOptionElement>(
+      const sortingFilterItem: HTMLOptionElement = <HTMLOptionElement>(
         this.createElement('option', 'products-block__sorting-filter-item', { value: item[1] }, item[0])
       );
       this.sortingFilter.appendChild(sortingFilterItem);
     });
 
-    this.searchResults.textContent = `Found ${data.products.length} items`;
+    this.sortingFilter.value = params.sort || 'placeholder';
 
-    const gridViewInput = <HTMLInputElement>this.createElement('input', 'btn-check', {
+    sortingFilterWrapper.appendChild(this.sortingFilter);
+    viewParameters.appendChild(sortingFilterWrapper);
+
+    // Search results
+    this.searchResults.textContent = `Found ${data.products.length} items`;
+    viewParameters.appendChild(this.searchResults);
+
+    // View style
+    const gridViewInput: HTMLInputElement = <HTMLInputElement>this.createElement('input', 'btn-check', {
       type: 'radio',
       name: 'view-style',
       id: 'grid',
       autocomplete: 'off',
     });
-    const gridViewLabel = this.createElement('label', 'btn btn-outline-secondary btn-sm', { for: 'grid' });
-    const listViewInput = <HTMLInputElement>this.createElement('input', 'btn-check', {
+    const gridViewLabel: HTMLElement = this.createElement('label', 'btn btn-outline-secondary btn-sm', { for: 'grid' });
+    const listViewInput: HTMLInputElement = <HTMLInputElement>this.createElement('input', 'btn-check', {
       type: 'radio',
       name: 'view-style',
       id: 'list',
       autocomplete: 'off',
     });
-    const listViewLabel = this.createElement('label', 'btn btn-outline-secondary btn-sm', { for: 'list' });
+    const listViewLabel: HTMLElement = this.createElement('label', 'btn btn-outline-secondary btn-sm', { for: 'list' });
 
     gridViewLabel.innerHTML = `
       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-grid" viewBox="0 0 16 16">
@@ -83,23 +96,18 @@ class ProductsBlock extends DomElement {
       </svg>
     `;
 
-    this.viewSwitcher.innerHTML = '';
+    params['view-style'] === 'list' ? (listViewInput.checked = true) : (gridViewInput.checked = true);
 
-    this.element.appendChild(viewParameters);
-    this.element.appendChild(this.productsItemsBlock);
-    sortingFilterWrapper.appendChild(this.sortingFilter);
-    viewParameters.appendChild(sortingFilterWrapper);
-    viewParameters.appendChild(this.searchResults);
     viewParameters.appendChild(this.viewSwitcher);
     this.viewSwitcher.appendChild(gridViewInput);
     this.viewSwitcher.appendChild(gridViewLabel);
     this.viewSwitcher.appendChild(listViewInput);
     this.viewSwitcher.appendChild(listViewLabel);
 
-    this.sortingFilter.value = params.sort || 'placeholder';
-    params['view-style'] === 'list' ? (listViewInput.checked = true) : (gridViewInput.checked = true);
-
+    // Products
+    this.element.appendChild(this.productsItemsBlock);
     this.drawProducts(filteredData, cart, params);
+
     return this.element;
   }
 
