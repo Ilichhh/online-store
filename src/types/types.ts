@@ -6,7 +6,6 @@ declare global {
 
 export type Route = {
   template: string;
-  component: string;
 };
 
 export type Routes = {
