@@ -66,8 +66,6 @@ class Router {
         newUrl.searchParams.delete(key);
       } else if (key === 'id' && isNaN(value)) {
         newUrl.searchParams.delete(key);
-        // window.history.pushState({}, '', window.location.origin);
-        // this.handleLocation();
       } else {
         newUrl.searchParams.set(key, value);
       }

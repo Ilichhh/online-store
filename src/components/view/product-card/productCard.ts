@@ -1,5 +1,4 @@
 import DomElement from '../domElement';
-// import ratingIcon from '../../../assets/svg/star.svg';
 import type { CartItem, Product } from '../../../types/types';
 
 class ProductCard extends DomElement {

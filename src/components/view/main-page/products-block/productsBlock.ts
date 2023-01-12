@@ -2,8 +2,6 @@ import DomElement from '../../domElement';
 import ProductCard from '../../product-card/productCard';
 import Filter from '../../../controller/filter';
 import type { ProductsData, Product, CartItem, QueryParams } from '../../../../types/types';
-// import gridIcon from '../../../../assets/svg/grid.svg';
-// import listIcon from '../../../../assets/svg/list-ul.svg';
 
 class ProductsBlock extends DomElement {
   filter: Filter;

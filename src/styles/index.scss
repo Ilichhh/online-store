@@ -1,17 +1,11 @@
-// @import "base/normalize.css";
 @import 'nouislider/dist/nouislider.css';
-@import "bootstrap/custom";
 @import "~bootstrap/scss/bootstrap";
-
-@import "abstracts/variables";
-@import "base/fonts";
 @import "base/main";
 
 @import "../components/view/footer/footer";
 @import "../components/view/header/header";
 @import "../components/view/page-404/page404";
 @import "../components/view/cart-page/cartPage";
-
 @import "../components/view/main-page/filters-block/filters";
 @import "../components/view/product-card/productCard";
 @import "../components/view/product-page/productPage";

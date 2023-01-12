@@ -7,7 +7,6 @@ class summaryCartBlock extends DomElement {
   countPrice: number;
   countProduct: number;
   countOldPrice: number;
-  // data: ProductsData;
   promoCode: string;
   promo: number;
 
@@ -18,7 +17,6 @@ class summaryCartBlock extends DomElement {
     this.countOldPrice = 0;
     this.countPrice = 0;
     this.countProduct = 0;
-    // this.data = data;
     this.element = this.createElement(
       'div',
       'cart-block__summary fs-6 mw-100 w-25 p-2 d-flex fw-bold border rounded-4 flex-column justify-content-start align-items-center'
