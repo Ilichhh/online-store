@@ -4,6 +4,11 @@ declare global {
   }
 }
 
+export type Image = {
+  url: string;
+  size: string;
+};
+
 export type Route = {
   template: string;
 };
