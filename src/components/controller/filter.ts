@@ -43,7 +43,6 @@ class Filter {
   }
 
   public searchData(filteredData: Product[], params: QueryParams): Product[] {
-    console.log(params);
     const searchInput: string = params.search;
 
     if (searchInput) {
