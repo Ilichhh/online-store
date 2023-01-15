@@ -4,6 +4,10 @@ declare global {
   }
 }
 
+export type Attributes = {
+  [name: string]: string | number | boolean;
+};
+
 export type Image = {
   url: string;
   size: string;

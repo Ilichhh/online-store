@@ -1,5 +1,5 @@
 import DomElement from '../domElement';
-import type { Product, CartItem, Image } from '../../../types/types';
+import type { Product, CartItem } from '../../../types/types';
 
 class ProductPage extends DomElement {
   addToCart: HTMLElement;
@@ -14,7 +14,7 @@ class ProductPage extends DomElement {
     });
   }
 
-  public async drawProductPage(data: Product, cart: CartItem[]): Promise<void> {
+  public drawProductPage(data: Product, cart: CartItem[]): void {
     const main: HTMLElement = <HTMLElement>document.getElementById('main');
     const container = this.createElement('div', 'container');
     const breadcrumbs = this.createElement('div', 'product-page__breadcrumbs pt-4 mb-3');
@@ -52,48 +52,28 @@ class ProductPage extends DomElement {
     const priceFinal = this.createElement('h3', 'product-page__price_final');
     const price = this.createElement('h5', 'product-page__price text-muted');
 
-    const images: Image[] = [];
-    let skip = 0;
-
-    const drrr = async () => {
-      data.images.forEach((link, index) => {
-        const myRequest = new Request(link);
-        fetch(myRequest).then((response) => {
-          const headers = [...response.headers];
-          const sizes = images.map((i) => i.size);
-          if (!sizes.includes(headers[1][1])) {
-            images.push({ url: link, size: headers[1][1] });
-            const item = this.createElement(
-              'div',
-              `product-page__carousel carousel-item ${index === 0 ? 'active' : ''}`
-            );
-            const image = this.createElement('img', 'product-page__carousel-img d-block w-100', {
-              src: link,
-              alt: 'product image',
-            });
-            const previewButton = this.createElement('button', `product-page__preview ${index === 0 ? 'active' : ''}`, {
-              type: 'button',
-              'data-bs-target': '#productSlider',
-              'data-bs-slide-to': index - skip,
-              'aria-label': `Slide ${index - skip + 1}`,
-            });
-            const previewImage = this.createElement('img', 'product-page__preview-img d-block w-100 img-fluid', {
-              alt: 'preview',
-              src: link,
-            });
-
-            sliderImgBlock.appendChild(item);
-            item.appendChild(image);
-            sliderPreviews.appendChild(previewButton);
-            previewButton.appendChild(previewImage);
-          } else {
-            skip++;
-          }
-        });
+    data.images.forEach((link, index) => {
+      const item = this.createElement('div', `product-page__carousel carousel-item ${index === 0 ? 'active' : ''}`);
+      const image = this.createElement('img', 'product-page__carousel-img d-block w-100', {
+        src: link,
+        alt: 'product image',
       });
-    };
+      const previewButton = this.createElement('button', `product-page__preview ${index === 0 ? 'active' : ''}`, {
+        type: 'button',
+        'data-bs-target': '#productSlider',
+        'data-bs-slide-to': index,
+        'aria-label': `Slide ${index + 1}`,
+      });
+      const previewImage = this.createElement('img', 'product-page__preview-img d-block w-100 img-fluid', {
+        alt: 'preview',
+        src: link,
+      });
 
-    await drrr();
+      sliderImgBlock.appendChild(item);
+      item.appendChild(image);
+      sliderPreviews.appendChild(previewButton);
+      previewButton.appendChild(previewImage);
+    });
 
     if (cart.filter((e) => e.id === data.id).length) {
       this.addToCart.textContent = 'Remove from Cart';
@@ -144,10 +124,6 @@ class ProductPage extends DomElement {
     orderingBlock.appendChild(this.addToCart);
     orderingBlock.appendChild(this.buy);
   }
-
-  // private async getUniqueImg(data: Product) {
-
-  // }
 }
 
 export default ProductPage;
