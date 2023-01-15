@@ -33,33 +33,11 @@ class App {
     });
 
     // Header
-    document.querySelector('.header__logo')?.addEventListener('click', (e) => {
-      this.redirectToMainPage(e);
-    });
+    document.querySelector('.header__logo')?.addEventListener('click', (e) => this.redirectToMainPage(e));
 
     this.view.header.cart.addEventListener('click', async (e) => {
       await this.router.route(e);
       this.renderCart();
-    });
-
-    document.addEventListener('click', (e: Event) => {
-      if (
-        (<HTMLElement>e.target).id === 'plus-button-product-cart' ||
-        (<HTMLElement>e.target).id === 'minus-button-product-cart' ||
-        (<HTMLElement>e.target).id === 'add-promo-input' ||
-        (<HTMLElement>e.target).id === 'add-promo-code' ||
-        (<HTMLElement>e.target).id === 'drop-promo0' ||
-        (<HTMLElement>e.target).id === 'drop-promo1'
-      ) {
-        this.cart = JSON.parse(<string>localStorage.getItem('cart')) || [];
-        this.controller.getAllProducts((data: ProductsData) => {
-          this.view.header.updateData(data, this.cart);
-        });
-      }
-    });
-
-    this.controller.getAllProducts((data: ProductsData) => {
-      this.view.cartPage.productCartBlock.addCartListeners(data);
     });
 
     // Product page
@@ -68,9 +46,7 @@ class App {
       this.addRemoveFromCart(target, target, this.cart);
     });
 
-    this.view.productPage.buy.addEventListener('click', (e) => {
-      this.buyNowFromProductPage(e);
-    });
+    this.view.productPage.buy.addEventListener('click', (e) => this.buyNowFromProductPage(e));
 
     // Main page
     this.view.mainPage.productsBlock.sortingFilter.addEventListener('change', (e) => this.sortProducts(e));
@@ -118,46 +94,66 @@ class App {
       this.sliderFilterProducts(range, 'stock');
     });
 
-    this.view.mainPage.searchBar.searchButton.addEventListener('click', () => {
-      const inputValue = this.view.mainPage.searchBar.input.value;
-      this.router.setQueryString({ search: inputValue.toLowerCase() });
+    this.view.mainPage.searchBar.searchButton.addEventListener('click', () => this.search());
+
+    // Cart page
+    this.view.cartPage.container.addEventListener('click', (e) => this.updateCartPage(e));
+    this.view.cartPage.modalBuyNow.submitButton.addEventListener('click', () => this.submitForm());
+    this.controller.getAllProducts((data: ProductsData) => {
+      this.view.cartPage.productCartBlock.addCartListeners(data);
+    });
+  }
+
+  private updateCartPage(e: Event): void {
+    const target: HTMLElement = <HTMLElement>e.target;
+    if (
+      target.id === 'plus-button-product-cart' ||
+      target.id === 'minus-button-product-cart' ||
+      target.id === 'add-promo-input' ||
+      target.id === 'add-promo-code' ||
+      target.id === 'drop-promo0' ||
+      target.id === 'drop-promo1'
+    ) {
+      this.cart = JSON.parse(<string>localStorage.getItem('cart')) || [];
       this.controller.getAllProducts((data: ProductsData) => {
-        this.view.drawAllProducts(data, this.cart, this.router.getQueryParams());
-        this.view.drawAllFilters(data, this.router.getQueryParams());
+        this.view.header.updateData(data, this.cart);
       });
-    });
-
-    this.view.cartPage.container.addEventListener('click', (e) => {
-      const target: HTMLElement = <HTMLElement>e.target;
-      setTimeout(() => {
-        if (target.id === 'minus-button-product-cart' && !this.cart.length) {
-          this.view.drawCartPageNone();
-        } else if (target.id === 'minus-button-product-cart') {
-          // e.target?.dispatchEvent(new CustomEvent('changeCurrentPage', { bubbles: true }));
-        }
-      });
-    });
-
-    this.view.cartPage.modalBuyNow.submitButton.addEventListener('click', () => {
-      if (this.view.cartPage.modalBuyNow.isValid) {
-        this.view.cartPage.modalBuyNow.closeButton.click();
-        this.cart.length = 0;
-        localStorage.setItem('cart', '[]');
+    }
+    setTimeout(() => {
+      if (target.id === 'minus-button-product-cart' && !this.cart.length) {
         this.view.drawCartPageNone();
-        const alert: HTMLElement = document.createElement('h2');
-        alert.setAttribute('style', 'position:absolute;top:40%;left:35%;background-color:white');
-        alert.innerHTML = 'The order has been placed';
-        document.body.appendChild(alert);
-        this.controller.getAllProducts((data: ProductsData) => {
-          this.view.header.updateData(data, this.cart);
-          setTimeout(() => {
-            const headerLogo: HTMLLinkElement = <HTMLLinkElement>document.querySelector('.header__logo');
-            alert.parentNode?.removeChild(alert);
-            headerLogo.click();
-            this.view.cartPage.modalBuyNow.isValid = false;
-          }, 3000);
-        });
       }
+    });
+  }
+
+  private submitForm(): void {
+    if (this.view.cartPage.modalBuyNow.isValid) {
+      this.view.cartPage.modalBuyNow.closeButton.click();
+      this.cart.length = 0;
+      localStorage.setItem('cart', '[]');
+      this.view.drawCartPageNone();
+      const alert: HTMLElement = document.createElement('h2');
+      alert.setAttribute('style', 'position:absolute;top:40%;left:35%;background-color:white');
+      alert.innerHTML = 'The order has been placed';
+      document.body.appendChild(alert);
+      this.controller.getAllProducts((data: ProductsData) => {
+        this.view.header.updateData(data, this.cart);
+        setTimeout(() => {
+          const headerLogo: HTMLLinkElement = <HTMLLinkElement>document.querySelector('.header__logo');
+          alert.parentNode?.removeChild(alert);
+          headerLogo.click();
+          this.view.cartPage.modalBuyNow.isValid = false;
+        }, 3000);
+      });
+    }
+  }
+
+  private search(): void {
+    const inputValue = this.view.mainPage.searchBar.input.value;
+    this.router.setQueryString({ search: inputValue.toLowerCase() });
+    this.controller.getAllProducts((data: ProductsData) => {
+      this.view.drawAllProducts(data, this.cart, this.router.getQueryParams());
+      this.view.drawAllFilters(data, this.router.getQueryParams());
     });
   }
 

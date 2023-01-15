@@ -4,9 +4,17 @@ declare global {
   }
 }
 
+export type Attributes = {
+  [name: string]: string | number | boolean;
+};
+
+export type Image = {
+  url: string;
+  size: string;
+};
+
 export type Route = {
   template: string;
-  component: string;
 };
 
 export type Routes = {

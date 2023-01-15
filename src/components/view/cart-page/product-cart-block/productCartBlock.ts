@@ -1,8 +1,6 @@
 import DomElement from '../../domElement';
 import ProductCard from '../../product-card/productCard';
 import type { CartItem, Product, ProductsData } from '../../../../types/types';
-// import gridIcon from '../../../../assets/svg/grid.svg';
-// import listIcon from '../../../../assets/svg/list-ul.svg';
 
 class ProductCartBlock extends DomElement {
   element: HTMLElement;

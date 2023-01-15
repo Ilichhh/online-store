@@ -25,10 +25,8 @@ class SearchBar extends DomElement {
 
   public draw(params: QueryParams): HTMLElement {
     const searchBar: HTMLElement = this.createElement('div', 'search-bar input-group mt-4 mb-4');
-    const message = document.createElement('div');
 
     this.input.value = params.search || '';
-    searchBar.appendChild(message);
     searchBar.appendChild(this.input);
     searchBar.appendChild(this.searchButton);
 
