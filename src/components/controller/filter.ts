@@ -16,7 +16,6 @@ class Filter {
     const brandArr: string[] = params.brand?.split('%') || [];
     const priceRange: number[] = params.price?.split('%').map((i) => +i) || [lowestPrice, highestPrice];
     const stockRange: number[] = params.stock?.split('%').map((i) => +i) || [lowestStock, highestStock];
-    const searchInput: string = params.search;
 
     let filteredByCategory: Product[] = data.products.filter((item) => categoryArr.includes(item.category));
     const wrongCategories = categoryArr.filter((item) => !allCategories.includes(item));
@@ -38,6 +37,14 @@ class Filter {
       .filter((price) => filteredByPrice.includes(price))
       .filter((stock) => filteredByStock.includes(stock));
 
+    if (wrongCategories.length || wrongBrands.length) filteredData = [];
+
+    return this.searchData(filteredData, params);
+  }
+
+  public searchData(filteredData: Product[], params: QueryParams): Product[] {
+    const searchInput: string = params.search;
+
     if (searchInput) {
       filteredData = filteredData.filter((item) => {
         const isInTitle: boolean = item.title.toLowerCase().includes(searchInput);
@@ -47,8 +54,6 @@ class Filter {
         return isInTitle || isInDescription || isInDescription || isInBrand || isInCategory;
       });
     }
-
-    if (wrongCategories.length || wrongBrands.length) filteredData = [];
 
     return filteredData;
   }

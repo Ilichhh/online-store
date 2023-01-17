@@ -64,21 +64,21 @@ class App {
     this.view.mainPage.filtersBlock.resetBtn.addEventListener('click', async () => {
       this.router.resetFilters();
       this.controller.getAllProducts((data: ProductsData) => {
-        this.view.drawMainPage(data, this.cart, this.router.getQueryParams());
+        this.view.drawMainPage(data, this.cart, this.router.getQueryParams(window.location.search));
       });
     });
 
     this.view.mainPage.filtersBlock.categoryFilter.addEventListener('change', (e) => {
       this.checkboxFilterProducts(e, 'category');
       this.controller.getAllProducts((data: ProductsData) => {
-        this.view.mainPage.filtersBlock.draw(data, this.router.getQueryParams());
+        this.view.mainPage.filtersBlock.draw(data, this.router.getQueryParams(window.location.search));
       });
     });
 
     this.view.mainPage.filtersBlock.brandFilter.addEventListener('change', (e) => {
       this.checkboxFilterProducts(e, 'brand');
       this.controller.getAllProducts((data: ProductsData) => {
-        this.view.mainPage.filtersBlock.draw(data, this.router.getQueryParams());
+        this.view.mainPage.filtersBlock.draw(data, this.router.getQueryParams(window.location.search));
       });
     });
 
@@ -152,8 +152,8 @@ class App {
     const inputValue = this.view.mainPage.searchBar.input.value;
     this.router.setQueryString({ search: inputValue.toLowerCase() });
     this.controller.getAllProducts((data: ProductsData) => {
-      this.view.drawAllProducts(data, this.cart, this.router.getQueryParams());
-      this.view.drawAllFilters(data, this.router.getQueryParams());
+      this.view.drawAllProducts(data, this.cart, this.router.getQueryParams(window.location.search));
+      this.view.drawAllFilters(data, this.router.getQueryParams(window.location.search));
     });
   }
 
@@ -162,7 +162,7 @@ class App {
     localStorage.setItem('promo', '0');
     this.controller.getAllProducts((data: ProductsData) => {
       this.cart = JSON.parse(<string>localStorage.getItem('cart')) || [];
-      this.view.drawMainPage(data, this.cart, this.router.getQueryParams());
+      this.view.drawMainPage(data, this.cart, this.router.getQueryParams(window.location.search));
       this.view.header.updateData(data, this.cart);
     });
   }
@@ -191,8 +191,8 @@ class App {
     if (path === '') this.renderMain();
     if (path === 'cart') this.renderCart();
     if (path === 'product') {
-      if (+this.router.getQueryParams().id) {
-        this.renderProductPage(+this.router.getQueryParams().id, this.cart);
+      if (+this.router.getQueryParams(window.location.search).id) {
+        this.renderProductPage(+this.router.getQueryParams(window.location.search).id, this.cart);
       } else {
         this.renderMain();
       }
@@ -201,7 +201,7 @@ class App {
 
   private renderMain(): void {
     this.controller.getAllProducts((data: ProductsData) => {
-      this.view.drawMainPage(data, this.cart, this.router.getQueryParams());
+      this.view.drawMainPage(data, this.cart, this.router.getQueryParams(window.location.search));
     });
   }
 
@@ -219,24 +219,24 @@ class App {
     const max: number = Math.round(+range[1]);
     this.router.setQueryString({ [filter]: `${min}%${max}` });
     this.controller.getAllProducts((data: ProductsData) => {
-      this.view.mainPage.productsBlock.draw(data, this.cart, this.router.getQueryParams());
+      this.view.mainPage.productsBlock.draw(data, this.cart, this.router.getQueryParams(window.location.search));
       this.view.mainPage.filtersBlock.drawRangeFilter(
         data,
         filter === 'stock' ? this.view.mainPage.filtersBlock.priceFilter : this.view.mainPage.filtersBlock.stockFilter,
         filter === 'stock' ? 'price' : 'stock',
-        this.router.getQueryParams()
+        this.router.getQueryParams(window.location.search)
       );
       this.view.mainPage.filtersBlock.drawCheckboxFilter(
         data,
         this.view.mainPage.filtersBlock.brandFilter,
         'brand',
-        this.router.getQueryParams()
+        this.router.getQueryParams(window.location.search)
       );
       this.view.mainPage.filtersBlock.drawCheckboxFilter(
         data,
         this.view.mainPage.filtersBlock.categoryFilter,
         'category',
-        this.router.getQueryParams()
+        this.router.getQueryParams(window.location.search)
       );
     });
   }
@@ -247,7 +247,7 @@ class App {
       const item: HTMLInputElement = <HTMLInputElement>target.closest('input');
       this.router.setQueryString({ [filter]: item.value });
       this.controller.getAllProducts((data: ProductsData) => {
-        this.view.mainPage.productsBlock.draw(data, this.cart, this.router.getQueryParams());
+        this.view.mainPage.productsBlock.draw(data, this.cart, this.router.getQueryParams(window.location.search));
       });
     }
   }
@@ -256,7 +256,7 @@ class App {
     const element: HTMLSelectElement = <HTMLSelectElement>e.target;
     this.router.setQueryString({ sort: element.value });
     this.controller.getAllProducts((data: ProductsData) =>
-      this.view.drawAllProducts(data, this.cart, this.router.getQueryParams())
+      this.view.drawAllProducts(data, this.cart, this.router.getQueryParams(window.location.search))
     );
   }
 
@@ -264,7 +264,7 @@ class App {
     const element: HTMLButtonElement = <HTMLButtonElement>e.target;
     this.router.setQueryString({ 'view-style': element.closest('.btn-check')?.id });
     this.controller.getAllProducts((data: ProductsData) =>
-      this.view.drawAllProducts(data, this.cart, this.router.getQueryParams())
+      this.view.drawAllProducts(data, this.cart, this.router.getQueryParams(window.location.search))
     );
   }
 
@@ -294,7 +294,7 @@ class App {
   private renderProductPage(id: number, cart: CartItem[]) {
     this.router.setQueryString({ id: id });
     this.controller.getAllProducts((data: ProductsData) => {
-      const i: number = +this.router.getQueryParams().id - 1;
+      const i: number = +this.router.getQueryParams(window.location.search).id - 1;
       this.view.productPage.drawProductPage(data.products[i], cart);
     });
   }

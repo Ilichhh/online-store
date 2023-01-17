@@ -112,7 +112,7 @@ class ProductsBlock extends DomElement {
   }
 
   public drawProducts(data: Product[], cart: CartItem[], params: QueryParams): void {
-    this.sortData(data, params);
+    data = this.sortData(data, params);
     this.searchResults.textContent = `Found ${data.length} items`;
 
     this.productsItemsBlock.innerHTML = '';
@@ -143,11 +143,12 @@ class ProductsBlock extends DomElement {
       : (button.textContent = 'Remove from Cart');
   }
 
-  private sortData(data: Product[], params: QueryParams): void {
-    if (params.sort === 'price-asc') data = data.sort((a, b) => a.price - b.price);
-    if (params.sort === 'price-desc') data = data.sort((a, b) => b.price - a.price);
-    if (params.sort === 'rating-asc') data = data.sort((a, b) => a.rating - b.rating);
-    if (params.sort === 'rating-desc') data = data.sort((a, b) => b.rating - a.rating);
+  public sortData(data: Product[], params: QueryParams): Product[] {
+    if (params.sort === 'price-asc') return data.sort((a, b) => a.price - b.price);
+    if (params.sort === 'price-desc') return data.sort((a, b) => b.price - a.price);
+    if (params.sort === 'rating-asc') return data.sort((a, b) => a.rating - b.rating);
+    if (params.sort === 'rating-desc') return data.sort((a, b) => b.rating - a.rating);
+    return data;
   }
 }
 

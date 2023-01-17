@@ -41,7 +41,7 @@ class Router {
 
     for (const [key, value] of Object.entries(params)) {
       if (key === 'category' || key === 'brand') {
-        const oldValues: string[] = this.getQueryParams()[key]?.split('%');
+        const oldValues: string[] = this.getQueryParams(window.location.search)[key]?.split('%');
         if (!oldValues) newUrl.searchParams.set(key, value);
         else {
           if (oldValues.includes(value)) {
@@ -62,8 +62,7 @@ class Router {
     window.history.pushState({}, '', newUrl.href);
   }
 
-  public getQueryParams(): QueryParams {
-    const paramsString: string = window.location.search;
+  public getQueryParams(paramsString: string): QueryParams {
     const searchParams: URLSearchParams = new URLSearchParams(paramsString);
     const paramsList: QueryParams = {};
     for (const [key, value] of searchParams.entries()) {
