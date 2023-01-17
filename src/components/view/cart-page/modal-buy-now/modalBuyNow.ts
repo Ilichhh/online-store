@@ -188,7 +188,7 @@ class modalBuyNow extends DomElement {
       if (currentText.length <= 16) {
         return true;
       } else {
-        let str = currentText;
+        let str: string = currentText;
         str = str.substring(0, str.length - 1);
         (<HTMLInputElement>e.target).value = str;
       }

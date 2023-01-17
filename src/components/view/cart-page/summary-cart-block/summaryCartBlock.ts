@@ -40,7 +40,8 @@ class summaryCartBlock extends DomElement {
 
   public recalculatePrice(data: ProductsData): void {
     this.promo = Number(localStorage.getItem('promo'));
-    const cart = localStorage.getItem('cart') === null ? [] : JSON.parse(localStorage.getItem('cart') || '');
+    const cart: CartItem[] =
+      localStorage.getItem('cart') === null ? [] : JSON.parse(localStorage.getItem('cart') || '');
     let sum = 0;
     let sumOld = 0;
     let countProduct = 0;
@@ -62,7 +63,7 @@ class summaryCartBlock extends DomElement {
     this.element.innerHTML = '';
     localStorage.setItem('promo', '0');
     let append: HTMLElement;
-    const promoArr = [
+    const promoArr: { name: string; text: string; discont: number }[] = [
       { name: 'rs', text: 'Rolling Scopes School - 10%', discont: 10 },
       { name: 'ep', text: 'Epam Systems - 10%', discont: 10 },
     ];
@@ -186,7 +187,7 @@ class summaryCartBlock extends DomElement {
     );
 
     addPromoInput.addEventListener('input', (e: Event) => {
-      const currentText = (<HTMLInputElement>e.target).value;
+      const currentText: string = (<HTMLInputElement>e.target).value;
       e.target?.dispatchEvent(new CustomEvent('changePromo', { bubbles: true }));
       if (currentText === promoArr[0].name && addedPromoCodesItem0.classList.contains('d-none')) {
         promoCodeButton.classList.remove('d-none');

@@ -52,14 +52,14 @@ class ProductCartBlock extends DomElement {
   }
 
   public changeCountPage(data: ProductsData): void {
-    const cart = JSON.parse(localStorage.getItem('cart') || '');
+    const cart: CartItem[] = JSON.parse(localStorage.getItem('cart') || '');
     this.productInCartCount = cart.length;
     this.pageCount = Math.ceil(this.productInCartCount / this.productInPage);
     this.changeCurrentPage(data);
   }
 
   public changeCurrentPage(data: ProductsData): void {
-    const cart = JSON.parse(<string>localStorage.getItem('cart') || '');
+    const cart: CartItem[] = JSON.parse(<string>localStorage.getItem('cart') || '');
     if (this.currentPage >= this.pageCount) {
       this.currentPage = this.pageCount;
       this.inputPageCount.textContent = `${this.pageCount}`;
@@ -94,9 +94,9 @@ class ProductCartBlock extends DomElement {
       this.currentPage = 1;
       this.inputPageCount.textContent = `${this.currentPage}`;
     }
-    let index = (this.currentPage - 1) * this.productInPage + 1;
-    const start = (this.currentPage - 1) * this.productInPage;
-    const end = this.currentPage * this.productInPage;
+    let index: number = (this.currentPage - 1) * this.productInPage + 1;
+    const start: number = (this.currentPage - 1) * this.productInPage;
+    const end: number = this.currentPage * this.productInPage;
     for (let i = start; i < end; i++) {
       data.products.forEach((itemData: Product) => {
         if (cart[i] && cart[i].id === itemData.id) {
