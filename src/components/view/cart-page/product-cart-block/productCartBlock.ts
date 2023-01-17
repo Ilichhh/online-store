@@ -89,7 +89,7 @@ class ProductCartBlock extends DomElement {
     });
   }
 
-  public drawProductInCart(data: ProductsData, cart: CartItem[]) {
+  public drawProductInCart(data: ProductsData, cart: CartItem[]): void {
     if (this.currentPage < 1) {
       this.currentPage = 1;
       this.inputPageCount.textContent = `${this.currentPage}`;
@@ -107,7 +107,7 @@ class ProductCartBlock extends DomElement {
     }
   }
 
-  public arrowRightListener(e: Event, data: ProductsData) {
+  public arrowRightListener(e: Event, data: ProductsData): void {
     this.currentPage += 1;
     if (this.currentPage >= this.pageCount && this.pageCount !== 0) {
       this.currentPage = this.pageCount;
@@ -118,7 +118,7 @@ class ProductCartBlock extends DomElement {
     this.changeCurrentPage(data);
   }
 
-  public arrowLeftListener(e: Event, data: ProductsData) {
+  public arrowLeftListener(e: Event, data: ProductsData): void {
     this.currentPage -= 1;
     if (this.currentPage <= 1) {
       this.currentPage = 1;
@@ -127,7 +127,7 @@ class ProductCartBlock extends DomElement {
     this.changeCurrentPage(data);
   }
 
-  public changeCountInPageInput(e: Event, data: ProductsData) {
+  public changeCountInPageInput(e: Event, data: ProductsData): void {
     this.productInPage = Number((<HTMLInputElement>e.target).value);
     this.changeCountPage(data);
   }
