@@ -12,4 +12,7 @@ describe('in the function of recalculation of the total cost', () => {
   it('there is a promo', () => {
     expect(summary.promo).toBeDefined();
   });
+  it('there is a promoCode', () => {
+    expect(summary.promoCode).toBeDefined();
+  });
 });
