@@ -1,0 +1,34 @@
+.container_not-found {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  max-width: 550px;
+  margin: 0 auto;
+  align-items: center;
+  justify-content: center;
+  padding-top: 5%;
+  user-select: none;
+  -ms-user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+}
+
+.page404 {
+  &__img {
+    pointer-events: none;
+    user-select: none;
+    width: 250px;
+  }
+
+  &__name {
+    color: grey;
+    font-size: 33px;
+  }
+
+  &__text {
+    text-align: center;
+    color: grey;
+    font-size: 22px;
+  }
+}

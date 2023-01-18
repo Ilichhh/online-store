@@ -1,0 +1,41 @@
+.container_header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header {
+  height: 60px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: rgb(33, 37, 41);
+  color: white;
+  &__logo {
+    align-items: center;
+    text-decoration: none;
+  }
+  &__logo-img {
+    margin-right: 20px;
+  }
+  &__logo-text {
+    text-decoration: none;
+    color: white;
+  }
+  &__cart {
+    color: rgb(0, 72, 217);
+    cursor: pointer;
+  }
+}
+
+.nav {
+  display: flex;
+  width: 50%;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav-item {
+  text-decoration: none;
+  color: black;
+}

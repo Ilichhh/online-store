@@ -1,0 +1,23 @@
+.container_footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.footer {
+  height: 50px;
+  padding: 10px;
+  background-color: rgb(33, 37, 41);
+}
+
+.social {
+  &__link {
+    color: white;
+    text-decoration: none;
+  }
+
+  &__gh-logo {
+    margin-left: 10px;
+    margin-right: 5px;
+  }
+}
